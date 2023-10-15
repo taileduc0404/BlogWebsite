@@ -1,14 +1,15 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using BlogWebsite.Models;
-using BlogWebsite.Services;
 using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using System.Text;
+using MailKit.Net.Smtp;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -18,47 +19,105 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly INotyfService _notification;
-        private readonly EmailService _emailService;
         public UserController(UserManager<ApplicationUser> userManager,
 								SignInManager<ApplicationUser> signInManager,
-								INotyfService notyfService,
-                                EmailService emailService)
+								INotyfService notyfService)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_notification = notyfService;
-			_emailService = emailService;
 		}
+        //Index
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var vm = users.Select(x => new UserVM()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                UserName = x.UserName,
+                Email = x.Email,
+            }).ToList();
+            foreach (var user in vm)
+            {
+                var singleUser = await _userManager.FindByIdAsync(user.Id);
+                var role = await _userManager.GetRolesAsync(singleUser);
+                user.Role = role.FirstOrDefault();
+            }
+
+            return View(vm);
+        }
 
 
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
 
-		//Index
-		[Authorize(Roles = "Admin")]
-		[HttpGet]
-		public async Task<IActionResult> Index()
-		{
-			var users = await _userManager.Users.ToListAsync();
-			var vm = users.Select(x => new UserVM()
-			{
-				Id = x.Id,
-				FirstName = x.FirstName,
-				LastName = x.LastName,
-				UserName = x.UserName,
-				Email = x.Email,
-			}).ToList();
-			foreach (var user in vm)
-			{
-				var singleUser = await _userManager.FindByIdAsync(user.Id);
-				var role = await _userManager.GetRolesAsync(singleUser);
-				user.Role = role.FirstOrDefault();
-			}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                // Kiểm tra xem địa chỉ email tồn tại trong hệ thống
+                // Nếu tồn tại, tạo mã xác minh và gửi email
+                // Đồng thời, lưu mã xác minh và thời gian hết hạn vào cơ sở dữ liệu
 
-			return View(vm);
-		}
+                var user = await _userManager.FindByEmailAsync(vm.Email);
+
+                if (user != null)
+                {
+                    // Tạo mã xác minh và thời gian hết hạn (ví dụ, 15 phút)
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                    // Tạo URL để xác minh mã và đặt lại mật khẩu
+                    var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { token = encodedToken, email = vm.Email }, Request.Scheme);
+
+                    // Gửi email chứa URL đặt lại mật khẩu
+                    await SendResetPasswordEmail(vm.Email!, resetPasswordUrl!);
+
+                    // Chuyển hướng đến trang thông báo
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+
+                // Xử lý trường hợp email không tồn tại
+            }
+
+            return View(vm);
+        }
 
 
-		//Register
-		[HttpGet("Register")]
+        private async Task SendResetPasswordEmail(string email, string resetPasswordUrl)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Duc Tai", "taileduc0404@gmail.com"));
+            message.To.Add(new MailboxAddress("My Customer", email));
+            message.Subject = "Reset Password";
+
+            var body = new TextPart("plain")
+            {
+                Text = $"To reset your password, click the following link:\n{resetPasswordUrl}"
+            };
+
+            message.Body = body;
+
+            using (var client = new SmtpClient())
+            {
+                await client.ConnectAsync("smtp.gmail.com", 587, false);
+                await client.AuthenticateAsync("taileduc0404@gmail.com", "tai0962964221");
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
+        }
+
+
+        //Register
+        [HttpGet("Register")]
 		public IActionResult Register()
 		{
 			return View(new RegisterVM());
@@ -125,39 +184,9 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 		}
 
-		//[HttpGet]
-		//public IActionResult ForgotPassword()
-		//{
-		//	return View(new ForgotPasswordVM());
-		//}
-
-  //      private string GenerateRandomToken(int length)
-  //      {
-  //          const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  //          var random = new Random();
-  //          var token = new string(Enumerable.Repeat(chars, length)
-  //              .Select(s => s[random.Next(s.Length)]).ToArray());
-  //          return token;
-  //      }
-
-  //      [HttpPost]
-  //      [ValidateAntiForgeryToken]
-		//public async Task<IActionResult> ForgotPassword(ForgotPassword forgot, string email)
-		//{
-		//	if (ModelState.IsValid)
-		//	{
-  //              var existingUser = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == forgot.Email);
-  //              if (!string.IsNullOrEmpty(existingUser!.Email))
-  //              {
-  //                  string resetToken = GenerateRandomToken(12);
-  //                  SaveResetToken(userEmail, resetToken);
-  //              }
-  //          }
-            
-  //      }
 
 
-        [Authorize]
+		[Authorize]
 		[HttpGet]
 		public async Task<IActionResult> ResetPassword(string id)
 		{

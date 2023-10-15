@@ -1,35 +1,40 @@
-﻿using MimeKit;
+﻿using Microsoft.Extensions.Options;
+using MimeKit;
 using MailKit.Net.Smtp;
-using MailKit.Security;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using BlogWebsite.Models;
 
 namespace BlogWebsite.Services
 {
     public class EmailService
     {
-        public async Task SendEmailAsync(string toEmail, string subject, string message)
+        private readonly SmtpSettings _smtpSettings;
+
+        public EmailService(IOptions<SmtpSettings> smtpSettings)
         {
-            var emailMessage = new MimeMessage();
+            _smtpSettings = smtpSettings.Value;
+        }
 
-            emailMessage.From.Add(new MailboxAddress("Your Name", "your-email@example.com"));
-            emailMessage.To.Add(new MailboxAddress("Recipient Name", toEmail));
-            emailMessage.Subject = subject;
+        public void SendEmail(string to, string subject, string body)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Duc Tai", _smtpSettings.SmtpUsername));
+            message.To.Add(new MailboxAddress("My Customer", to));
+            message.Subject = subject;
 
-            var bodyBuilder = new BodyBuilder();
-            var body = new TextPart("plain")
+            message.Body = new TextPart("plain")
             {
-                Text = message
+                Text = body
             };
-
-            emailMessage.Body = bodyBuilder.ToMessageBody();
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.example.com", 587, SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync("your-username", "your-password");
-                await client.SendAsync(emailMessage);
-                await client.DisconnectAsync(true);
+                client.Connect(_smtpSettings.SmtpServer, _smtpSettings.SmtpPort, false);
+                client.Authenticate(_smtpSettings.SmtpUsername, _smtpSettings.SmtpPassword);
+                client.Send(message);
+                client.Disconnect(true);
             }
         }
     }
+
 }
