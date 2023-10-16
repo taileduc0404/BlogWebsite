@@ -4,7 +4,7 @@
 
 namespace BlogWebsite.Migrations
 {
-    public partial class TagAddedOnPost : Migration
+    public partial class addTagOnPost : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

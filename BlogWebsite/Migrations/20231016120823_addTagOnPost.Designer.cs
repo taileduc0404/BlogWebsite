@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230924040430_TagAddedOnPost")]
-    partial class TagAddedOnPost
+    [Migration("20231016120823_addTagOnPost")]
+    partial class addTagOnPost
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
