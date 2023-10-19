@@ -2,6 +2,7 @@
 using AspNetCoreHero.ToastNotification.Extensions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
+using BlogWebsite.Services;
 using BlogWebsite.Utilites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,6 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 options.UseSqlServer(connectionString));
 //end connect to sqlServer
 
-// Đọc cấu hình từ appsettings.json
-builder.Configuration.AddJsonFile("appsettings.json");
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -32,6 +29,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //    options.User.RequireUniqueEmail = true;
 //    options.SignIn.RequireConfirmedEmail = true;
 //});
+
+//email services
+var emailConfig = builder.Configuration
+		.GetSection("EmailConfiguration")
+		.Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
+builder.Services.AddControllers();
 
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();

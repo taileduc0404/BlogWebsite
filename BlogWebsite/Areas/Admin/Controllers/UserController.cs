@@ -52,70 +52,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
         }
 
 
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM vm)
-        {
-            if (ModelState.IsValid)
-            {
-                // Kiểm tra xem địa chỉ email tồn tại trong hệ thống
-                // Nếu tồn tại, tạo mã xác minh và gửi email
-                // Đồng thời, lưu mã xác minh và thời gian hết hạn vào cơ sở dữ liệu
-
-                var user = await _userManager.FindByEmailAsync(vm.Email);
-
-                if (user != null)
-                {
-                    // Tạo mã xác minh và thời gian hết hạn (ví dụ, 15 phút)
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-
-                    // Tạo URL để xác minh mã và đặt lại mật khẩu
-                    var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { token = encodedToken, email = vm.Email }, Request.Scheme);
-
-                    // Gửi email chứa URL đặt lại mật khẩu
-                    await SendResetPasswordEmail(vm.Email!, resetPasswordUrl!);
-
-                    // Chuyển hướng đến trang thông báo
-                    return RedirectToAction("ForgotPasswordConfirmation");
-                }
-
-                // Xử lý trường hợp email không tồn tại
-            }
-
-            return View(vm);
-        }
-
-
-        private async Task SendResetPasswordEmail(string email, string resetPasswordUrl)
-        {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Duc Tai", "taileduc0404@gmail.com"));
-            message.To.Add(new MailboxAddress("My Customer", email));
-            message.Subject = "Reset Password";
-
-            var body = new TextPart("plain")
-            {
-                Text = $"To reset your password, click the following link:\n{resetPasswordUrl}"
-            };
-
-            message.Body = body;
-
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync("smtp.gmail.com", 587, false);
-                await client.AuthenticateAsync("taileduc0404@gmail.com", "tai0962964221");
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-            }
-        }
-
-
         //Register
         [HttpGet("Register")]
 		public IActionResult Register()
@@ -156,19 +92,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			if (result.Succeeded)
 			{
-				//var token = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
-				//var confirmationLink = Url.Action("ConfirmEmail", "Email", new { token, email = applicationUser.Email }, Request.Scheme);
-				//EmailHelper emailHelper = new EmailHelper();
-				//bool emailResponse = emailHelper.SendEmail(vm.Email!, confirmationLink!);
-				//if (emailResponse == true)
-				//{
-				//	_notification.Success("Mail has sent");
-				//}
-				//else
-				//{
-				//                _notification.Error("Error sent");
-				//            }
-
 				if (vm.IsAuthor)
 				{
 					await _userManager.AddToRoleAsync(applicationUser, WebsiteRole.WebisteAuthor);

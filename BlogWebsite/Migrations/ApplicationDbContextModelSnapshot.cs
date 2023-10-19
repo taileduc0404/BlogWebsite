@@ -114,6 +114,23 @@ namespace BlogWebsite.Migrations
                     b.ToTable("settings");
                 });
 
+            modelBuilder.Entity("BlogWebsite.Models.SmtpSettings", b =>
+                {
+                    b.Property<string>("SmtpPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SmtpPort")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SmtpServer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SmtpUsername")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("smtpSettings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
