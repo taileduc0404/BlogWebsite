@@ -191,7 +191,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			//	return View(vm);
 			//}
 			_notification.Success("Logged In Successfully!");
-			return RedirectToAction("Index", "Post", new { area = "Admin" });
+			return RedirectToAction("Index", "Home", new { area = "Default" });
 
 		}
 
@@ -201,7 +201,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		{
 			_signInManager.SignOutAsync();
 			_notification.Success("You logged out successfully!");
-			return RedirectToAction("Login", "User", new { area = "Admin" });
+			return RedirectToAction("Index", "Home", new { area = "Default" });
 		}
 	}
 }

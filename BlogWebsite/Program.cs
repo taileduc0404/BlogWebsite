@@ -1,10 +1,11 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using BlogWebsite.Data;
+using BlogWebsite.EmailServices;
 using BlogWebsite.Models;
-using BlogWebsite.Services;
 using BlogWebsite.Utilites;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -21,22 +22,11 @@ options.UseSqlServer(connectionString));
 //end connect to sqlServer
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-//builder.Services.Configure<IdentityOptions>(options =>
-//{
-//    options.User.RequireUniqueEmail = true;
-//    options.SignIn.RequireConfirmedEmail = true;
-//});
 
-//email services
-var emailConfig = builder.Configuration
-		.GetSection("EmailConfiguration")
-		.Get<EmailConfiguration>();
-builder.Services.AddSingleton(emailConfig);
 
-builder.Services.AddControllers();
+
 
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
@@ -50,9 +40,21 @@ builder.Services.ConfigureApplicationCookie(options =>
 }
 );
 
+
 var app = builder.Build();
 DataSeeding();
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+//app.MapGet("/", async context =>
+//{
+//    await context.Response.WriteAsync("Hello from the root path!");
+//});
+
+//app.MapGet("/hello/{name}", async context =>
+//{
+//    var name = context.Request.RouteValues["name"];
+//    await context.Response.WriteAsync($"Hello, {name}!");
+//});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

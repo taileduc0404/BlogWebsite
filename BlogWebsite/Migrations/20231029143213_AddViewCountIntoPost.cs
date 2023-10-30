@@ -4,21 +4,22 @@
 
 namespace BlogWebsite.Migrations
 {
-    public partial class addTagOnPost : Migration
+    public partial class AddViewCountIntoPost : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Tag",
+            migrationBuilder.AddColumn<int>(
+                name: "ViewCount",
                 table: "posts",
-                type: "nvarchar(max)",
-                nullable: true);
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Tag",
+                name: "ViewCount",
                 table: "posts");
         }
     }

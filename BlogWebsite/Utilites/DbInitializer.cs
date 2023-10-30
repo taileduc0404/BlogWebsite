@@ -48,11 +48,11 @@ namespace BlogWebsite.Utilites
                         Title = "About Us",
                         Slug = "about"
                     },
-                    new Page()
-                    {
-                        Title = "Contact Us",
-                        Slug = "contact"
-                    }
+                    //new Page()
+                    //{
+                    //    Title = "Contact Us",
+                    //    Slug = "contact"
+                    //}
                  };
 
                 _context.pages!.AddRange(listOfPages);
