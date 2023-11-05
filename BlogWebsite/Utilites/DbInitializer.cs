@@ -25,7 +25,6 @@ namespace BlogWebsite.Utilites
             {
                 _roleManager.CreateAsync(new IdentityRole(WebsiteRole.WebisteAdmin)).GetAwaiter().GetResult();
                 _roleManager.CreateAsync(new IdentityRole(WebsiteRole.WebisteAuthor)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(WebsiteRole.WebisteReader)).GetAwaiter().GetResult();
                 _userManager.CreateAsync(new ApplicationUser()
                 {
                     UserName = "admin@gmail.com",

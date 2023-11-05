@@ -79,6 +79,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
             return RedirectToAction(nameof(ForgotPasswordConfirmation));
         }
 
+        [HttpGet("ForgotPasswordConfirmation")]
         public IActionResult ForgotPasswordConfirmation()
         {
             return View();
@@ -125,14 +126,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
             if (result.Succeeded)
             {
-                if (vm.IsAuthor)
-                {
-                    await _userManager.AddToRoleAsync(applicationUser, WebsiteRole.WebisteAuthor);
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(applicationUser, WebsiteRole.WebisteReader);
-                }
+                await _userManager.AddToRoleAsync(applicationUser, WebsiteRole.WebisteAuthor);
                 _notification.Success("User Created Successfully!");
                 return RedirectToAction("Login", "User", new { area = "Admin" });
             }
@@ -203,7 +197,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
             return RedirectToAction(nameof(ResetPasswordConfirmation));
         }
 
-        [HttpGet]
+        [HttpGet("ResetPasswordConfirmation")]
         public IActionResult ResetPasswordConfirmation()
         {
             return View();
