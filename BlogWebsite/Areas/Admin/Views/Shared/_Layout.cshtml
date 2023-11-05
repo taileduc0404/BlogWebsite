@@ -129,10 +129,10 @@
 						}
 					</div>
 				</div>
-				<div class="sb-sidenav-footer">
+			@*	<div class="sb-sidenav-footer">
 					<div class="small">Logged in as: </div>
 					@loggedInUser!.FirstName @loggedInUser.LastName
-				</div>
+				</div>*@
 			</nav>
 		</div>
 		<div id="layoutSidenav_content">
@@ -174,7 +174,7 @@
 	<script>
 		let table = new DataTable('#myTable');
 	</script>
-	@await Component.InvokeAsync("Notyf")
+	@*@await Component.InvokeAsync("Notyf")*@
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

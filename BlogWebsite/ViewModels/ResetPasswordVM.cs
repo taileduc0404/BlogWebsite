@@ -2,14 +2,17 @@
 
 namespace BlogWebsite.ViewModels
 {
-	public class ResetPasswordVM
-	{
-		public string? Id { get; set; }
-		public string? Username { get; set; }
-		[Required]
-		public string? NewPassword { get; set; }
-		[Compare(nameof(NewPassword))]
-		[Required]
-		public string? ConfirmPassword { get; set; }
-	}
+    public class ResetPasswordVM
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        public string? Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string? ConfirmPassword { get; set; }
+
+        public string? Email { get; set; }
+        public string? Token { get; set; }
+    }
 }

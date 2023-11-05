@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MimeKit;
 using MailKit.Net.Smtp;
-using MimeKit;
+using System;
 
-namespace EmailServices
+namespace EmailService
 {
-    public class EmailSender:IEmailSender
+    public class EmailSender : IEmailSender
     {
         private readonly EmailConfiguration _emailConfig;
 
@@ -36,7 +30,7 @@ namespace EmailServices
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(_emailConfig.From));
+            emailMessage.From.Add(new MailboxAddress(_emailConfig.FromName,_emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
@@ -63,13 +57,13 @@ namespace EmailServices
 
         private void Send(MimeMessage mailMessage)
         {
-            using (var client = new SmtpClient())
+            using var client = new SmtpClient();
             {
                 try
                 {
                     client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, true);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
+                    client.Authenticate(_emailConfig.UserName, "paoyjharvgjqhukd");
 
                     client.Send(mailMessage);
                 }
@@ -111,5 +105,4 @@ namespace EmailServices
             }
         }
     }
-}
 }

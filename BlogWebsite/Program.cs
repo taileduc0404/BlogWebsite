@@ -1,12 +1,12 @@
 ﻿using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using BlogWebsite.Data;
-using BlogWebsite.EmailServices;
 using BlogWebsite.Models;
 using BlogWebsite.Utilites;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using EmailService;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,12 +21,27 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 options.UseSqlServer(connectionString));
 //end connect to sqlServer
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+{
+    opt.Password.RequiredLength = 7;
+    opt.Password.RequireDigit = false;
+    opt.Password.RequireUppercase = false;
+    opt.User.RequireUniqueEmail = true;
+    opt.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(
+        typeof(DataProtectorTokenProvider<ApplicationUser>)));
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
+//email service
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
+  .Get<EmailConfiguration>();
 
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+   opt.TokenLifespan = TimeSpan.FromHours(2));
 
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
@@ -45,16 +60,7 @@ var app = builder.Build();
 DataSeeding();
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-//app.MapGet("/", async context =>
-//{
-//    await context.Response.WriteAsync("Hello from the root path!");
-//});
 
-//app.MapGet("/hello/{name}", async context =>
-//{
-//    var name = context.Request.RouteValues["name"];
-//    await context.Response.WriteAsync($"Hello, {name}!");
-//});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

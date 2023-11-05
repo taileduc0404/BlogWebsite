@@ -11,7 +11,8 @@
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int ViewCount { get; set; }
         public string? Description { get; set; }
-        public string? Tag { get; set; }
+        //public Tag? Tags { get; set; }
+        //public string? TagId { get; set; }
         public string? Slug { get; set; }
         public string? ThumbnailUrl { get; set; }
     }
