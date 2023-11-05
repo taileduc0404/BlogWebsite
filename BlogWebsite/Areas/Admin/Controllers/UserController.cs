@@ -73,7 +73,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+            var callback = Url.Action("ResetPassword", "User", new { token, email = user.Email }, Request.Scheme);
             var message = new Message(_emailConfig, new string[] { user.Email }, "Reset password token", callback!, null!);
             await _emailSender.SendEmailAsync(message);
             return RedirectToAction(nameof(ForgotPasswordConfirmation));
@@ -142,12 +142,12 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 
 
-        [HttpGet]
-        public IActionResult ResetPassword()
-        {
+        //[HttpGet]
+        //public IActionResult ResetPassword()
+        //{
             
-            return View(new ResetPasswordVM());
-        }
+        //    return View(new ResetPasswordVM());
+        //}
 
 
         //[HttpPost]
@@ -171,18 +171,36 @@ namespace BlogWebsite.Areas.Admin.Controllers
         //}
 
 
-        [HttpGet]
+        [HttpGet("ResetPassword")]
         public IActionResult ResetPassword(string token, string email)
         {
             var model = new ResetPasswordVM { Token = token, Email = email };
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost("ResetPassword")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordVM vm)
         {
-            return View();
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var user = await _userManager.FindByEmailAsync(vm.Email);
+            if (user == null)
+                RedirectToAction(nameof(ResetPasswordConfirmation));
+
+            var resetPassResult = await _userManager.ResetPasswordAsync(user!, vm.Token, vm.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                foreach (var error in resetPassResult.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+
+                return View();
+            }
+
+            return RedirectToAction(nameof(ResetPasswordConfirmation));
         }
 
         [HttpGet]
@@ -200,7 +218,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
             {
                 return View(new LoginVM());
             }
-            return RedirectToAction("Index", "Post", new { area = "Admin" });
+            return RedirectToAction("Index", "Home", new { area = "Default" });
         }
 
         [HttpPost("Login")]
@@ -223,16 +241,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
                 return View(vm);
             }
             await _signInManager.PasswordSignInAsync(vm.Username, vm.Password, vm.RememberMe, true);
-            //if (result.Succeeded)
-            //{
-            //	_notification.Success("Logged In Successfully!");
-            //	return RedirectToAction("Index", "Post", new { area = "Admin" });
-            //}
-            //else
-            //{
-            //	_notification.Error("Account has not been verified");
-            //	return View(vm);
-            //}
             _notification.Success("Logged In Successfully!");
             return RedirectToAction("Index", "Home", new { area = "Default" });
 
