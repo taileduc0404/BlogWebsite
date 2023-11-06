@@ -34,7 +34,7 @@ namespace EmailService
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
-            var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<h2 style='color:red;'>{0}</h2>", message.Content) };
+            var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<p style='color:black;'>Để reset password, bạn hãy bấm vào đường link này để đặt lại password:</p> <br>  <a style='display: inline-block;padding: 10px 20px;background-color: #3385b5;color: #fff;text-decoration: none;border: none;border-radius: 5px;cursor: pointer;' href='{0}' role='button'>Reset Password</a>", message.Content) };
 
             if (message.Attachments != null && message.Attachments.Any())
             {
