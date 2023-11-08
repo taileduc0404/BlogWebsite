@@ -6,7 +6,6 @@ using BlogWebsite.Utilites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using EmailService;
-using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,12 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-//start connect to sqlServer
+//Start connect to sqlServer
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 options.UseSqlServer(connectionString));
-//end connect to sqlServer
 
+// Configure Identity and Email Service
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 {
     opt.Password.RequiredLength = 7;
@@ -36,18 +35,25 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 //email service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
   .Get<EmailConfiguration>();
-
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+// Configure TokenProviderOptions and Session
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
    opt.TokenLifespan = TimeSpan.FromHours(2));
 
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(20); // Thời gian phiên làm việc
+});
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
+// Configure Notyf
 builder.Services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.BottomRight; });
 
+
+// Configure ApplicationCookie and DataSeeding
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/login";
@@ -70,12 +76,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseNotyf();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

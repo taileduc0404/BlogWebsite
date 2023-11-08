@@ -59,13 +59,13 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 
 		[HttpGet]
-		public IActionResult Create()
+		public IActionResult CreatePost()
 		{
 			return View(new CreatPostVM());
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(CreatPostVM vm)
+		public async Task<IActionResult> CreatePost(CreatPostVM vm)
 		{
 			if (!ModelState.IsValid)
 			{

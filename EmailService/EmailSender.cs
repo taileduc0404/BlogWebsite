@@ -30,11 +30,11 @@ namespace EmailService
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress(_emailConfig.FromName,_emailConfig.From));
+            emailMessage.From.Add(new MailboxAddress(_emailConfig.FromName, _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
-            var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<p style='color:black;'>Để reset password, bạn hãy bấm vào đường link này để đặt lại password:</p> <br>  <a style='display: inline-block;padding: 10px 20px;background-color: #3385b5;color: #fff;text-decoration: none;border: none;border-radius: 5px;cursor: pointer;' href='{0}' role='button'>Reset Password</a>", message.Content) };
+            var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<p style='color:black;'>To reset your password, please click on the button below to set a new password.</p> <br>  <a style='display: inline-block;padding: 10px 20px;background-color: #3385b5;color: #fff;text-decoration: none;border: none;border-radius: 5px;cursor: pointer;' href='{0}' role='button'>Reset Password</a>", message.Content) };
 
             if (message.Attachments != null && message.Attachments.Any())
             {

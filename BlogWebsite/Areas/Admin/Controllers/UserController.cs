@@ -42,7 +42,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				FirstName = x.FirstName,
 				LastName = x.LastName,
 				UserName = x.UserName,
-				Email = x.Email,
+				Email = x.Email
 			}).ToList();
 			foreach (var user in vm)
 			{
@@ -236,7 +236,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			await _signInManager.PasswordSignInAsync(vm.Username, vm.Password, vm.RememberMe, true);
 			_notification.Success("Logged In Successfully!");
 			return RedirectToAction("Index", "Home", new { area = "Default" });
-
 		}
 
 		[HttpPost]

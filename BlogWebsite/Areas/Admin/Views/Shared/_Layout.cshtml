@@ -68,7 +68,7 @@
 							</a>
 						}
 
-						<a class="nav-link" href="index.html">
+						<a class="nav-link" asp-action="Index" asp-controller="Post" asp-area="Admin">
 							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
 							Post
 						</a>
@@ -171,8 +171,15 @@
 	<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 	<script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.tiny.cloud/1/mbdqmy7e3qeqgy8pvai5u5svy91mievfhma0tuua5tv3l0z0/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 	<script>
 		let table = new DataTable('#myTable');
+		tinymce.init({
+			selector: 'textarea',
+			plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+			toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+		});
+
 	</script>
 	@await Component.InvokeAsync("Notyf")
 	@await RenderSectionAsync("Scripts", required: false)

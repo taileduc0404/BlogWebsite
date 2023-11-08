@@ -20,7 +20,8 @@
 								<th>User Name</th>
 								<th>Email</th>
 								<th>Role</th>
-								<th>Action</th>
+								<th>Active</th>
+								@*<th>Action</th>*@
 							</tr>
 						</thead>
 						<tbody>
@@ -32,12 +33,27 @@
 									<td>@users.UserName</td>
 									<td>@users.Email</td>
 									<td>@users.Role</td>
-									@if (User.IsInRole("Admin"))
-									{
-										<td>
-											<a class="btn btn-info" asp-action="ResetPassword" asp-controller="User" asp-route-id="@users.Id">Reset Password</a>
-										</td>
-									}
+									@*<td>
+										@if (User.Identity!.IsAuthenticated)
+										{
+											<span style="background-color: green; width: 15px; height: 15px; border-radius: 50%; display: inline-block;"></span>
+										}
+										else
+										{
+											<span style="background-color: gray; width: 15px; height: 15px; border-radius: 50%; display: inline-block;"></span>
+										}
+									</td>
+*@
+
+									
+								@if (User.IsInRole("Admin"))
+								{
+								<td>
+								<a class="btn btn-info" asp-action="ForgotPassword" asp-controller="User" asp-route-id="@users.Id">Reset Password</a>
+								</td>
+								}
+
+
 								</tr>
 							}
 						</tbody>
@@ -46,8 +62,4 @@
 			</div>
 		</div>
 	</div>
-
-	
-
-	
 </main>
