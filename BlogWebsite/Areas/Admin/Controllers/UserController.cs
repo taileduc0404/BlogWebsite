@@ -30,7 +30,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			_emailSender = emailSender;
 			_emailConfig = emailConfig;
 		}
-		//Index
+
 		[Authorize(Roles = "Admin")]
 		[HttpGet]
 		public async Task<IActionResult> Index()
@@ -68,14 +68,21 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			if (!ModelState.IsValid)
 				return View(vm);
 			var user = await _userManager.FindByEmailAsync(vm.Email);
+			var checkUserByEmail = await _userManager.FindByEmailAsync(vm.Email);	
 			if (user == null)
-				return RedirectToAction(nameof(ForgotPasswordConfirmation));
-			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+			{
+				return RedirectToAction(nameof(ForgotPasswordConfirmationError));
+			}
+			else
+			{
+				var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-			var callback = Url.Action("ResetPassword", "User", new { token, email = user.Email }, Request.Scheme);
-			var message = new Message(_emailConfig, new string[] { user.Email }, "Reset password link", callback!, null!);
-			await _emailSender.SendEmailAsync(message);
-			return RedirectToAction(nameof(ForgotPasswordConfirmation));
+				var callback = Url.Action("ResetPassword", "User", new { token, email = user.Email }, Request.Scheme);
+				var message = new Message(_emailConfig, new string[] { user.Email }, "Reset password link", callback!, null!);
+				await _emailSender.SendEmailAsync(message);
+				return RedirectToAction(nameof(ForgotPasswordConfirmation));
+			}
+			
 		}
 
 		[HttpGet("ForgotPasswordConfirmation")]
@@ -83,6 +90,40 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		{
 			return View();
 		}
+		[HttpGet("ForgotPasswordConfirmationError")]
+		public IActionResult ForgotPasswordConfirmationError()
+		{
+			return View();
+		}
+
+		//[Authorize(Roles = "Admin")]
+		//[HttpPost("Delete")]
+		//public async Task<IActionResult> DeleteUser(string id)
+		//{
+		//	var user = await _userManager.FindByIdAsync(id);
+
+		//	if (user == null)
+		//	{
+		//		return NotFound();
+		//	}
+
+		//	var result = await _userManager.DeleteAsync(user);
+
+		//	if (result.Succeeded)
+		//	{
+		//		_notification.Success("User Deleted Successfully!");
+		//		return RedirectToAction("Index", "User", new {area=("Admin")});
+		//	}
+		//	else
+		//	{
+		//		// Xử lý lỗi trong result.Errors
+		//		foreach (var error in result.Errors)
+		//		{
+		//			ModelState.AddModelError("", error.Description);
+		//		}
+		//		return RedirectToAction("Index", "User", new { area = ("Admin") });
+		//	}
+		//}
 
 
 		//Register
@@ -116,7 +157,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			var applicationUser = new ApplicationUser()
 			{
 				FirstName = vm.FirstName,
-				LastName = vm.LastName,
+				LastName = vm.LastName,	
 				Email = vm.Email,
 				UserName = vm.UserName
 			};
@@ -132,37 +173,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return View(vm);
 
 		}
-
-
-
-		//[HttpGet]
-		//public IActionResult ResetPassword()
-		//{
-
-		//    return View(new ResetPasswordVM());
-		//}
-
-
-		//[HttpPost]
-		//public async Task<IActionResult> ResetPassword(ResetPasswordVM vm)
-		//{
-		//	if (!ModelState.IsValid) { return View(vm); }
-		//	var existingUser = await _userManager.FindByIdAsync(vm.Id);
-		//	if (existingUser == null)
-		//	{
-		//		_notification.Error("User doesn't exist!");
-		//		return View(vm);
-		//	}
-		//	var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-		//	var result = await _userManager.ResetPasswordAsync(existingUser, token, vm.NewPassword);
-		//	if (result.Succeeded)
-		//	{
-		//		_notification.Success("Password reset successful!");
-		//		return RedirectToAction(nameof(Index));
-		//	}
-		//	return View(vm);
-		//}
-
 
 		[HttpGet("ResetPassword")]
 		public IActionResult ResetPassword(string token, string email)
@@ -202,8 +212,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return View();
 		}
 
-
-		//Login
 		[HttpGet("Login")]
 		public IActionResult Login()
 		{

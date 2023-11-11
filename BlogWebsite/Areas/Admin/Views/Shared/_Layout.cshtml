@@ -40,10 +40,8 @@
 				</a>
 
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-					@*<li><a class="dropdown-item" asp-controller="User" asp-action="ResetPassword" asp-area="Admin">Account Settings</a></li>*@
 					<li><a class="dropdown-item" href="#!">Activity Log</a></li>
 					<li><hr class="dropdown-divider" /></li>
-					@*<li><a class="dropdown-item" asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">Logout</a></li>*@
 					<form asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">
 						<button type="submit" class="dropdown-item">
 							<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -64,28 +62,21 @@
 						{
 							<a class="nav-link" asp-controller="User" asp-action="Index" asp-area="Admin">
 								<div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
-								User
+								Users
 							</a>
 						}
 
 						<a class="nav-link" asp-action="Index" asp-controller="Post" asp-area="Admin">
 							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
-							Post
+							Posts
+						</a>
+						<a class="nav-link" asp-controller="Tag" asp-action="Index" asp-area="Admin">
+							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
+							Tags
 						</a>
 						@if (User.IsInRole("Admin"))
 						{
 							<div class="sb-sidenav-menu-heading">Interface</div>
-							@*<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-								<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-								Layouts
-								<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-							</a>
-							<div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-								<nav class="sb-sidenav-menu-nested nav">
-									<a class="nav-link" href="layout-static.html">Static Navigation</a>
-									<a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
-								</nav>
-							</div>*@
 							<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
 								<div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
 								Pages
@@ -129,10 +120,6 @@
 						}
 					</div>
 				</div>
-			@*	<div class="sb-sidenav-footer">
-					<div class="small">Logged in as: </div>
-					@loggedInUser!.FirstName @loggedInUser.LastName
-				</div>*@
 			</nav>
 		</div>
 		<div id="layoutSidenav_content">
