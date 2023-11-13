@@ -1,0 +1,41 @@
+﻿@model BlogWebsite.ViewModels.CreateTagVM
+
+@{
+	ViewData["Title"] = "Create Tag";
+}
+
+<div class="container-fluid">
+	<a class="btn btn-primary mb-1" asp-action="Index" asp-controller="Tag" asp-area="Admin">Go Back</a>
+	<div class="card">
+		<div class="card-header bg-primary">
+			<h4 class="card-title text-white">New Post</h4>
+		</div>
+		<div class="card-body">
+			<form asp-action="CreateTag" asp-controller="Tag" asp-area="Admin" enctype="multipart/form-data">
+				<div class="row mb-2">
+					<div class="col-12">
+						<div class="mb-2">
+							<label>Name</label>
+							<input type="text" asp-for="Name" class="form-control" />
+							<span asp-validation-for="Name" class="text-danger"></span>
+						</div>
+					</div>
+				</div>
+				<div class="mb-2">
+					<button type="submit" class="btn btn-primary w-100">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts{
+	<partial name="_ValidationScriptsPartial" />
+	<script>
+		$(".custom-file").on("change", function () {
+			var fileName = $(this).val().split("\\").pop();
+			$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+			document.getElementById('thumbnail').src = window.URL.createObjectURL(this.files[0])
+		});
+	</script>
+}

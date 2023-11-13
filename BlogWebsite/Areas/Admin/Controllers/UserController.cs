@@ -32,7 +32,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		}
 
 		[Authorize(Roles = "Admin")]
-		[HttpGet]
+		[HttpGet("User")]
 		public async Task<IActionResult> Index()
 		{
 			var users = await _userManager.Users.ToListAsync();
@@ -76,7 +76,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			else
 			{
 				var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
 				var callback = Url.Action("ResetPassword", "User", new { token, email = user.Email }, Request.Scheme);
 				var message = new Message(_emailConfig, new string[] { user.Email }, "Reset password link", callback!, null!);
 				await _emailSender.SendEmailAsync(message);

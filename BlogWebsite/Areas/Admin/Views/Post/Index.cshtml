@@ -1,7 +1,8 @@
 ﻿@*@using X.PagedList;
 @using X.PagedList.Mvc.Core
-@using X.PagedList.Web.Common
-@model IPagedList<Blog.ViewModels.PostVM>*@
+@using X.PagedList.Web.Common*@
+@*@model IPagedList<BlogWebsite.ViewModels.PostVM>*@
+@*@model X.PagedList.IPagedList<BlogWebsite.ViewModels.PostVM>*@
 
 @{
 	ViewData["Title"] = "List of Posts";
@@ -59,17 +60,15 @@
 				</div>
 			}
 		</div>
-		@*<div class="card-footer">
-		Page @(Model?.PageCount < Model?.PageNumber ? 0 : Model?.PageNumber) of @Model?.PageCount
-		@Html.PagedListPager(Model,page => Url.Action("Index",
-		new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }),
-		new PagedListRenderOptions()
-		{
-		ContainerDivClasses = new List<string> {"blog","navigation"},
-		UlElementClasses = new List<string> {"pagination"},
-		LiElementClasses = new List<string> {"page-item","page-link"},
-		ActiveLiElementClass =  "active",
-		})
+@*		<div class="card-footer">
+			Trang @(Model?.PageCount < Model?.PageNumber ? 0 : Model?.PageNumber) trên @Model?.PageCount
+			@Html.PagedListPager(Model, page => Url.Action("Index", new { page }), new PagedListRenderOptions()
+			{
+			ContainerDivClasses = new List<string> { "blog", "navigation" },
+			UlElementClasses = new List<string> { "pagination" },
+			LiElementClasses = new List<string> { "page-item", "page-link" },
+			ActiveLiElementClass = "active",
+			})
 		</div>*@
 	</div>
 </div>
