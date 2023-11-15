@@ -21,8 +21,8 @@
 						</div>
 						<div class="mb-2">
 							<label>Tag</label>
-							<input type="text" asp-for="Tag" class="form-control" />
-							<span asp-validation-for="Tag" class="text-danger"></span>
+							<input type="text" asp-for="TagName" class="form-control" id="tags" />
+							<span asp-validation-for="TagName" class="text-danger"></span>
 						</div>
 						<div class="mb-2">
 							<label>Description</label>
@@ -48,6 +48,39 @@
 		</div>
 	</div>
 </div>
+
+<!-- Thêm thư viện jQuery (nếu chưa có) -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Thêm thư viện jQuery UI -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+	$(function () {
+		var availableTags = [];
+
+		// Gọi API để lấy danh sách tag khi trang được tải
+		$.ajax({
+			url: '/Admin/Tag/GetTags',
+			type: 'GET',
+			success: function (data) {
+				availableTags = data.map(function (tag) {
+					return tag.name;
+				});
+
+				// Kích hoạt autocomplete cho trường TagName
+				$('#tags').autocomplete({
+					source: availableTags,
+					minLength: 2
+				});
+			}
+		});
+	});
+
+</script>
+
+
 
 @section Scripts{
 	<partial name="_ValidationScriptsPartial" />

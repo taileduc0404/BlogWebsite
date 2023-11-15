@@ -4,6 +4,7 @@ using BlogWebsite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231114042402_updatePostModel2")]
+    partial class updatePostModel2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +69,6 @@ namespace BlogWebsite.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ThumbnailUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -82,8 +81,6 @@ namespace BlogWebsite.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("TagId");
 
                     b.ToTable("posts");
                 });
@@ -358,15 +355,7 @@ namespace BlogWebsite.Migrations
                         .WithMany("Posts")
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("BlogWebsite.Models.Tag", "Tag")
-                        .WithMany("posts")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ApplicationUsers");
-
-                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -418,11 +407,6 @@ namespace BlogWebsite.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BlogWebsite.Models.Tag", b =>
-                {
-                    b.Navigation("posts");
                 });
 
             modelBuilder.Entity("BlogWebsite.Models.ApplicationUser", b =>

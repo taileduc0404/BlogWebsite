@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <a class="btn btn-primary mb-1" asp-action="Index" asp-controller="Post" asp-area="Admin">Go Back</a>
-    <div class="card">
+    <div class="card"> 
         <div class="card-header bg-primary">
             <h4 class="card-title text-white">Edit Post</h4>
         </div>
@@ -22,11 +22,16 @@
                             <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
                         <div class="mb-2">
+                            <label>Tag</label>
+                            <input type="text" asp-for="TagName" class="form-control" />
+                            <span asp-validation-for="TagName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
                             <label>Description</label>
                             <textarea id="richEditor" asp-for="Description" class="form-control" rows="8"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-                    </div>
+                    </div>  
                     <div class="col-3">
                         <div class="mb-2">
                             @if (Model.ThumbnailUrl == null)

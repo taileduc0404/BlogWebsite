@@ -1,7 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
-using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,47 +9,47 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize]
-    public class TagController : Controller
-    {
-        private readonly ApplicationDbContext _context;
-        public INotyfService _notification { get; }
-        private IWebHostEnvironment _webHostEnvironment;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public TagController(ApplicationDbContext context,
-                              INotyfService notyfService,
-                              IWebHostEnvironment webHostEnvironment,
-                              UserManager<ApplicationUser> userManager)
-        {
-            _context = context;
-            _webHostEnvironment = webHostEnvironment;
-            _userManager = userManager;
-            _notification = notyfService;
-        }
+	[Area("Admin")]
+	[Authorize]
+	public class TagController : Controller
+	{
+		private readonly ApplicationDbContext _context;
+		public INotyfService _notification { get; }
+		private IWebHostEnvironment _webHostEnvironment;
+		private readonly UserManager<ApplicationUser> _userManager;
+		public TagController(ApplicationDbContext context,
+							  INotyfService notyfService,
+							  IWebHostEnvironment webHostEnvironment,
+							  UserManager<ApplicationUser> userManager)
+		{
+			_context = context;
+			_webHostEnvironment = webHostEnvironment;
+			_userManager = userManager;
+			_notification = notyfService;
+		}
 
-        [HttpGet("Tag")]
-        public async Task<IActionResult> Index()
-        {
-            var loggedInUser = await _userManager.GetUserAsync(User);
-            var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser);
+		[HttpGet("Tag")]
+		public async Task<IActionResult> Index()
+		{
+			var loggedInUser = await _userManager.GetUserAsync(User);
+			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser);
 
-            var listOfTag=await _context.tags!
-                .ToListAsync();
+			var listOfTag = await _context.tags!
+				.ToListAsync();
 
-            var listOfTagVM = listOfTag.Select(x => new TagVM
-            {
-                Id = x.Id,
-                Name = x.Name,
-            }).ToList();
-            return View(listOfTagVM);
-        }
+			var listOfTagVM = listOfTag.Select(x => new TagVM
+			{
+				Id = x.Id,
+				Name = x.Name,
+			}).ToList();
+			return View(listOfTagVM);
+		}
 
-        [HttpGet("CreateTag")]
-        public IActionResult CreateTag()
-        {
-            return View(new CreateTagVM());
-        }
+		[HttpGet("CreateTag")]
+		public IActionResult CreateTag()
+		{
+			return View(new CreateTagVM());
+		}
 
 		[HttpPost("CreateTag")]
 		public async Task<IActionResult> CreateTag(CreateTagVM vm)
@@ -82,6 +81,42 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				return RedirectToAction("Index");
 			}
 		}
+
+		[HttpGet("PostInTag")]
+		public async Task<IActionResult> ShowPostInTag(int id)
+		{
+			var listOfPosts = await _context.posts!
+				.Include(x => x.ApplicationUsers)
+				.Include(t => t.Tag)
+				.OrderByDescending(x => x.CreatedDate)
+				.Where(x => x.TagId == id) // Lấy list post thuộc tag có id tương ứng
+				.ToListAsync();
+
+			var listOfPostVM = listOfPosts.Select(x => new PostVM
+			{
+				Id = x.Id,
+				Title = x.Title,
+				CreateDate = x.CreatedDate,
+				ThumbnailUrl = x.ThumbnailUrl,
+				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
+			}).ToList();
+
+			return View(listOfPostVM);
+		}
+
+
+		[HttpGet("GetTags")]
+		public IActionResult GetTags(string term)
+		{
+			var tags = _context.tags!
+				.Where(t => t.Name!.Contains(term, StringComparison.OrdinalIgnoreCase))
+				.Select(t => new { name = t.Name })
+				.ToList();
+
+			return Json(tags);
+		}
+
+
 		[HttpPost]
 		public async Task<IActionResult> DeleteTag(int id)
 		{
