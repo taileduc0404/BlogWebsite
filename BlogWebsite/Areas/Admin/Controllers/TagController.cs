@@ -29,7 +29,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		}
 
 		[HttpGet("Tag")]
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string keyword)
 		{
 			var loggedInUser = await _userManager.GetUserAsync(User);
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser);
@@ -42,7 +42,15 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				Id = x.Id,
 				Name = x.Name,
 			}).ToList();
-			return View(listOfTagVM);
+			if (string.IsNullOrEmpty(keyword))
+			{
+
+				return View(listOfTagVM);
+			}
+			else
+			{
+				return View(listOfTagVM.Where(x => x.Name!.ToLower().Contains(keyword)));
+			}
 		}
 
 		[HttpGet("CreateTag")]
@@ -89,7 +97,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				.Include(x => x.ApplicationUsers)
 				.Include(t => t.Tag)
 				.OrderByDescending(x => x.CreatedDate)
-				.Where(x => x.TagId == id) // Lấy list post thuộc tag có id tương ứng
+				.Where(x => x.TagId == id)
 				.ToListAsync();
 
 			var listOfPostVM = listOfPosts.Select(x => new PostVM

@@ -1,10 +1,9 @@
-﻿
-@{
+﻿@{
 	ViewData["Title"] = "List of Posts";
 }
 
 <div class="container-fluid">
-	<a class="btn btn-primary mb-2" asp-action="CreatePost" asp-controller="Post" asp-area="Admin">Add Post</a>
+	<a class="btn btn-dark mb-2 mt-2" asp-action="CreatePost" asp-controller="Post" asp-area="Admin">Add Post</a>
 	<div class="card">
 		<div class="card-header bg-primary">
 			<h4 class="card-title text-white">List of Posts</h4>
@@ -23,7 +22,7 @@
 				<div class="rounded mb-4 bg-white p-1">
 					<div class="row">
 						<div class="col-2">
-							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post">
+							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post" style="text-decoration:none">
 								@if (posts.ThumbnailUrl == null)
 								{
 									<img class="img-fluid" src="~/thumbnails/default_image.png" style="object-fit:cover; height: 100%; width:100%;">
@@ -39,6 +38,9 @@
 							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post">
 								<h4 style="font-size:25px; font-weight: bolder;" class="text-primary fw-bold">@posts.Title</h4>
 							</a>
+							<button type="button" class="btn btn-secondary">
+								@posts.TagName
+							</button>
 							<p>@posts.AuthorName</p>
 							<p>@posts.CreateDate</p>
 						</div>
