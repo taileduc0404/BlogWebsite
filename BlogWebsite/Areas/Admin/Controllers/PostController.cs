@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -48,7 +47,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			{
 				Id = x.Id,
 				Title = x.Title,
-				TagName=x.Tag !=null ? x.Tag.Name : "",
+				TagName=x.Tag !=null ? x.Tag.Name : "None Tag",
 				CreateDate = x.CreatedDate,
 				ThumbnailUrl = x.ThumbnailUrl,
 				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
@@ -170,7 +169,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);
 			if (loggedInUserRole[0] != WebsiteRole.WebisteAdmin && loggedInUser!.Id != post.ApplicationUserId)
 			{
-				_notification.Error("You are not Authorized!");
+				_notification.Error("You Are Not Author Of This Post!");
 				return RedirectToAction("Index");
 			}
 

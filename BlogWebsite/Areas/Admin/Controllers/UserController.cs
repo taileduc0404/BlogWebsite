@@ -95,36 +95,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return View();
 		}
 
-		//[Authorize(Roles = "Admin")]
-		//[HttpPost("Delete")]
-		//public async Task<IActionResult> DeleteUser(string id)
-		//{
-		//	var user = await _userManager.FindByIdAsync(id);
-
-		//	if (user == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	var result = await _userManager.DeleteAsync(user);
-
-		//	if (result.Succeeded)
-		//	{
-		//		_notification.Success("User Deleted Successfully!");
-		//		return RedirectToAction("Index", "User", new {area=("Admin")});
-		//	}
-		//	else
-		//	{
-		//		// Xử lý lỗi trong result.Errors
-		//		foreach (var error in result.Errors)
-		//		{
-		//			ModelState.AddModelError("", error.Description);
-		//		}
-		//		return RedirectToAction("Index", "User", new { area = ("Admin") });
-		//	}
-		//}
-
-
 		//Register
 		[HttpGet("Register")]
 		public IActionResult Register()

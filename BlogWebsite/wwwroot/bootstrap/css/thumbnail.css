@@ -1,0 +1,6 @@
+﻿/* CSS */
+.custom-img-fluid {
+    width: 100%;
+    height: 200px; /* Điều chỉnh kích thước tùy thuộc vào yêu cầu của bạn */
+    object-fit: cover;
+}

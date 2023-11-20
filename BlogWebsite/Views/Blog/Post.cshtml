@@ -1,0 +1,49 @@
+﻿@model BlogWebsite.ViewModels.BlogPostVM
+
+@{
+    ViewData["Title"] = "Post";
+
+    string thumbnailUrl = "";
+    if (Model.ThumbnailUrl == null)
+    {
+        thumbnailUrl = "/blog/assets/img/post-bg.jpg";
+    }
+    else
+    {
+        thumbnailUrl = "/thumbnails/" + Model.ThumbnailUrl;
+    }
+}
+
+<header class="masthead" style="background-image: url('@thumbnailUrl')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="post-heading">
+                    <h1>@Model.Title</h1>
+                    <span class="meta">
+                        <i class="fa-solid fa-user"></i> <b>@Model.AuthorName</b><br>
+                        <i class="fa-solid fa-clock"></i> @Model.CreatedDate.ToLongDateString() | @Model.CreatedDate.ToShortTimeString()
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Post Content-->
+<article class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <a asp-controller="Home" asp-action="Index"><b>Home</b></a> <i class="fa-solid fa-angles-right fa-xs" style="color: #5d7cb1;"></i>
+                @Html.Raw(Model.Description)
+               @* <h4 style="color:darkcyan">Comment</h4>
+
+                <input type="text" id="comment-box" placeholder="Enter comment">
+                <button id="post">Post</button>
+                <ul id="unordered">
+                </ul>
+*@
+            </div>
+        </div>
+    </div>
+</article>

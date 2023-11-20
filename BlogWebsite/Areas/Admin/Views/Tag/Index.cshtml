@@ -26,11 +26,11 @@
 								<div class="ms-3">
 									@if (!string.IsNullOrEmpty(tags.Name))
 									{
-										<a asp-area="Admin" asp-action="ShowPostInTag" asp-controller="Tag" asp-route-id="@tags.Id" method="get" class="fw-bold mb-1"i style="text-decoration:none">@tags.Name</a>
+										<a asp-area="Admin" asp-action="ShowPostInTag" asp-controller="Tag" asp-route-id="@tags.Id" method="get" class="fw-bold mb-1" style="text-decoration:none">@tags.Name</a>
 									}
 									else
 									{
-										<a asp-area="Admin" asp-action="ShowPostInTag" asp-controller="Tag" asp-route-id="@tags.Id" method="get" class="fw-bold mb-1" style="text-decoration:none">None</a>
+										<a asp-area="Admin" asp-action="ShowPostInTag" asp-controller="Tag" asp-route-id="@tags.Id" method="get" class="fw-bold mb-1" style="text-decoration:none">None Tag</a>
 									}
 								</div>
 							</div>
