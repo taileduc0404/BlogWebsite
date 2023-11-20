@@ -3,30 +3,45 @@
 	ViewData["Title"] = "Home Page";
 }
 <div class="container">
-	<div class="row">
-		@foreach (var post in Model.posts!)
-		{
-			<div class="col-lg-4 col-md-6 mb-4">
-				<!-- Blog post-->
-				<div class="card">
-					<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
-						@if (post.ThumbnailUrl == null)
-						{
-							<img class="custom-img-fluid" src="~/thumbnails/default_image.png">
-						}
-						else
-						{
-							<img class="custom-img-fluid" src="~/thumbnails/@post.ThumbnailUrl">
-
-						}
-					</a>
-					<div class="card-body">
-						<div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
-						<h2 class="card-title h4">@post.Title</h2>
-						<a class="btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">Read more →</a>
-					</div>
-				</div>
-			</div>
-		}
-	</div>
+    <div class="row">
+        @foreach (var post in Model.posts!)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <!-- Blog post-->
+                <div class="card">
+                    <a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
+                        @if (post.ThumbnailUrl == null)
+                        {
+                            <img class="custom-img-fluid" src="~/thumbnails/default_image.png">
+                        }
+                        else
+                        {
+                            <img class="custom-img-fluid" src="~/thumbnails/@post.ThumbnailUrl">
+                        }
+                    </a>
+                    <div class="card-body">
+                        <div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
+                        @{
+                            var words = post.Title!.Split(' ');
+                            string shortenedTitle = words.Length > 6 ? string.Join(" ", words.Take(6)) + "..." : post.Title;
+                        }
+                        <h2 class="card-title h4" title="@post.Title">@shortenedTitle</h2>
+                        <a class="btn custom-btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" style="background-color:#85C1E9;color:#454545;">Read more →</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.card-title').hover(function () {
+            var fullTitle = $(this).attr('title');
+            $(this).text(fullTitle);
+        }, function () {
+            var shortenedTitle = $(this).text();
+            $(this).text(shortenedTitle);
+        });
+    });
+</script>
