@@ -31,20 +31,19 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpGet("Tag")]
 		public async Task<IActionResult> Index(string keyword)
 		{
-			var loggedInUser = await _userManager.GetUserAsync(User);
-			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser);
-
 			var listOfTag = await _context.tags!
 				.ToListAsync();
 
-			var listOfTagVM = listOfTag.Select(x => new TagVM
-			{
-				Id = x.Id,
-				Name = x.Name,
-			}).ToList();
+			var listOfTagVM = listOfTag
+				.Select(x => new TagVM
+				{
+					Id = x.Id,
+					Name = x.Name ?? "None Tag" // Đặt tên mặt định cho Name nếu Name được set là null
+				})
+				.ToList();
+
 			if (string.IsNullOrEmpty(keyword))
 			{
-
 				return View(listOfTagVM);
 			}
 			else
@@ -52,6 +51,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				return View(listOfTagVM.Where(x => x.Name!.ToLower().Contains(keyword)));
 			}
 		}
+
 
 		[HttpGet("CreateTag")]
 		public IActionResult CreateTag()

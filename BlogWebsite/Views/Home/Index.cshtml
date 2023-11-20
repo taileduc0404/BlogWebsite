@@ -2,31 +2,31 @@
 @{
 	ViewData["Title"] = "Home Page";
 }
+<div class="container">
+	<div class="row">
+		@foreach (var post in Model.posts!)
+		{
+			<div class="col-lg-4 col-md-6 mb-4">
+				<!-- Blog post-->
+				<div class="card">
+					<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
+						@if (post.ThumbnailUrl == null)
+						{
+							<img class="custom-img-fluid" src="~/thumbnails/default_image.png">
+						}
+						else
+						{
+							<img class="custom-img-fluid" src="~/thumbnails/@post.ThumbnailUrl">
 
-<div class="row">
-	@foreach (var post in Model.posts!)
-	{
-		<div class="col-lg-4 col-md-6 mb-4">
-			<!-- Blog post-->
-			<div class="card">
-				<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
-					@if (post.ThumbnailUrl == null)
-					{
-						<img class="custom-img-fluid" src="~/thumbnails/default_image.png">
-					}
-					else
-					{
-						<img class="custom-img-fluid" src="~/thumbnails/@post.ThumbnailUrl">
-
-					}
-				</a>
-				<div class="card-body">
-					<div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
-					<h2 class="card-title h4">@post.Title</h2>
-					<a class="btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">Read more →</a>
+						}
+					</a>
+					<div class="card-body">
+						<div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
+						<h2 class="card-title h4">@post.Title</h2>
+						<a class="btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">Read more →</a>
+					</div>
 				</div>
 			</div>
-		</div>
-	}
+		}
+	</div>
 </div>
-
