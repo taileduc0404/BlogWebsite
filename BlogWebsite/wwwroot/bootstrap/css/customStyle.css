@@ -72,6 +72,12 @@ header {
     padding: 10px 0; /* Tăng khoảng cách giữa các mục */
 }
 
+.description-text {
+    text-align: justify; /* Căn đều văn bản */
+    max-width: 100%; /* Giới hạn chiều rộng tối đa */
+    margin: 0 auto; /* Căn giữa theo chiều ngang */
+}
+
 
 .Tags {
     display: flex;
