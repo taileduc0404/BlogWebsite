@@ -1,6 +1,4 @@
-﻿using BlogWebsite.Data;
-
-namespace BlogWebsite.Models
+﻿namespace BlogWebsite.Models
 {
 	public class Comment
 	{
@@ -14,5 +12,12 @@ namespace BlogWebsite.Models
 
 		public int? ParentCommentId { get; set; } // comment cha (xác định cho reply)
 		public Comment? ParentComment { get; set; } // navigation property tham chiếu đến comment cha
+
+		public List<Comment> Replies { get; set; } // Danh sách các reply
+
+		public Comment()
+		{
+			Replies = new List<Comment>();
+		}
 	}
 }

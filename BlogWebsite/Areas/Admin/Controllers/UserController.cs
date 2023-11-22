@@ -54,7 +54,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return View(vm);
 		}
 
-
 		[HttpGet("ForgotPassword")]
 		public IActionResult ForgotPassword()
 		{
@@ -89,13 +88,13 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		{
 			return View();
 		}
+
 		[HttpGet("ForgotPasswordConfirmationError")]
 		public IActionResult ForgotPasswordConfirmationError()
 		{
 			return View();
 		}
 
-		//Register
 		[HttpGet("Register")]
 		public IActionResult Register()
 		{

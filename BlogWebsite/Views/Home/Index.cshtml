@@ -23,7 +23,7 @@
                         <div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
                         @{
                             var words = post.Title!.Split(' ');
-                            string shortenedTitle = words.Length > 6 ? string.Join(" ", words.Take(4)) + "..." : post.Title;
+                            string shortenedTitle = words.Length > 4 ? string.Join(" ", words.Take(4)) + "..." : post.Title;
                         }
                         <h2 class="card-title h4" title="@post.Title" style="color:#B03A2E;">@shortenedTitle</h2>
                         <a class="btn custom-btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" style="background-color:#85C1E9;color:#454545;">Read more →</a>

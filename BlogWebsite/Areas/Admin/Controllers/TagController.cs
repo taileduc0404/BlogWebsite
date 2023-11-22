@@ -52,7 +52,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			}
 		}
 
-
 		[HttpGet("CreateTag")]
 		public IActionResult CreateTag()
 		{
@@ -112,7 +111,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return View(listOfPostVM);
 		}
 
-
 		[HttpGet("GetTags")]
 		public IActionResult GetTags(string term)
 		{
@@ -123,7 +121,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			return Json(tags);
 		}
-
 
 		[HttpPost]
 		public async Task<IActionResult> DeleteTag(int id)

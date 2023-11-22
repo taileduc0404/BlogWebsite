@@ -12,7 +12,7 @@
         public int TagId { get; set; }
         public Tag? Tag { get; set; }
         public string? Slug { get; set; }
-        public string? ThumbnailUrl { get; set; }
+        public string? ThumbnailUrl { get; set; } 
 		public ICollection<Comment>? Comments { get; set; }
 	}
 }

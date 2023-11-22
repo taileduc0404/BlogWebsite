@@ -29,7 +29,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			_notification = notyfService;
 		}
 
-
 		[HttpGet("Post")]
 		public async Task<IActionResult> Index(string keyword)
 		{
@@ -38,7 +37,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			var listOfPosts = await _context.posts!
 				.Include(x => x.ApplicationUsers)
-				.Include(t=>t.Tag)
+				.Include(t=>t.Tag)    //  Lấy ra thẻ tag của bài post
 				.OrderByDescending(x => x.CreatedDate)
 				.Where(x => loggedInUserRole[0] == WebsiteRole.WebisteAdmin || x.ApplicationUsers!.Id == loggedInUser!.Id)
 				.ToListAsync();
@@ -48,6 +47,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				Id = x.Id,
 				Title = x.Title,
 				TagName=x.Tag !=null ? x.Tag.Name : "None Tag",
+				ViewCount = x.ViewCount,
 				CreateDate = x.CreatedDate,
 				ThumbnailUrl = x.ThumbnailUrl,
 				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
@@ -63,7 +63,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				return View(listOfPostVM.Where(x => x.Title!.ToLower().Contains(keyword)));
 			}
 		}
-
 
 		[HttpGet("CreatePost")]
 		public IActionResult CreatePost()
@@ -128,7 +127,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return RedirectToAction("Index");
 		}
 
-
 		[HttpPost]
 		public async Task<IActionResult> DeletePost(int id)
 		{
@@ -150,7 +148,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				return RedirectToAction("Index", "Post", new { area = "Admin" });
 			}
 		}
-
 
 		[HttpGet("EditPost")]
 		public async Task<IActionResult> EditPost(int id)
@@ -184,7 +181,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			return View(vm);
 		}
-
 
 		[HttpPost("EditPost")]
 		public async Task<IActionResult> EditPost(CreatPostVM vm)
@@ -222,6 +218,8 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return RedirectToAction("Index", "Post", new { area = "Admin" });
 
 		}
+
+		
 
 		public string UploadImage(IFormFile file)
 		{

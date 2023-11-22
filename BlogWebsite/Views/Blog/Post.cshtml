@@ -1,8 +1,8 @@
 ﻿@model BlogWebsite.ViewModels.BlogPostVM
 
+
 @{
 	ViewData["Title"] = "Post";
-
 	string thumbnailUrl = "";
 	if (Model.ThumbnailUrl == null)
 	{
@@ -12,6 +12,8 @@
 	{
 		thumbnailUrl = "/thumbnails/" + Model.ThumbnailUrl;
 	}
+
+
 }
 
 <main class="mt-4 mb-5">
@@ -26,6 +28,7 @@
 					<span class="meta">
 						<i class="fa-solid fa-user"></i> <b>@Model.AuthorName</b><br>
 						<i class="fa-solid fa-clock"></i> @Model.CreatedDate.ToLongDateString() | @Model.CreatedDate.ToShortTimeString()<br>
+						<i class="fa-solid fa-eye"></i> @Model.ViewCount
 					</span>
 					<hr />
 					<div class="row align-items-center mb-4">
@@ -34,13 +37,13 @@
 
 							@if (!string.IsNullOrEmpty(Model.TagName))
 							{
-								<button type="button" class="btn px-3 me-1" style="background-color: #3b5998;">
+								<button type="button" class="btn px-3 me-1" style="color:white;background-color: #28B463;">
 									@Model.TagName
 								</button>
 							}
 							else
 							{
-								<button type="button" class="btn px-3 me-1" style="background-color: #3b5998;">
+								<button type="button" class="btn px-3 me-1" style="background-color: #28B463;">
 									None Tag
 								</button>
 							}
@@ -93,42 +96,71 @@
 				</section>
 				<!--Section: Share buttons-->
 				<!--Section: Comments-->
-				<section id="commentListSection" class="border-bottom mb-3">
-					<p class="text-center" style="color:black;"><strong>Comments: 3</strong></p>
+				<!-- Hiển thị danh sách comment -->
+				<section id="commentListSection" class="gradient-custom">
+					<div class="container my-5 py-5">
+						<div class="row d-flex justify-content-center">
+							<div class="col-md-12 col-lg-12 col-xl-12">
+								<div class="card">
+									<div class="card-body p-4">
+										<h4 class="text-center mb-4 pb-2" style="color: #333;">@(Model.Comments?.Count ?? 0) comments</h4>
+										@if (Model.Comments != null && Model.Comments.Count > 0)
+										{
+											<div class="row">
+												<div class="col">
+													<ul class="list-unstyled">
+														@foreach (var comment in Model.Comments)
+														{
+															<li class="media my-4">
+																<div class="media-body">
+																	<div class="d-flex justify-content-between">
+																		<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers?.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
+																		<button class="btn btn-sm btn-primary" onclick="showReplyForm(@comment.Id)">
+																			<i class="fas fa-reply" style="color: #fff;"></i>
+																		</button>
+																	</div>
+																	<p style="color: #555;">@comment.Description</p>
 
-					<!-- Comment -->
-					<div class="row mb-4">
-						<div class="col-12">
-							<p class="mb-2"><strong>Marta Dolores</strong></p>
-							<p>
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio est ab iure
-								inventore dolorum consectetur? Molestiae aperiam atque quasi consequatur aut?
-								Repellendus alias dolor ad nam, soluta distinctio quis accusantium!
-							</p>
-						</div>
-					</div>
-
-					<!-- Comment -->
-					<div class="row mb-4">
-						<div class="col-12">
-							<p class="mb-2"><strong>Marta Dolores</strong></p>
-							<p>
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio est ab iure
-								inventore dolorum consectetur? Molestiae aperiam atque quasi consequatur aut?
-								Repellendus alias dolor ad nam, soluta distinctio quis accusantium!
-							</p>
-						</div>
-					</div>
-
-					<!-- Comment -->
-					<div class="row mb-4">
-						<div class="col-12">
-							<p class="mb-2"><strong>Marta Dolores</strong></p>
-							<p>
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio est ab iure
-								inventore dolorum consectetur? Molestiae aperiam atque quasi consequatur aut?
-								Repellendus alias dolor ad nam, soluta distinctio quis accusantium!
-							</p>
+																	<!-- Form reply ẩn -->
+																	<form id="replyForm_@comment.Id" class="mt-3 d-none" asp-controller="Blog" asp-action="AddReply" method="post">
+																		<input type="hidden" name="parentId" value="@comment.Id" />
+																		<input type="hidden" name="postId" value="@Model.Id" />
+																		<input type="hidden" name="replyTo" value="@comment.ApplicationUsers!.UserName" />
+																		<div class="form-outline mb-4">
+																			<label class="form-label" for="description" style="color: #333;">Reply</label>
+																			<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required></textarea>
+																			<small id="replyContentHelp" class="form-text text-muted" style="color: #777;">Min length: 5, Max length: 200 characters.</small>
+																		</div>
+																		<button type="submit" class="btn btn-primary btn-sm">Submit Reply</button>
+																	</form>
+																	<form id="deleteForm_@comment.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
+																		<input type="hidden" name="commentId" value="@comment.Id" />
+																		<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+																	</form>
+																	<!-- Hiển thị comment cha cho reply -->
+																	@if (comment.ParentCommentId != null)
+																	{
+																		var parentComment = Model.Comments.FirstOrDefault(c => c.Id == comment.ParentCommentId);
+																		if (parentComment != null)
+																		{
+																			<div class="media mt-4" style="margin-left: 20px;">
+																				<div class="media-body">
+																					<h5 class="mt-0 mb-1" style="color: #333;">@parentComment.ApplicationUsers?.UserName <span class="small">- @parentComment.CreatedDate.ToShortDateString()</span></h5>
+																					<p style="color: #555;">@parentComment.Description</p>
+																				</div>
+																			</div>
+																		}
+																	}
+																</div>
+															</li>
+														}
+													</ul>
+												</div>
+											</div>
+										}
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -137,12 +169,14 @@
 				<section id="commentSection">
 					<p class="text-center"><strong>Leave a reply</strong></p>
 
-					<form asp-area="Admin" asp-controller="Comment" asp-action="CreateComment" method="post">
+					<form asp-controller="Blog" asp-action="AddComment" method="post">
 						<!-- Các trường dữ liệu cho comment -->
 						<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
 						<div class="form-outline mb-4">
-							<label class="form-label" for="commentContent">Comment</label>
-							<textarea class="form-control" id="commentContent" name="content" rows="4" required></textarea>
+							<label class="form-label" for="description ">Comment</label>
+							<textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+
+							<small id="contentHelp" class="form-text text-muted">Min length: 10, Max length: 500 characters.</small>
 						</div>
 						<button type="submit" class="btn btn-primary btn-block mb-4">
 							Submit Comment
@@ -152,7 +186,6 @@
 				<!--Section: Reply-->
 			</div>
 			<div class="col-md-4 mb-4" id="google-ad">
-
 				<!--Section: Sidebar-->
 				<section class="sticky-top" style="top: 80px;">
 					<!--Section: Ad-->
@@ -215,6 +248,18 @@
 		var commentSection = document.getElementById('commentListSection');
 		if (commentSection) {
 			commentSection.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+</script>
+<script>
+	function showReplyForm(commentId) {
+		var replyForm = document.getElementById(`replyForm_${commentId}`);
+		if (replyForm) {
+			if (replyForm.classList.contains('d-none')) {
+				replyForm.classList.remove('d-none');
+			} else {
+				replyForm.classList.add('d-none');
+			}
 		}
 	}
 </script>
