@@ -75,11 +75,11 @@ namespace BlogWebsite.Controllers
 			var post = await _context.posts!
 				.FirstOrDefaultAsync(p => p.Id == postId);
 
-			if (post == null)
-			{
-				_notification.Error("Post not found!");
-				return RedirectToAction("NotFound", "Error");
-			}
+			//if (post == null)
+			//{
+			//	_notification.Error("Post not found!");
+			//	return RedirectToAction("NotFound", "Error");
+			//}
 
 			var comment = new Comment
 			{
@@ -92,58 +92,10 @@ namespace BlogWebsite.Controllers
 			_context.comments!.Add(comment);
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction("Post", "Blog", new { slug = post.Slug });
+			return RedirectToAction("Post", "Blog", new { slug = post!.Slug });
 		}
 
-		//[HttpPost]
-		//public async Task<IActionResult> AddReply(int parentCommentId, int postId, string description)
-		//{
-		//	var user = await _userManager.GetUserAsync(User);
 
-		//	if (user == null || !User.Identity!.IsAuthenticated)
-		//	{
-		//		return RedirectToAction("Login", "User", new { area = "Admin" });
-		//	}
-
-		//	var post = await _context.posts!
-		//		.FirstOrDefaultAsync(p => p.Id == postId);
-
-		//	if (post == null)
-		//	{
-		//		_notification.Error("Post not found!");
-		//		return RedirectToAction("NotFound", "Error");
-		//	}
-
-		//	var parentComment = await _context.comments!
-		//		.Include(c => c.Replies) // Bao gồm danh sách replies của comment cha
-		//		.FirstOrDefaultAsync(c => c.Id == parentCommentId);
-
-		//	if (parentComment == null)
-		//	{
-		//		_notification.Error("Parent comment not found!");
-		//		return RedirectToAction("NotFound", "Error");
-		//	}
-
-		//	var reply = new Comment
-		//	{
-		//		PostId = postId,
-		//		ParentCommentId = parentCommentId,
-		//		Description = description,
-		//		ApplicationUserId = user.Id,
-		//		CreatedDate = DateTime.Now
-		//	};
-
-		//	// Khởi tạo danh sách Replies nếu null
-		//	parentComment.Replies ??= new List<Comment>();
-
-		//	// Thêm reply vào danh sách Replies của comment cha
-		//	parentComment.Replies.Add(reply);
-
-		//	_context.comments!.Add(reply);
-		//	await _context.SaveChangesAsync();
-
-		//	return RedirectToAction("Post", "Blog", new { slug = post.Slug });
-		//}
 		[HttpPost]
 		public async Task<IActionResult> AddReply(int parentId, int postId, string description)
 		{
@@ -157,11 +109,11 @@ namespace BlogWebsite.Controllers
 			var post = await _context.posts!
 				.FirstOrDefaultAsync(p => p.Id == postId);
 
-			if (post == null)
-			{
-				_notification.Error("Post not found!");
-				return RedirectToAction("NotFound", "Error");
-			}
+			//if (post == null)
+			//{
+			//	_notification.Error("Post not found!");
+			//	return RedirectToAction("NotFound", "Error");
+			//}
 
 			var parentComment = await _context.comments!
 				.Include(c => c.Replies)
@@ -186,42 +138,64 @@ namespace BlogWebsite.Controllers
 
 			await _context.SaveChangesAsync();
 
-			return RedirectToAction("Post", "Blog", new { slug = post.Slug });
+			return RedirectToAction("Post", "Blog", new { slug = post!.Slug });
 		}
 
+		//[HttpPost]
+		//public async Task<IActionResult> DeleteComment(int commentId, int postId)
+		//{
+
+		//	var user = await _userManager.GetUserAsync(User);
+		//	if (user == null || !User.Identity!.IsAuthenticated)
+		//	{
+		//		return RedirectToAction("Login", "User", new { area = "Admin" });
+		//	}
+		//	else
+		//	{
+		//		var commentToDelete = await _context.comments!
+		//		.Include(c => c.Replies)
+		//		.FirstOrDefaultAsync(c => c.Id == commentId);
+
+
+		//		// Tìm và xóa tất cả các comment con của commentToDelete
+		//		var childComments = _context.comments!.Where(c => c.ParentCommentId == commentToDelete!.Id);
+		//		if (childComments.Any())
+		//		{
+		//			_context.comments!.RemoveRange(childComments);
+		//		}
+
+		//		_context.comments!.Remove(commentToDelete!);
+		//		await _context.SaveChangesAsync();
+
+		//		return RedirectToAction("Index", "Home");
+		//	}
+
+		//}
+
 		[HttpPost]
-		[Authorize] // Chỉ cho phép người dùng đã đăng nhập thực hiện hành động này
 		public async Task<IActionResult> DeleteComment(int commentId, int postId)
 		{
-			var post = await _context.posts!
-				.FirstOrDefaultAsync(p => p.Id == postId);
-
-			if (post == null)
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null || !User.Identity!.IsAuthenticated)
 			{
-				_notification.Error("Post not found!");
-				return RedirectToAction("NotFound", "Error");
+				return RedirectToAction("Login", "User", new { area = "Admin" });
 			}
-			var commentToDelete = await _context.comments!
-				.Include(c => c.Replies)
-				.FirstOrDefaultAsync(c => c.Id == commentId);
-
-			if (commentToDelete == null)
+			else
 			{
-				_notification.Error("Comment not found!");
-				return RedirectToAction("NotFound", "Error");
+				var commentToDelete = await _context.comments!
+					.Include(c => c.Replies)
+					.FirstOrDefaultAsync(c => c.Id == commentId || c.ParentCommentId == commentId);
+
+				if (commentToDelete == null)
+				{
+					return RedirectToAction("Index", "Home");
+				}
+
+				_context.comments!.Remove(commentToDelete);
+				await _context.SaveChangesAsync();
+
+				return RedirectToAction("Index", "Home");
 			}
-
-			if (commentToDelete.Replies.Count > 0)
-			{
-				// Nếu comment có replies, xóa luôn các replies của nó trước
-				_context.comments!.RemoveRange(commentToDelete.Replies);
-			}
-
-			_context.comments!.Remove(commentToDelete);
-			await _context.SaveChangesAsync();
-
-			_notification.Success("Comment deleted successfully!");
-			return RedirectToAction("Post", "Blog", new {slug=post.Slug}); // Hoặc chuyển hướng đến trang khác sau khi xóa comment
 		}
 
 	}
