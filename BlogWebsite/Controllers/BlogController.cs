@@ -95,7 +95,6 @@ namespace BlogWebsite.Controllers
 			return RedirectToAction("Post", "Blog", new { slug = post!.Slug });
 		}
 
-
 		[HttpPost]
 		public async Task<IActionResult> AddReply(int parentId, int postId, string description)
 		{
@@ -140,37 +139,6 @@ namespace BlogWebsite.Controllers
 
 			return RedirectToAction("Post", "Blog", new { slug = post!.Slug });
 		}
-
-		//[HttpPost]
-		//public async Task<IActionResult> DeleteComment(int commentId, int postId)
-		//{
-
-		//	var user = await _userManager.GetUserAsync(User);
-		//	if (user == null || !User.Identity!.IsAuthenticated)
-		//	{
-		//		return RedirectToAction("Login", "User", new { area = "Admin" });
-		//	}
-		//	else
-		//	{
-		//		var commentToDelete = await _context.comments!
-		//		.Include(c => c.Replies)
-		//		.FirstOrDefaultAsync(c => c.Id == commentId);
-
-
-		//		// Tìm và xóa tất cả các comment con của commentToDelete
-		//		var childComments = _context.comments!.Where(c => c.ParentCommentId == commentToDelete!.Id);
-		//		if (childComments.Any())
-		//		{
-		//			_context.comments!.RemoveRange(childComments);
-		//		}
-
-		//		_context.comments!.Remove(commentToDelete!);
-		//		await _context.SaveChangesAsync();
-
-		//		return RedirectToAction("Index", "Home");
-		//	}
-
-		//}
 
 		[HttpPost]
 		public async Task<IActionResult> DeleteComment(int commentId, int postId)

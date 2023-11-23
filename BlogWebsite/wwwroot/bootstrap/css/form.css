@@ -178,11 +178,13 @@ body {
     align-items: center;
     justify-content: center;
 }
+
 @keyframes Show {
     0%, 49.999% {
         opacity: 0;
         z-index: 1;
     }
+
     100% {
         opacity: 1;
         z-index: 5;
@@ -194,6 +196,7 @@ body {
         opacity: 1;
         z-index: 5;
     }
+
     100% {
         opacity: 0;
         z-index: 1;
@@ -228,25 +231,25 @@ body {
     text-align: center;
 }
 
-.container .box .form.sign_up {
-    /* transition: all 0.5s;
+    .container .box .form.sign_up {
+        /* transition: all 0.5s;
     opacity: 0;
     transform: translateX(-100%); */
-}
+    }
 
-.container .box .form.sign_up {
-    transition: all 1.15s;
-    z-index: 1;
-    opacity: 0;
-    background-color: #fff;
-}
+    .container .box .form.sign_up {
+        transition: all 1.15s;
+        z-index: 1;
+        opacity: 0;
+        background-color: #fff;
+    }
 
-.container .box .form.sign_in {
-    opacity: 1;
-    transition: all 1.15s;
-    z-index: 5;
-    background-color: #fff;
-}
+    .container .box .form.sign_in {
+        opacity: 1;
+        transition: all 1.15s;
+        z-index: 5;
+        background-color: #fff;
+    }
 
 .container.active .box .form.sign_in {
     z-index: 1;
@@ -280,7 +283,7 @@ body {
     width: 50%;
     transition: all 0.8s;
     transform: translateX(0);
-    background-color: #FF4167;
+    background-color: #85C1E9;
     z-index: 1;
     overflow: hidden;
     z-index: 5;
@@ -356,19 +359,19 @@ body {
     margin: 30px 0;
 }
 
-#form_input .type input {
-    width: 100%;
-    height: 100%;
-    padding: 0 10px;
-    font-size: 16px;
-    border: none;
-    outline: none;
-    background-color: transparent;
-}
+    #form_input .type input {
+        width: 100%;
+        height: 100%;
+        padding: 0 10px;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        background-color: transparent;
+    }
 
-#form_input .type input::placeholder {
-    color: #A9A8A9;
-}
+        #form_input .type input::placeholder {
+            color: #A9A8A9;
+        }
 
 #form_input .forgot {
     margin-bottom: 20px;
@@ -376,5 +379,5 @@ body {
 }
 
 .bkg {
-    background-color: #FF4167;
+    background-color: #85C1E9;
 }

@@ -219,8 +219,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 		}
 
-		
-
 		public string UploadImage(IFormFile file)
 		{
 			string uniqueFileName = "";

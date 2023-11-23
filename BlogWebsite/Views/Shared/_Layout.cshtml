@@ -15,9 +15,8 @@
 	<meta name="author" content="" />
 	<title>Techno Blog</title>
 	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-	<link href="css/styles.css" rel="stylesheet" />
-	<link rel="stylesheet" href="~/bootstrap/css/styles.css">
 	<link rel="stylesheet" href="~/bootstrap/css/customStyle.css">
+	<link rel="stylesheet" href="~/bootstrap/css/styles.css">
 	<link rel="stylesheet" href="~/bootstrap/css/thumbnail.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
 
@@ -59,8 +58,8 @@
 								Hello @User.Identity.Name
 							</a>
 							<ul class="dropdown-menu" style="border-radius:10px;">
-								<li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Post" asp-action="Index">Dashboard</a></li>
-								<li class="nav-item"><a class="nav-link" asp-controller="Post" asp-action="CreatePost" asp-area="Admin">Create Post</a></li>
+								<li class=nav-item><a class="nav-link" asp-area="Admin" asp-controller="Post" asp-action="Index">Dashboard</a></li>
+								<li class=nav-item><a class="nav-link" asp-controller="Post" asp-action="CreatePost" asp-area="Admin">Create Post</a></li>
 								<form asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">
 									<button type="submit" class="dropdown-item">
 										<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
