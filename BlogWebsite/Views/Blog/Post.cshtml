@@ -116,7 +116,7 @@
 				</section>
 				<!--Section: Comments-->
 				<!-- Hiển thị danh sách comment -->
-				@*<section id="commentListSection" class="gradient-custom">
+				<section id="commentListSection" class="gradient-custom">
 					<div class="container my-5 py-5">
 						<div class="row d-flex justify-content-center">
 							<div class="col-md-12 col-lg-12 col-xl-12">
@@ -139,7 +139,6 @@
 																		</button>
 																	</div>
 																	<p style="color: #555;">@comment.Description</p>
-
 																	<!-- Form trả lời ẩn -->
 																	<form id="replyForm_@comment.Id" class="mt-3 d-none" asp-controller="Blog" asp-action="AddReply" method="post">
 																		<input type="hidden" name="parentId" value="@comment.Id" />
@@ -160,14 +159,19 @@
 																		</form>
 																	}
 
-
-																	<!-- Hiển thị các câu trả lời -->
 																	@foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id))
 																	{
 																		<div class="media mt-4" style="margin-left: 20px;">
 																			<div class="media-body">
 																				<h5 class="mt-0 mb-1" style="color: #333;">@reply.ApplicationUsers?.UserName <span class="small">- @reply.CreatedDate.ToShortDateString()</span></h5>
 																				<p style="color: #555;">@reply.Description</p>
+																				@if (User.Identity!.IsAuthenticated && reply.ApplicationUsers != null && reply.ApplicationUsers.UserName == User.Identity.Name)
+																				{
+																					<form id="deleteForm_@reply.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
+																						<input type="hidden" name="commentId" value="@reply.Id" />
+																						<button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+																					</form>
+																				}
 																			</div>
 																		</div>
 																	}
@@ -183,55 +187,8 @@
 							</div>
 						</div>
 					</div>
-				</section>*@
-				@if (Model.Comments != null && Model.Comments.Count > 0)
-				{
-					<div class="row">
-						<div class="col">
-							<ul class="list-unstyled">
-								@foreach (var comment in Model.Comments.Where(c => c.ParentCommentId == null))
-								{
-									<li class="media my-4">
-										<div class="media-body">
-											<div class="d-flex justify-content-between">
-												<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers?.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
-												<button class="btn btn-sm btn-primary" onclick="showReplyForm(@comment.Id)">
-													<i class="fas fa-reply" style="color: #fff;"></i>
-												</button>
-											</div>
-											<p style="color: #555;">@comment.Description</p>
-
-											@if (User.Identity!.IsAuthenticated && comment.ApplicationUsers != null && comment.ApplicationUsers.UserName == User.Identity.Name)
-											{
-												<form id="deleteForm_@comment.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
-													<input type="hidden" name="commentId" value="@comment.Id" />
-													<button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-												</form>
-											}
-
-											@foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id))
-											{
-												<div class="media mt-4" style="margin-left: 20px;">
-													<div class="media-body">
-														<h5 class="mt-0 mb-1" style="color: #333;">@reply.ApplicationUsers?.UserName <span class="small">- @reply.CreatedDate.ToShortDateString()</span></h5>
-														<p style="color: #555;">@reply.Description</p>
-														@if (User.Identity!.IsAuthenticated && reply.ApplicationUsers != null && reply.ApplicationUsers.UserName == User.Identity.Name)
-														{
-															<form id="deleteForm_@reply.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
-																<input type="hidden" name="commentId" value="@reply.Id" />
-																<button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-															</form>
-														}
-													</div>
-												</div>
-											}
-										</div>
-									</li>
-								}
-							</ul>
-						</div>
-					</div>
-				}
+				</section>
+				
 
 
 				<!--Section: Reply-->
