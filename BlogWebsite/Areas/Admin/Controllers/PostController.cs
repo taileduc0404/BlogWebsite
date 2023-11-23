@@ -219,7 +219,18 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 		}
 
-		public string UploadImage(IFormFile file)
+        [HttpGet]
+        public IActionResult AutocompleteTags(string keyword)
+        {
+            var tags = _context.tags!
+                .Where(t => t.Name!.StartsWith(keyword))
+                .Select(t => t.Name)
+                .ToList();
+
+            return Json(tags);
+        }
+
+        public string UploadImage(IFormFile file)
 		{
 			string uniqueFileName = "";
 			var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "thumbnails");

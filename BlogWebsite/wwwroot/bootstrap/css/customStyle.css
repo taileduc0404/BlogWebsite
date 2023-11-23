@@ -26,8 +26,10 @@ header {
     position: sticky;
     background-color: #85C1E9;
 }
-.navbar-brand {
+.custom-navbar-brand {
     font-family: 'Pacifico', cursive;
+    text-decoration: none;
+    color: #454545;
     font-size: 2em;
 }
 .custom-nav-item {

@@ -4,6 +4,16 @@
 	ViewData["Title"] = "Create Post";
 }
 
+
+<!-- Bootstrap CSS -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- Select2 CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+
+
+
+
 <div class="container-fluid">
 	<a class="btn btn-primary mb-1" asp-action="Index" asp-controller="Post" asp-area="Admin">Go Back</a>
 	<div class="card">
@@ -21,7 +31,8 @@
 						</div>
 						<div class="mb-2">
 							<label>Tag</label>
-							<input type="text" asp-for="TagName" class="form-control" id="tags" />
+							<input type="text" asp-for="TagName" class="form-control" id="tags" list="tags-list" />
+							<datalist id="tags-list"></datalist>
 							<span asp-validation-for="TagName" class="text-danger"></span>
 						</div>
 						<div class="mb-2">
@@ -48,40 +59,6 @@
 		</div>
 	</div>
 </div>
-
-<!-- Thêm thư viện jQuery (nếu chưa có) -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<!-- Thêm thư viện jQuery UI -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<script>
-	$(function () {
-		var availableTags = [];
-
-		// Gọi API để lấy danh sách tag khi trang được tải
-		$.ajax({
-			url: '/Admin/Tag/GetTags',
-			type: 'GET',
-			success: function (data) {
-				availableTags = data.map(function (tag) {
-					return tag.name;
-				});
-
-				// Kích hoạt autocomplete cho trường TagName
-				$('#tags').autocomplete({
-					source: availableTags,
-					minLength: 2
-				});
-			}
-		});
-	});
-
-</script>
-
-
-
 @section Scripts{
 	<partial name="_ValidationScriptsPartial" />
 	<script>
@@ -89,6 +66,26 @@
 			var fileName = $(this).val().split("\\").pop();
 			$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 			document.getElementById('thumbnail').src = window.URL.createObjectURL(this.files[0])
+		});
+	</script>
+	<script>
+		$(document).ready(function () {
+			$("#tags").keyup(function () {
+				var input = $(this).val();
+				if (input.length >= 2) { // Kiểm tra nếu có ít nhất 2 ký tự được nhập
+					$.ajax({
+						url: "/Admin/Post/AutocompleteTags", // Địa chỉ URL xử lý autocomplete
+						type: "GET",
+						data: { keyword: input },
+						success: function (data) {
+							$("#tags-list").empty();
+							$.each(data, function (index, value) {
+								$("#tags-list").append('<option value="' + value + '"></option>');
+							});
+						}
+					});
+				}
+			});
 		});
 	</script>
 }

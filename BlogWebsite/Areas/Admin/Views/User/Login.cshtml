@@ -6,8 +6,8 @@
 }
 
 
-@*<div class="container">
-    <div class="row justify-content-center">
+<div class="container">
+    <div class="row justify-content-center mt-5">
         <div class="col-lg-5">
             <div class="card shadow-lg border-0 rounded-lg mt-5">
                 <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
@@ -32,80 +32,12 @@
                     </form>
                 </div>
                 <div class="card-footer text-center py-3">
-                    <div class="small"><a asp-controller="User" asp-action="Register" asp-area="Admin">Need an account? Sign up!</a></div>
+                    <button class="small btn btn-primary btn-user btn-block"><a style="color:white;text-decoration:none;" asp-controller="User" asp-action="Register" asp-area="Admin">Need an account? Sign up!</a></button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-*@
 
-<div class="container">
-    <div class="box">
-        <div class="form sign_in">
-            <h3>Log In</h3>
-            <span>Enjoy us</span>
 
-            <form asp-controller="User" method="post" asp-action="Login" id="form_input">
-                <div class="type">
-                    <input asp-for="Username" type="text" placeholder="Username" id="email">
-                    
-                </div>
-                <div class="type">
-                    <input asp-for="Password" type="password" placeholder="Password" id="password">
-
-                </div>
-
-                <div class="">
-                    <span><a asp-controller="User" asp-action="ForgotPassword" asp-area="Admin">Forgot your password?</a></span>
-                </div>
-
-                <button type="submit" class="btn bkg" style="margin-top: 20px;background-color:#85C1E9">Log In</button>
-            </form>
-        </div>
-
-        <div class="form sign_up">
-            <h3>Register</h3>
-            <span>Start your new plan with us</span>
-
-            <form action="#" id="form_input">
-                <div class="type">
-                    <input type="text" placeholder="First Name">
-                </div>
-                <div class="type">
-                    <input type="text" placeholder="Last name">
-                </div>
-                <div class="type">
-                    <input type="email" placeholder="Email">
-                </div>
-                <div class="type">
-                    <input type="text" placeholder="Username">
-                </div>
-                <div class="type">
-                    <input type="password" placeholder="Password">
-                </div>
-
-                <button class="btn bkg" style="background-color:#85C1E9">Register</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="overlay bkg" style="background-color:#85C1E9;">
-        <div class="page page_signIn" style="background-color:#85C1E9;">
-            <h3>Welcome Back!</h3>
-            <p>To keep with us please login with your personal info</p>
-
-            <button class="btn btnSign-in">Register <i class="bi bi-arrow-right"></i></button>
-        </div>
-
-        <div class="page page_signUp" style="background-color:#85C1E9;">
-            <h3>Hello Friend!</h3>
-            <p>Enter your personal details and start journey with us</p>
-
-            <button class="btn btnSign-up" style="background-color:#85C1E9;">
-                <i class="bi bi-arrow-left"></i> Log In
-            </button>
-        </div>
-    </div>
-</div>
