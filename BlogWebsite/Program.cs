@@ -27,6 +27,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+
+
 // Email service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
   .Get<EmailConfiguration>();

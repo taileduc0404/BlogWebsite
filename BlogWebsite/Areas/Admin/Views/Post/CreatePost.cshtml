@@ -4,16 +4,6 @@
 	ViewData["Title"] = "Create Post";
 }
 
-
-<!-- Bootstrap CSS -->
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<!-- Select2 CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
-
-
-
-
 <div class="container-fluid">
 	<a class="btn btn-primary mb-1" asp-action="Index" asp-controller="Post" asp-area="Admin">Go Back</a>
 	<div class="card">
@@ -72,7 +62,7 @@
 		$(document).ready(function () {
 			$("#tags").keyup(function () {
 				var input = $(this).val();
-				if (input.length >= 2) { // Kiểm tra nếu có ít nhất 2 ký tự được nhập
+				if (input.length >= 1) { // Kiểm tra nếu có ít nhất 2 ký tự được nhập
 					$.ajax({
 						url: "/Admin/Post/AutocompleteTags", // Địa chỉ URL xử lý autocomplete
 						type: "GET",

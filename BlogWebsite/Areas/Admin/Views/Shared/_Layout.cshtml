@@ -70,6 +70,10 @@
 							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
 							Tags
 						</a>
+						<a class="nav-link" asp-controller="Comment" asp-action="Index" asp-area="Admin">
+							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
+							Comment
+						</a>
 						@if (User.IsInRole("Admin"))
 						{
 							<div class="sb-sidenav-menu-heading">Interface</div>

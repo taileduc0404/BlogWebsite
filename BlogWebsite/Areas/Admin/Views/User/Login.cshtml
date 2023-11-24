@@ -1,43 +1,45 @@
-﻿
-@model BlogWebsite.ViewModels.LoginVM
+﻿@model BlogWebsite.ViewModels.LoginVM
 @{
-    Layout = "_LoginLayout";
+	Layout = "_LoginLayout";
 	ViewData["Title"] = "Login";
 }
 
 
 <div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-lg-5">
-            <div class="card shadow-lg border-0 rounded-lg mt-5">
-                <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
-                <div class="card-body">
-                    <form asp-controller="User" method="post" asp-action="Login">
-                        <div class="form-floating mb-3">
-                            <input asp-for="Username" class="form-control" type="text" placeholder="Username" />
-                            <label for="inputEmail">Username</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input asp-for="Password" class="form-control" id="inputPassword" type="password" placeholder="Password" />
-                            <label for="inputPassword">Password</label>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input asp-for="RememberMe" class="form-check-input" id="customCheck" type="checkbox" />
-                            <label class="form-check-label" for="customCheck">Remember Me</label>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                            <a class="small" asp-action="ForgotPassword" asp-controller="User" asp-area="Admin">Forgot Password?</a>
-                            <input type="submit" class="btn btn-primary btn-user btn-block" value="Login">
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center py-3">
-                    <button class="small btn btn-primary btn-user btn-block"><a style="color:white;text-decoration:none;" asp-controller="User" asp-action="Register" asp-area="Admin">Need an account? Sign up!</a></button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<div class="row justify-content-center mt-5">
+		<div class="col-lg-5">
+			<div class="card shadow-lg border-0 rounded-lg mt-5">
+				<div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+				<div class="card-body">
+					<form asp-controller="User" method="post" asp-action="Login">
+						<div class="form-floating mb-3">
+							<input asp-for="Username" class="form-control" type="text" placeholder="Username" />
+							<label for="inputEmail">Username</label>
+						</div>
+						<div class="form-floating mb-3 position-relative">
+							<input asp-for="Password" class="form-control" id="inputPassword" type="password" placeholder="Password" />
+							<label for="inputPassword">Password</label>
+							<span class="eye-icon" onclick="togglePassword()">
+								<i class="fa fa-eye-slash" id="eyeIcon" aria-hidden="true"></i>
+							</span>
+						</div>
 
+						<div class="form-check mb-3">
+							<input asp-for="RememberMe" class="form-check-input" id="customCheck" type="checkbox" />
+							<label class="form-check-label" for="customCheck">Remember Me</label>
+						</div>
+						<div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+							<a class="small" asp-action="ForgotPassword" asp-controller="User" asp-area="Admin">Forgot Password?</a>
+							<input type="submit" class="btn btn-primary btn-user btn-block" value="Login">
+						</div>
+					</form>
+				</div>
+				<div class="card-footer text-center py-3">
+					<button class="small btn btn-primary btn-user btn-block"><a style="color:white;text-decoration:none;" asp-controller="User" asp-action="Register" asp-area="Admin">Need an account? Sign up!</a></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 

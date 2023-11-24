@@ -1,12 +1,12 @@
 ﻿@{
-	ViewData["Title"] = "List of Posts";
+	ViewData["Title"] = "Comment In Post";
 }
 
+
 <div class="container-fluid">
-	<a class="btn btn-dark mb-2 mt-2" asp-action="CreatePost" asp-controller="Post" asp-area="Admin">Add Post</a>
 	<div class="card">
 		<div class="card-header bg-primary">
-			<h4 class="card-title text-white">List of Posts</h4>
+			<h4 class="card-title text-white">List of Comments</h4>
 			<form asp-area="Admin" asp-controller="Post" asp-action="Index" method="get" class="input-group px-lg-1 py-2 py-lg-3">
 				<div class="form-outline">
 					<input id="search-input" name="keyword" type="search" placeholder="Search..." class="form-control form-control-sm box-shadow" style="border-bottom-left-radius:30px;border-top-left-radius:30px;" />
@@ -55,13 +55,13 @@
 							<p>@posts.CreateDate</p>
 							<p><i class="fa-solid fa-eye"></i> @posts.ViewCount</p>
 						</div>
-						<div class="col-4 text-right d-flex justify-content-center flex-column">
+						@*<div class="col-4 text-right d-flex justify-content-center flex-column">
 							<div class="d-flex justify-content-end">
 								<form asp-area="Admin" asp-action="DeletePost" asp-controller="Post" asp-route-id="@posts.Id" method="post" onsubmit="return confirm('Do you want to delete this post?')">
 									<button type="submit" class="btn btn-danger btn-sm">Delete</button>
 								</form>
 							</div>
-						</div>
+						</div>*@
 					</div>
 
 				</div>

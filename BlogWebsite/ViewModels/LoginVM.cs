@@ -6,7 +6,7 @@ namespace BlogWebsite.ViewModels
     {
         [Required]
         public string? Username { get; set; }
-        [Required]
+		[Required]
         public string? Password { get; set; }
         public bool RememberMe { get; set; }
     }

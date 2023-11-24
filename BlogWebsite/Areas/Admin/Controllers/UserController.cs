@@ -197,22 +197,32 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			{
 				return View(vm);
 			}
-			var existingUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == vm.Username);
-			if (existingUser == null)
+
+			var user = await _userManager.FindByEmailAsync(vm.Username);
+			if (user == null)
 			{
-				_notification.Error("Username does not exist");
+				user = await _userManager.FindByNameAsync(vm.Username);
+				if (user == null)
+				{
+					_notification.Error("Username or Email does not exist");
+					return View(vm);
+				}
+			}
+
+			var signInResult = await _signInManager.PasswordSignInAsync(user.UserName, vm.Password, vm.RememberMe, true);
+			if (signInResult.Succeeded)
+			{
+				_notification.Success("Logged In Successfully!");
+				return RedirectToAction("Index", "Home", new { area = "Default" });
+			}
+			else
+			{
+				_notification.Error("Invalid password");
 				return View(vm);
 			}
-			var verifyPassword = await _userManager.CheckPasswordAsync(existingUser, vm.Password);
-			if (!verifyPassword)
-			{
-				_notification.Error("Password does not match");
-				return View(vm);
-			}
-			await _signInManager.PasswordSignInAsync(vm.Username, vm.Password, vm.RememberMe, true);
-			_notification.Success("Logged In Successfully!");
-			return RedirectToAction("Index", "Home", new { area = "Default" });
 		}
+
+
 
 		[HttpPost]
 		[Authorize]
