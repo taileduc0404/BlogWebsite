@@ -38,18 +38,6 @@
         }
     </div>
 
-   @* <!-- Pagination -->
-    Page @(Model?.posts.PageCount < Model?.posts.PageNumber ? 0 : Model?.posts.PageNumber) of @Model?.posts.PageCount
-    @Html.PagedListPager(Model?.posts,page => Url.Action("Index",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }),
-    new PagedListRenderOptions()
-    {
-    ContainerDivClasses = new List<string> {"d-flex justify-content-start mb-3"},
-    UlElementClasses = new List<string> {"pagination"},
-    LiElementClasses = new List<string> {"btn btn-primary mx-1 text-uppercase"},
-    ActiveLiElementClass =  "active",
-    })*@
-    <!-- Pagination -->
     <!-- Pagination -->
     <div class="d-flex justify-content-center my-4">
         <nav aria-label="Page navigation">
