@@ -1,0 +1,23 @@
+﻿@model BlogWebsite.Models.Post
+@{
+    ViewData["Title"] = "List Of Comment";
+}
+<h2 style="color: #007bff;">@Model.Title</h2>
+<!-- Hiển thị các thông tin khác của bài post -->
+
+<h3>Comments</h3>
+@if (Model.Comments != null && Model.Comments.Any())
+{
+    foreach (var comment in Model.Comments)
+    {
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <h4 style="color: #007bff;">@comment.ApplicationUsers?.UserName - @comment.CreatedDate.ToLongDateString()</h4>
+            <p>@comment.Description</p>
+            <!-- Hiển thị thông tin comment -->
+        </div>
+    }
+}
+else
+{
+    <p>No comments yet.</p>
+}

@@ -34,38 +34,34 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		public async Task<IActionResult> Index(string keyword, int? page)
 		{
 			int pageNumber = page ?? 1;
-			int pageSize = 6;
+			int pageSize = 4;
 
 			var loggedInUser = await _userManager.GetUserAsync(User);
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);
 
-			var listOfPosts = await _context.posts!
-				.Include(x => x.ApplicationUsers)
-				.Include(t=>t.Tag)    //  Lấy ra thẻ tag của bài post
-				.OrderByDescending(x => x.CreatedDate)
+			var postsQuery = _context.posts!
 				.Where(x => loggedInUserRole[0] == WebsiteRole.WebisteAdmin || x.ApplicationUsers!.Id == loggedInUser!.Id)
-				.ToListAsync();
+				.OrderByDescending(x => x.CreatedDate)
+				.Select(x => new PostVM
+				{
+					Id = x.Id,
+					Title = x.Title,
+					TagName = x.Tag != null ? x.Tag.Name : "None Tag",
+					ViewCount = x.ViewCount,
+					CreateDate = x.CreatedDate,
+					ThumbnailUrl = x.ThumbnailUrl,
+					AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
+				});
 
-			var listOfPostVM = listOfPosts.Select(x => new PostVM
+			if (!string.IsNullOrEmpty(keyword))
 			{
-				Id = x.Id,
-				Title = x.Title,
-				TagName=x.Tag !=null ? x.Tag.Name : "None Tag",
-				ViewCount = x.ViewCount,
-				CreateDate = x.CreatedDate,
-				ThumbnailUrl = x.ThumbnailUrl,
-				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
-			}).ToList();
+				keyword = keyword.ToLower();
+				postsQuery = postsQuery.Where(x => x.Title!.ToLower().Contains(keyword));
+			}
 
-			IPagedList<PostVM> listPost_Page=listOfPostVM.ToPagedList(pageNumber, pageSize);
-			if (string.IsNullOrEmpty(keyword))
-			{
-				return View(listPost_Page);
-			}
-			else
-			{
-				return View(listOfPostVM.Where(x => x.Title!.ToLower().Contains(keyword)));
-			}
+			var listPost_Page = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
+
+			return View(listPost_Page);
 		}
 
 		[HttpGet("CreatePost")]

@@ -1,71 +1,36 @@
-﻿@{
-	ViewData["Title"] = "Comment In Post";
-}
+﻿@model List<BlogWebsite.Models.Post>
 
+@{
+	ViewData["Title"] = "List of Posts";
+}
 
 <div class="container-fluid">
 	<div class="card">
 		<div class="card-header bg-primary">
-			<h4 class="card-title text-white">List of Comments</h4>
-			<form asp-area="Admin" asp-controller="Post" asp-action="Index" method="get" class="input-group px-lg-1 py-2 py-lg-3">
+			<h4 class="card-title text-white">List of Posts</h4>
+@*			<form asp-area="Admin" asp-controller="Comment" asp-action="Index" method="get" class="input-group px-lg-1 py-2 py-lg-3">
 				<div class="form-outline">
 					<input id="search-input" name="keyword" type="search" placeholder="Search..." class="form-control form-control-sm box-shadow" style="border-bottom-left-radius:30px;border-top-left-radius:30px;" />
 				</div>
 				<button type="submit" class="btn btn-sm btn-secondary" style="border-bottom-right-radius:30px;border-top-right-radius:30px;">
 					<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
 				</button>
-			</form>
+			</form>*@
 		</div>
 		<div class="card-body" style="background-color:lightgray;">
-			@foreach (var posts in Model)
+			@foreach (var post in Model)
 			{
 				<div class="rounded mb-4 bg-white p-1">
 					<div class="row">
 						<div class="col-4">
-							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post" style="text-decoration:none;">
-								@if (posts.ThumbnailUrl == null)
-								{
-									<img class="img-fluid" src="~/thumbnails/default_image.png" style="object-fit:cover; height: 100%; width:100%;">
-								}
-								else
-								{
-									<img class="img-fluid" src="~/thumbnails/@posts.ThumbnailUrl" style="object-fit:cover; height: 100%; width:100%;">
-
-								}
+							<a asp-area="Admin" asp-action="Comments" asp-controller="Comment" asp-route-postId="@post.Id" method="get" style="text-decoration:none;">
+								<p style="font-size:20px; font-weight: bolder;" class="text-primary fw-bold">@post.Title</p>
 							</a>
 						</div>
-						<div class="col-4">
-							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post">
-								<h4 style="font-size:25px; font-weight: bolder;" class="text-primary fw-bold">@posts.Title</h4>
-							</a>
-							@if (!string.IsNullOrEmpty(posts.TagName))
-							{
-								<button type="button" class="btn btn-secondary">
-									@posts.TagName
-								</button>
-							}
-							else
-							{
-								<button type="button" class="btn btn-secondary">
-									None Tag
-								</button>
-							}
-
-							<p>@posts.AuthorName</p>
-							<p>@posts.CreateDate</p>
-							<p><i class="fa-solid fa-eye"></i> @posts.ViewCount</p>
-						</div>
-						@*<div class="col-4 text-right d-flex justify-content-center flex-column">
-							<div class="d-flex justify-content-end">
-								<form asp-area="Admin" asp-action="DeletePost" asp-controller="Post" asp-route-id="@posts.Id" method="post" onsubmit="return confirm('Do you want to delete this post?')">
-									<button type="submit" class="btn btn-danger btn-sm">Delete</button>
-								</form>
-							</div>
-						</div>*@
 					</div>
-
 				</div>
 			}
 		</div>
+		
 	</div>
 </div>
