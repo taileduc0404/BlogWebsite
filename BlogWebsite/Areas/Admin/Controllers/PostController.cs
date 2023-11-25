@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -30,8 +31,11 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		}
 
 		[HttpGet("Post")]
-		public async Task<IActionResult> Index(string keyword)
+		public async Task<IActionResult> Index(string keyword, int? page)
 		{
+			int pageNumber = page ?? 1;
+			int pageSize = 6;
+
 			var loggedInUser = await _userManager.GetUserAsync(User);
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);
 
@@ -53,10 +57,10 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
 			}).ToList();
 
+			IPagedList<PostVM> listPost_Page=listOfPostVM.ToPagedList(pageNumber, pageSize);
 			if (string.IsNullOrEmpty(keyword))
 			{
-				return View(listOfPostVM);
-
+				return View(listPost_Page);
 			}
 			else
 			{

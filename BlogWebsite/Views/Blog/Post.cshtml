@@ -116,6 +116,7 @@
 				</section>
 				<!--Section: Comments-->
 				<!-- Hiển thị danh sách comment -->
+
 				<section id="commentListSection" class="gradient-custom">
 					<div class="container my-5 py-5">
 						<div class="row d-flex justify-content-center">
@@ -145,17 +146,16 @@
 																		<input type="hidden" name="postId" value="@Model.Id" />
 																		<input type="hidden" name="replyTo" value="@comment.ApplicationUsers!.UserName" />
 																		<div class="form-outline mb-4">
-																			<label class="form-label" for="description" style="color: #333;">Trả lời</label>
+																			<label class="form-label" for="description" style="color: #333;">Reply</label>
 																			<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required></textarea>
-																			<small id="replyContentHelp" class="form-text text-muted" style="color: #777;">Độ dài tối thiểu: 5, Độ dài tối đa: 200 ký tự.</small>
 																		</div>
-																		<button type="submit" class="btn btn-primary btn-sm">Gửi Trả lời</button>
+																		<button type="submit" class="btn btn-primary btn-sm">Reply</button>
 																	</form>
 																	@if (User.Identity!.IsAuthenticated && comment.ApplicationUsers != null && comment.ApplicationUsers.UserName == User.Identity.Name)
 																	{
 																		<form id="deleteForm_@comment.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
 																			<input type="hidden" name="commentId" value="@comment.Id" />
-																			<button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+																			<button type="submit" class="btn btn-danger btn-sm">Delete</button>
 																		</form>
 																	}
 
@@ -165,11 +165,12 @@
 																			<div class="media-body">
 																				<h5 class="mt-0 mb-1" style="color: #333;">@reply.ApplicationUsers?.UserName <span class="small">- @reply.CreatedDate.ToShortDateString()</span></h5>
 																				<p style="color: #555;">@reply.Description</p>
+
 																				@if (User.Identity!.IsAuthenticated && reply.ApplicationUsers != null && reply.ApplicationUsers.UserName == User.Identity.Name)
 																				{
 																					<form id="deleteForm_@reply.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
 																						<input type="hidden" name="commentId" value="@reply.Id" />
-																						<button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+																						<button type="submit" class="btn btn-danger btn-sm">Delete</button>
 																					</form>
 																				}
 																			</div>
