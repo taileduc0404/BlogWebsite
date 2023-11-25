@@ -16,11 +16,11 @@
 					<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
 						@if (post.ThumbnailUrl == null)
 						{
-							<img class="custom-img-fluid" src="~/thumbnails/default_image.png">
+							<img class="custom-img-fluid" alt="@post.Title" src="~/thumbnails/default_image.webp">
 						}
 						else
 						{
-							<img class="custom-img-fluid" src="~/thumbnails/@post.ThumbnailUrl">
+							<img class="custom-img-fluid" alt="@post.Title" src="~/thumbnails/@post.ThumbnailUrl">
 						}
 					</a>
 					<div class="card-body">

@@ -24,7 +24,7 @@
 			<div class="col-md-8 mb-4" id="contentColumn">
 				<!--Section: Post data-mdb-->
 				<section class="border-bottom mb-4">
-					<img src="@thumbnailUrl" class="img-fluid shadow-2-strong rounded-5 mb-4" alt="" /><br>
+					<img src="@thumbnailUrl" class="img-fluid shadow-2-strong rounded-5 mb-4" alt="@Model.Title" /><br>
 					<span class="meta">
 						<i class="fa-solid fa-user"></i> <b>@Model.AuthorName</b><br>
 						<i class="fa-solid fa-clock"></i> @Model.CreatedDate.ToLongDateString() | @Model.CreatedDate.ToShortTimeString()<br>
@@ -52,16 +52,16 @@
 						<div class="col-lg-3 text-center text-lg-end">
 							<div class="d-flex justify-content-end">
 								<!-- Các nút mạng xã hội -->
-								<button type="button" class="btn btn-primary px-3 me-1" style="background-color: #3b5998;">
+								<button type="button" class="btn btn-primary px-3 me-1" aria-label="Facebook" title="facebook" style="background-color: #3b5998;">
 									<i class="fab fa-facebook-f"></i>
 								</button>
-								<button type="button" class="btn btn-primary px-3 me-1" style="background-color: #55acee;">
+								<button type="button" class="btn btn-primary px-3 me-1" aria-label="twitter" title="twitter" style="background-color: #55acee;">
 									<i class="fab fa-twitter"></i>
 								</button>
-								<button type="button" class="btn btn-primary px-3 me-1" style="background-color: #0082ca;">
+								<button type="button" class="btn btn-primary px-3 me-1" aria-label="linkedin" title="linkedin" style="background-color: #0082ca;">
 									<i class="fab fa-linkedin"></i>
 								</button>
-								<button onclick="scrollToCommentList()" type="button" class="btn btn-primary px-3 me-1">
+								<button onclick="scrollToCommentList()" type="button" aria-label="comments" title="comments" class="btn btn-primary px-3 me-1">
 									<i class="fas fa-comments"></i>
 								</button>
 							</div>
@@ -81,21 +81,21 @@
 				<section class="text-center border-top border-bottom py-4 mb-4">
 					<p><strong>Share with your friends:</strong></p>
 
-					<button type="button" class="btn btn-primary me-1" style="background-color: #3b5998;">
+					<button type="button" class="btn btn-primary px-3 me-1" aria-label="Facebook" title="facebook" style="background-color: #3b5998;">
 						<i class="fab fa-facebook-f"></i>
 					</button>
-					<button type="button" class="btn btn-primary me-1" style="background-color: #55acee;">
+					<button type="button" class="btn btn-primary px-3 me-1" aria-label="twitter" title="twitter" style="background-color: #55acee;">
 						<i class="fab fa-twitter"></i>
 					</button>
-					<button type="button" class="btn btn-primary me-1" style="background-color: #0082ca;">
+					<button type="button" class="btn btn-primary px-3 me-1" aria-label="linkedin" title="linkedin" style="background-color: #0082ca;">
 						<i class="fab fa-linkedin"></i>
 					</button>
-					<a onclick="scrollToComment()" class="btn btn-primary me-1">
+					<a onclick="scrollToComment()" aria-label="comments" title="comments" class="btn btn-primary me-1">
 						<i class="fas fa-comments me-2"></i>Add Comment
 					</a>
 				</section>
 				<!--Section: Share buttons-->
-						<!--Section: Comments-->
+				<!--Section: Comments-->
 				<!--Section: Reply-->
 				<section id="commentSection">
 					<p class="text-center"><strong>Leave a reply</strong></p>
@@ -105,7 +105,7 @@
 						<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
 						<div class="form-outline mb-4">
 							<label class="form-label" for="description ">Comment</label>
-							<textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+<textarea class="form-control" id="description" name="description" rows="4" required aria-label="Description" placeholder="Enter Description Here" aria-required="true"></textarea>
 
 							<small id="contentHelp" class="form-text text-muted">Min length: 10, Max length: 500 characters.</small>
 						</div>
@@ -123,7 +123,16 @@
 							<div class="col-md-12 col-lg-12 col-xl-12">
 								<div class="card">
 									<div class="card-body p-4">
-										<h4 class="text-center mb-4 pb-2" style="color: #333;">@(Model.Comments?.Count ?? 0) bình luận</h4>
+										<div role="heading" aria-level="4" class="text-center mb-4 pb-2" style="color: #333;">
+											@if (Model.Comments?.Count != null && Model.Comments.Count > 0)
+											{
+												<span>@Model.Comments.Count bình luận</span>
+											}
+											else
+											{
+												<span>Không có bình luận</span>
+											}
+										</div>
 										@if (Model.Comments != null && Model.Comments.Count > 0)
 										{
 											<div class="row">
@@ -147,7 +156,7 @@
 																		<input type="hidden" name="replyTo" value="@comment.ApplicationUsers!.UserName" />
 																		<div class="form-outline mb-4">
 																			<label class="form-label" for="description" style="color: #333;">Reply</label>
-																			<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required></textarea>
+																			<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required aria-label="Your Reply" placeholder="Enter Your Reply Here" aria-required="true"></textarea>
 																		</div>
 																		<button type="submit" class="btn btn-primary btn-sm">Reply</button>
 																	</form>
@@ -189,7 +198,7 @@
 						</div>
 					</div>
 				</section>
-				
+
 
 
 				<!--Section: Reply-->
@@ -201,9 +210,9 @@
 					<section class="text-center border-bottom pb-4 mb-4">
 						<div class="bg-image hover-overlay ripple mb-4">
 							<img src="~/bootstrap/assets/Screenshot 2023-11-21 102024.png"
-		 class="img-fluid" />
+		 class="img-fluid" alt="ads" />
 							<img src="~/bootstrap/assets/Screenshot 2023-11-21 102057.png"
-		 class="img-fluid" />
+		 class="img-fluid" alt="ads" />
 						</div>
 
 					</section>

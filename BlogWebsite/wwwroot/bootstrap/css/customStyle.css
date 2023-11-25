@@ -13,6 +13,7 @@ header {
         z-index: -1; /* Đặt z-index là -1 để đảm bảo hình nền chìm dưới tiêu đề */
     }
 
+
 .container {
     position: relative;
     z-index: 1; /* Đặt z-index là 1 để đảm bảo tiêu đề đè lên hình nền */

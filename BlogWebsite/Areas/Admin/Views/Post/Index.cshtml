@@ -16,9 +16,10 @@
 				<div class="form-outline">
 					<input id="search-input" name="keyword" type="search" placeholder="Search..." class="form-control form-control-sm box-shadow" style="border-bottom-left-radius:30px;border-top-left-radius:30px;" />
 				</div>
-				<button type="submit" class="btn btn-sm btn-secondary" style="border-bottom-right-radius:30px;border-top-right-radius:30px;">
-					<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
+				<button type="submit" class="btn btn-sm btn-secondary" style="border-bottom-right-radius:30px;border-top-right-radius:30px;" aria-label="Search">
+					<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;" aria-hidden="true"></i>
 				</button>
+
 			</form>
 		</div>
 		<div class="card-body" style="background-color:lightgray;">
@@ -30,11 +31,11 @@
 							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post" style="text-decoration:none;">
 								@if (posts.ThumbnailUrl == null)
 								{
-									<img class="img-fluid" src="~/thumbnails/default_image.png" style="object-fit:cover; height: 100%; width:100%;">
+									<img class="img-fluid" alt="@posts.Title" src="~/thumbnails/default_image.webp" style="object-fit:cover; height: 100%; width:100%;">
 								}
 								else
 								{
-									<img class="img-fluid" src="~/thumbnails/@posts.ThumbnailUrl" style="object-fit:cover; height: 100%; width:100%;">
+									<img class="img-fluid" alt="@posts.Title" src="~/thumbnails/@posts.ThumbnailUrl" style="object-fit:cover; height: 100%; width:100%;">
 
 								}
 							</a>
