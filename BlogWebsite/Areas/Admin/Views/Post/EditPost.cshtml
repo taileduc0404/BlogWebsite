@@ -23,7 +23,8 @@
                         </div>
                         <div class="mb-2">
                             <label>Tag</label>
-                            <input type="text" asp-for="TagName" class="form-control" />
+                            <input type="text" asp-for="TagName" class="form-control" id="tags" list="tags-list" />
+                            <datalist id="tags-list"></datalist>
                             <span asp-validation-for="TagName" class="text-danger"></span>
                         </div>
                         <div class="mb-2">
@@ -57,8 +58,6 @@
         </div>
     </div>
 </div>
-
-
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script>
@@ -66,6 +65,26 @@
             var fileName = $(this).val().split("\\").pop();
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
             document.getElementById('thumbnail').src = window.URL.createObjectURL(this.files[0])
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#tags").keyup(function () {
+                var input = $(this).val();
+                if (input.length >= 1) { // Kiểm tra nếu có ít nhất 2 ký tự được nhập
+                    $.ajax({
+                        url: "/Admin/Post/AutocompleteTags", // Địa chỉ URL xử lý autocomplete
+                        type: "GET",
+                        data: { keyword: input },
+                        success: function (data) {
+                            $("#tags-list").empty();
+                            $.each(data, function (index, value) {
+                                $("#tags-list").append('<option value="' + value + '"></option>');
+                            });
+                        }
+                    });
+                }
+            });
         });
     </script>
 }

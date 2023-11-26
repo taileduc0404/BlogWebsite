@@ -83,7 +83,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				// Nếu tag chưa tồn tại, tạo mới tag trước khi tạo post
 				tag = new Tag
 				{
-					Name = vm.TagName
+					Name = vm.TagName!.ToUpper()
 				};
 
 				_context.tags!.Add(tag);
@@ -198,7 +198,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			{
 				tag = new Tag()
 				{
-					Name = vm.TagName
+					Name = vm.TagName!.ToUpper()
 				};
 				_context.tags!.Add(tag);
 				await _context.SaveChangesAsync();

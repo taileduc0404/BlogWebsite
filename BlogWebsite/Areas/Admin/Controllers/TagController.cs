@@ -79,7 +79,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			{
 				var tag = new Tag
 				{
-					Name = vm.Name,
+					Name = vm.Name!.ToUpper(),
 				};
 
 				_context.tags!.Add(tag);
@@ -108,7 +108,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
 			}).ToList();
 
-			return View(listOfPostVM);
+            return View(listOfPostVM);
 		}
 
 		[HttpGet("GetTags")]

@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Tags";
+}
+<div class="container">
+    <div class="row">
+        @foreach (var tag in Model.tags)
+        {
+            <div class="col-lg-3 col-md-4 mb-4">
+                <!-- Tag button -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="small text-muted">
+                            <!-- Truyền id của tag qua URL khi người dùng nhấp vào -->
+                            <a asp-action="ShowPostInTag" asp-controller="Home" asp-route-id="@tag.Id">@tag.Name</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

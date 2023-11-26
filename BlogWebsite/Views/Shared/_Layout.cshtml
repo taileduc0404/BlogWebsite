@@ -49,7 +49,7 @@
 					</li>
 					<li class="custom-nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
 					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
-					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Tags</a></li>
+					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="GetTags">Tags</a></li>
 					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Forum</a></li>
 					@if (User.Identity!.IsAuthenticated)
 					{
@@ -79,7 +79,7 @@
 	</nav>
 	<!-- Page header with logo and tagline-->
 	<header class="py-5 border-bottom mb-4">
-		<img src="~/bootstrap/assets/banner.jpg" alt="">
+		<img src="~/bootstrap/assets/banner_1.webp" alt="">
 		<div class="container">
 			<div class="text-center my-5">
 				<h1 class="fw-bolder">Welcome to Blog Home!</h1>
