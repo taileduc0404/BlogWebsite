@@ -1,0 +1,70 @@
+﻿@model BlogWebsite.ViewModels.HomeVM
+
+@{
+	ViewData["Title"] = "Post Tag";
+}
+
+<div class="container">
+	@if (Model.posts != null && Model.posts!.Any())
+	{
+		<div class="row">
+			@foreach (var post in Model.posts!)
+			{
+				<div class="col-lg-4 col-md-6 mb-4">
+					<div class="card">
+						<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
+							@if (post.ThumbnailUrl == null)
+							{
+								<img class="custom-img-fluid" alt="@post.Title" src="~/thumbnails/default_image.webp">
+							}
+							else
+							{
+								<img class="custom-img-fluid" alt="@post.Title" src="~/thumbnails/@post.ThumbnailUrl">
+							}
+						</a>
+						<div class="card-body">
+							<div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
+							@{
+								var words = post.Title!.Split(' ');
+								string shortenedTitle = words.Length > 4 ? string.Join(" ", words.Take(4)) + "..." : post.Title;
+							}
+							<h2 class="card-title h4" title="@post.Title" style="color:#B03A2E;">@shortenedTitle</h2>
+							<a class="btn custom-btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" style="background-color:#85C1E9;color:#454545;">Read more →</a>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<!-- Pagination -->
+		<div class="d-flex justify-content-center my-4">
+			<nav aria-label="Page navigation">
+				<ul class="pagination">
+					<li class="page-item @(Model?.posts.HasPreviousPage == false ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("Index", new { page = Model?.posts.PageNumber - 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+							<span class="sr-only">Previous</span>
+						</a>
+					</li>
+					@for (var i = 1; i <= Model?.posts.PageCount; i++)
+					{
+						<li class="page-item @(i == Model?.posts.PageNumber ? "active" : "")">
+							<a class="page-link" href="@Url.Action("Index", new { page = i, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })">@i</a>
+						</li>
+					}
+					<li class="page-item @(Model?.posts.HasNextPage == false ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("Index", new { page = Model?.posts.PageNumber + 1, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+							<span class="sr-only">Next</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	}
+	else
+	{
+		<div class="text-center"><p>No posts found for this tag.</p></div>
+	}
+
+</div>

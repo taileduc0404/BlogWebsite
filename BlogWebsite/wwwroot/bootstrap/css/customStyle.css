@@ -91,15 +91,12 @@ header {
 .Tags {
     display: flex;
     flex-wrap: wrap;
-    .tag-item
+}
 
-{
+.tag-item {
     padding: 10px;
 }
 
-}
-
-/* CSS */
 .card {
     transition: transform 0.3s ease; /* Tạo hiệu ứng chuyển động mượt mà */
     box-shadow: none; /* Bắt đầu với bóng đổ ẩn */

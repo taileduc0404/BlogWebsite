@@ -7,7 +7,6 @@ namespace BlogWebsite.ViewModels
 	{
         public string? Title { get; set; }
         public string? ThumbnailUrl { get; set; }
-        //public List<Post>? posts { get; set; }
         public IPagedList<Post>? posts { get; set; }
         public List<Tag>? tags { get; set; }
     }

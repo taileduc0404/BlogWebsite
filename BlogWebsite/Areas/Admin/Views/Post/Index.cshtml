@@ -5,13 +5,21 @@
 
 @{
 	ViewData["Title"] = "List of Posts";
+	// Đếm tổng số bài post trong Model
+	int totalPostCount = (Model != null && Model.Any()) ? Model.Count : 0;
 }
-
 <div class="container-fluid">
 	<a class="btn btn-dark mb-2 mt-2" asp-action="CreatePost" asp-controller="Post" asp-area="Admin">Add Post</a>
 	<div class="card">
 		<div class="card-header bg-primary">
-			<h4 class="card-title text-white">List of Posts</h4>
+			@if (Model?.Count != null && Model.Count > 0)
+			{
+				<h4 class="card-title text-white">List of Posts (@totalPostCount)</h4>
+			}
+			else
+			{
+				<h4 class="card-title text-white">List of Posts (0 Post)</h4>
+			}
 			<form asp-area="Admin" asp-controller="Post" asp-action="Index" method="get" class="input-group px-lg-1 py-2 py-lg-3">
 				<div class="form-outline">
 					<input id="search-input" name="keyword" type="search" placeholder="Search..." class="form-control form-control-sm box-shadow" style="border-bottom-left-radius:30px;border-top-left-radius:30px;" />
@@ -23,7 +31,7 @@
 			</form>
 		</div>
 		<div class="card-body" style="background-color:lightgray;">
-			@foreach (var posts in Model)
+			@foreach (var posts in Model!)
 			{
 				<div class="rounded mb-4 bg-white p-1">
 					<div class="row">

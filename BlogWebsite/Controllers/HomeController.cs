@@ -2,7 +2,6 @@
 using BlogWebsite.Models;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using X.PagedList;
@@ -10,81 +9,111 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace BlogWebsite.Controllers
 {
-	public class HomeController : Controller
-	{
-		private readonly ApplicationDbContext _context;
-		private readonly ILogger<HomeController> _logger;
+    public class HomeController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly ILogger<HomeController> _logger;
 
-		public HomeController(ApplicationDbContext context,
-						ILogger<HomeController> logger)
-		{
-			_context = context;
-			_logger = logger;
-		}
+        public HomeController(ApplicationDbContext context,
+                        ILogger<HomeController> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
 
-		public async Task<IActionResult> Index(string keyword, int? page)
-		{
-			var vm = new HomeVM();
+        public async Task<IActionResult> Index(string keyword, int? page)
+        {
+            var vm = new HomeVM();
 
-			IQueryable<Post> postsQuery = _context.posts!.Include(x => x.ApplicationUsers).OrderByDescending(x => x.CreatedDate);
+            IQueryable<Post> postsQuery = _context.posts!.Include(x => x.ApplicationUsers).OrderByDescending(x => x.CreatedDate);
 
-			if (!string.IsNullOrEmpty(keyword))
-			{
-				string lowerKeyword = keyword.ToLower();
-				postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
-			}
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                string lowerKeyword = keyword.ToLower();
+                postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
+            }
 
-			int pageNumber = page ?? 1;
-			int pageSize = 6;
+            int pageNumber = page ?? 1;
+            int pageSize = 6;
 
-			vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
+            vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
 
-			ViewData["keyword"] = keyword;  // Pass the keyword to the view
+            ViewData["keyword"] = keyword;  // Pass the keyword to the view
 
-			return View(vm);
-		}
-		[HttpGet("Tags")]
-		public async Task<IActionResult> GetTags()
-		{
-			var vm = new HomeVM();
-			IQueryable<Tag> tagsQuery = _context.tags!;
+            return View(vm);
+        }
 
-			vm.tags = await tagsQuery.ToListAsync();
-			return View(vm);
-		}
+        [HttpGet("Tags")]
+        public async Task<IActionResult> GetTags()
+        {
+            var vm = new HomeVM();
+            IQueryable<Tag> tagsQuery = _context.tags!;
 
-		[HttpGet("PostInTag")]
-		public async Task<IActionResult> ShowPostInTag(int id, string keyword, int? page)
-		{
-			var vm = new HomeVM();
+            vm.tags = await tagsQuery.ToListAsync();
+            return View(vm);
+        }
 
-			IQueryable<Post> postsQuery = _context.posts!.Include(x => x.ApplicationUsers).Where(x => x.TagId == id).OrderByDescending(x => x.CreatedDate);
+        //[HttpGet("PostTag")]
+        //public async Task<IActionResult> PostTag(int id, string keyword, int? page)
+        //{
+        //    int pageNumber = page ?? 1;
+        //    int pageSize = 6;
 
-			if (!string.IsNullOrEmpty(keyword))
-			{
-				string lowerKeyword = keyword.ToLower();
-				postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
-			}
+        //    var vm = new HomeVM();
+        //    var listOfPosts = await _context.posts!
+        //        //.Include(x => x.ApplicationUsers)
+        //        .Include(t => t.Tag)
+        //        //.OrderByDescending(x => x.CreatedDate)
+        //        .Where(x => x.TagId == id)
+        //        .ToListAsync();
 
-			int pageNumber = page ?? 1;
-			int pageSize = 6;
+        //    if (!string.IsNullOrEmpty(keyword))
+        //    {
+        //        string lowerKeyword = keyword.ToLower();
+        //        listOfPosts = (List<Post>)listOfPosts.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
+        //    }
 
-			vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
 
-			ViewData["keyword"] = keyword;  // Pass the keyword to the view
+        //    vm.posts = await listOfPosts.ToPagedListAsync(pageNumber, pageSize);
 
-			return View(vm);
-		}
+        //    ViewData["keyword"] = keyword;
 
-		public IActionResult About()
-		{
-			return View();
-		}
+        //    return View(vm);
+        //}
+        [HttpGet("PostTag")]
+        public async Task<IActionResult> PostTag(int id, string keyword, int? page)
+        {
+            int pageNumber = page ?? 1;
+            int pageSize = 6;
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-		}
-	}
+            var vm = new HomeVM();
+            var postsQuery = _context.posts!.AsQueryable();
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                string lowerKeyword = keyword.ToLower();
+                postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
+                ViewData["keyword"] = keyword;
+            }
+
+            postsQuery = postsQuery.Where(x => x.TagId == id).OrderByDescending(x => x.CreatedDate);
+
+            vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
+
+            return View(vm);
+        }
+
+
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
 }
