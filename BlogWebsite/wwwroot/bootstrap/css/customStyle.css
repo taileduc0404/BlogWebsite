@@ -4,6 +4,13 @@ header {
     position: relative;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
     header img {
         width: 100%;
         height: 100%;
@@ -24,7 +31,7 @@ header {
 }
 
 .navbar {
-    position: sticky;
+    position: fixed;
     background-color: #85C1E9;
 }
 .custom-navbar-brand {
@@ -76,6 +83,11 @@ header {
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
+
+.main-content {
+    flex: 1;
+}
+
 .dropdown-menu {
     border-radius: 10px;
     padding: 10px 0; /* Tăng khoảng cách giữa các mục */
@@ -88,14 +100,6 @@ header {
 }
 
 
-.Tags {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.tag-item {
-    padding: 10px;
-}
 
 .card {
     transition: transform 0.3s ease; /* Tạo hiệu ứng chuyển động mượt mà */
@@ -109,6 +113,6 @@ header {
 
 footer.custom-footer {
     background-color: #2E2E2E;
-    color: #ffffff; 
+    color: #ffffff;
 }
 

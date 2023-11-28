@@ -43,69 +43,79 @@ namespace BlogWebsite.Controllers
             return View(vm);
         }
 
+        //[HttpGet("Tags")]
+        //public async Task<IActionResult> GetTags()
+        //{
+        //    var vm = new HomeVM();
+        //    var tagsQuery = await _context.tags!.ToListAsync();
+
+
+        //    foreach (var tag in tagsQuery)
+        //    {
+        //        int postCount = _context.posts!.Where(p => p.TagId == tag.Id).Count();
+        //        tag.PostCount = postCount;
+        //    }
+
+        //    vm.tags = tagsQuery;
+
+        //    return View(vm);
+        //}
         [HttpGet("Tags")]
         public async Task<IActionResult> GetTags()
         {
             var vm = new HomeVM();
-            IQueryable<Tag> tagsQuery = _context.tags!;
 
-            vm.tags = await tagsQuery.ToListAsync();
-            return View(vm);
-        }
+            var tagsWithPostCount = await _context.posts!  //chứa thông tin số lượng bài post của tag theo TagId và gom nhóm dữ liệu từ bảng post
+                .GroupBy(post => post.TagId)
+                .Select(group => new
+                {
+                    TagId = group.Key,
+                    PostCount = group.Count()
+                })
+                .ToListAsync();
 
-        //[HttpGet("PostTag")]
-        //public async Task<IActionResult> PostTag(int id, string keyword, int? page)
-        //{
-        //    int pageNumber = page ?? 1;
-        //    int pageSize = 6;
+            var tags = await _context.tags!.ToListAsync();
 
-        //    var vm = new HomeVM();
-        //    var listOfPosts = await _context.posts!
-        //        //.Include(x => x.ApplicationUsers)
-        //        .Include(t => t.Tag)
-        //        //.OrderByDescending(x => x.CreatedDate)
-        //        .Where(x => x.TagId == id)
-        //        .ToListAsync();
-
-        //    if (!string.IsNullOrEmpty(keyword))
-        //    {
-        //        string lowerKeyword = keyword.ToLower();
-        //        listOfPosts = (List<Post>)listOfPosts.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
-        //    }
-
-
-        //    vm.posts = await listOfPosts.ToPagedListAsync(pageNumber, pageSize);
-
-        //    ViewData["keyword"] = keyword;
-
-        //    return View(vm);
-        //}
-        [HttpGet("PostTag")]
-        public async Task<IActionResult> PostTag(int id, string keyword, int? page)
-        {
-            int pageNumber = page ?? 1;
-            int pageSize = 6;
-
-            var vm = new HomeVM();
-            var postsQuery = _context.posts!.AsQueryable();
-
-            if (!string.IsNullOrEmpty(keyword))
+            foreach (var tag in tags)
             {
-                string lowerKeyword = keyword.ToLower();
-                postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
-                ViewData["keyword"] = keyword;
+                var postCount = tagsWithPostCount.FirstOrDefault(t => t.TagId == tag.Id)?.PostCount ?? 0;
+                tag.PostCount = postCount;
             }
 
-            postsQuery = postsQuery.Where(x => x.TagId == id).OrderByDescending(x => x.CreatedDate);
-
-            vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
+            vm.tags = tags;
 
             return View(vm);
         }
 
+        [HttpGet("PostTag")]
+		public async Task<IActionResult> PostTag(int id, string keyword, int? page)
+		{
+			int pageNumber = page ?? 1;
+			int pageSize = 6;
+
+			var vm = new HomeVM();
+			var postsQuery = _context.posts!.AsQueryable();
+
+			if (!string.IsNullOrEmpty(keyword))
+			{
+				string lowerKeyword = keyword.ToLower();
+				postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
+				ViewBag.CurrentFilter = keyword; // Truyền từ khóa vào ViewBag
+			}
+
+			postsQuery = postsQuery.Where(x => x.TagId == id).OrderByDescending(x => x.CreatedDate);
+
+			ViewBag.TagId = id; // Truyền ID của tag vào ViewBag
+
+			vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
+
+			return View(vm);
+		}
 
 
-        public IActionResult About()
+
+
+		public IActionResult About()
         {
             return View();
         }

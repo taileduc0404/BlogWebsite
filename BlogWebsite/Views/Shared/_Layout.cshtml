@@ -16,6 +16,7 @@
 	<title>Techno Blog</title>
 	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 	<link rel="stylesheet" href="~/bootstrap/css/customStyle.css">
+	<link rel="stylesheet" href="~/bootstrap/css/tag.css">
 	<link rel="stylesheet" href="~/bootstrap/css/styles.css">
 	<link rel="stylesheet" href="~/bootstrap/css/thumbnail.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
@@ -90,11 +91,13 @@
 		</div>
 	</header>
 	<!-- Page content-->
-	@RenderBody()
-	@*<button id="moveToTopBtn" onclick="moveToTop()"><i class="fa fa-arrow-up"></i></button>*@
+
+	<div class="main-content">
+		@RenderBody()
+	</div>
 	<button id="moveToTopBtn" onclick="moveToTop()" title="MoveToTop">↑</button>
 
-	<!-- Footer-->
+	<!-- Footer -->
 	<footer class="py-5 custom-footer">
 		<div class="container">
 			<p class="m-0 text-center text-white">
@@ -102,10 +105,11 @@
 			</p>
 		</div>
 	</footer>
-	<!-- Bootstrap core JS-->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- Core theme JS-->
-	<script src="~/bootstrap/js/scripts.js"></script>
-	<script src="~/bootstrap/js/moveToTop.js"></script>
+
 </body>
 </html>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="~/bootstrap/js/scripts.js"></script>
+<script src="~/bootstrap/js/moveToTop.js"></script>
