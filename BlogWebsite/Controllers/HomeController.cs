@@ -24,8 +24,12 @@ namespace BlogWebsite.Controllers
         public async Task<IActionResult> Index(string keyword, int? page)
         {
             var vm = new HomeVM();
+			var setting = _context.settings!.ToList();
+			vm.Title = setting[0].Title;
+			vm.ShortDescription = setting[0].ShortDescription;
+			vm.ThumbnailUrl = setting[0].ThumbnailUrl;
 
-            IQueryable<Post> postsQuery = _context.posts!.Include(x => x.ApplicationUsers).OrderByDescending(x => x.CreatedDate);
+			IQueryable<Post> postsQuery = _context.posts!.Include(x => x.ApplicationUsers).OrderByDescending(x => x.CreatedDate);
 
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -43,23 +47,6 @@ namespace BlogWebsite.Controllers
             return View(vm);
         }
 
-        //[HttpGet("Tags")]
-        //public async Task<IActionResult> GetTags()
-        //{
-        //    var vm = new HomeVM();
-        //    var tagsQuery = await _context.tags!.ToListAsync();
-
-
-        //    foreach (var tag in tagsQuery)
-        //    {
-        //        int postCount = _context.posts!.Where(p => p.TagId == tag.Id).Count();
-        //        tag.PostCount = postCount;
-        //    }
-
-        //    vm.tags = tagsQuery;
-
-        //    return View(vm);
-        //}
         [HttpGet("Tags")]
         public async Task<IActionResult> GetTags()
         {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -90,26 +91,31 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		}
 
 		[HttpGet("PostInTag")]
-		public async Task<IActionResult> ShowPostInTag(int id)
+		public async Task<IActionResult> ShowPostInTag(int id, int? page)
 		{
-			var listOfPosts = await _context.posts!
+			int pageNumber = page ?? 1;
+			int pageSize = 4;
+
+			var postsQuery = _context.posts!
 				.Include(x => x.ApplicationUsers)
 				.Include(t => t.Tag)
-				.OrderByDescending(x => x.CreatedDate)
 				.Where(x => x.TagId == id)
-				.ToListAsync();
+				.OrderByDescending(x => x.CreatedDate);
+			ViewBag.TagId = id;
+			var listOfPostVM = await postsQuery
+				.Select(x => new PostVM
+				{
+					Id = x.Id,
+					Title = x.Title,
+					CreateDate = x.CreatedDate,
+					ThumbnailUrl = x.ThumbnailUrl,
+					AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
+				})
+				.ToPagedListAsync(pageNumber, pageSize);
 
-			var listOfPostVM = listOfPosts.Select(x => new PostVM
-			{
-				Id = x.Id,
-				Title = x.Title,
-				CreateDate = x.CreatedDate,
-				ThumbnailUrl = x.ThumbnailUrl,
-				AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
-			}).ToList();
-
-            return View(listOfPostVM);
+			return View(listOfPostVM);
 		}
+
 
 		[HttpGet("GetTags")]
 		public IActionResult GetTags(string term)

@@ -1,4 +1,8 @@
-﻿@{
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+@model IPagedList<BlogWebsite.ViewModels.PostVM>
+@{
 	ViewData["Title"] = "List of Posts";
 }
 
@@ -25,7 +29,7 @@
 							<a asp-area="Admin" asp-action="EditPost" asp-controller="Post" asp-route-id="@posts.Id" method="post">
 								@if (posts.ThumbnailUrl == null)
 								{
-									<img class="img-fluid" src="~/thumbnails/default_image.png" style="object-fit:cover; height: 100%; width:100%;">
+									<img class="img-fluid" src="~/thumbnails/default_image.webp" style="object-fit:cover; height: 100%; width:100%;">
 								}
 								else
 								{
@@ -53,5 +57,32 @@
 				</div>
 			}
 		</div>
+	
+		<!-- Pagination -->
+		<div class="d-flex justify-content-center my-4">
+			<nav aria-label="Page navigation">
+				<ul class="pagination">
+					<li class="page-item @(Model?.HasPreviousPage == false ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("ShowPostInTag", new { id = ViewBag.TagId, page = Model?.PageNumber - 1 })" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+							<span class="sr-only">Previous</span>
+						</a>
+					</li>
+					@for (var i = 1; i <= Model?.PageCount; i++)
+					{
+						<li class="page-item @(i == Model?.PageNumber ? "active" : "")">
+							<a class="page-link" href="@Url.Action("ShowPostInTag", new { id = ViewBag.TagId, page = i })">@i</a>
+						</li>
+					}
+					<li class="page-item @(Model?.HasNextPage == false ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("ShowPostInTag", new { id = ViewBag.TagId, page = Model?.PageNumber + 1 })" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+							<span class="sr-only">Next</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+
 	</div>
 </div>
