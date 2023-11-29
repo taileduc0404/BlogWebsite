@@ -4,9 +4,30 @@
 
 @{
 	ViewData["Title"] = "Home Page";
+
+	string thumbnailUrl = "";
+	if (Model.ThumbnailUrl == "")
+	{
+		thumbnailUrl = "/bootstrap/assets/banner_1.webp";
+	}
+	else
+	{
+		thumbnailUrl = "/thumbnails/" + Model.ThumbnailUrl;
+	}
 	
 }
-
+<!-- Page header with logo and tagline-->
+<header class="py-5 border-bottom mb-4">
+	<img src="~/bootstrap/assets/banner_1.webp" alt="">
+	<div class="container">
+		<div class="text-center my-5">
+			<h1 class="fw-bolder">Welcome to Blog Home!</h1>
+			<p class="lead mb-0">
+				A Bootstrap 5 starter layout for your next blog homepage
+			</p>
+		</div>
+	</div>
+</header>
 <div class="container">
 	<div class="row">
 		@foreach (var post in Model.posts!)

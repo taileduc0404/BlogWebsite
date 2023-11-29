@@ -101,7 +101,9 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				.Include(t => t.Tag)
 				.Where(x => x.TagId == id)
 				.OrderByDescending(x => x.CreatedDate);
+
 			ViewBag.TagId = id;
+
 			var listOfPostVM = await postsQuery
 				.Select(x => new PostVM
 				{

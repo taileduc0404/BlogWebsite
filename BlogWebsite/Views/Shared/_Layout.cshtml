@@ -5,6 +5,18 @@
 	loggedInUser = _userManager.Users.FirstOrDefault(x => x.UserName == User.Identity!.Name);
 }
 
+
+@using BlogWebsite.Data;
+@using BlogWebsite.ViewModels;
+@inject ApplicationDbContext _context;
+
+@{
+	var setting = _context.settings!.ToList();
+	var vm = new SettingVM()
+			{
+				SiteName = setting[0].SiteName,
+			};
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +25,7 @@
 		  content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="Techno Blog is a platform dedicated to technology-related blogs, providing a diverse range of articles covering tech, knowledge, and insights. Our platform invites everyone to contribute their thoughts, share expertise, and engage in discussions on our forums. Join our community to explore the latest trends, dive into tech-related topics, and exchange ideas in an interactive environment." />
 	<meta name="author" content="Le Duc Tai, .NET Core Developer. Passionate about crafting robust solutions using .NET technologies, constantly exploring new trends in software development and contributing to the tech community." />
-	<title>Techno Blog</title>
+	<title>@vm.SiteName</title>
 	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 	<link rel="stylesheet" href="~/bootstrap/css/customStyle.css">
 	<link rel="stylesheet" href="~/bootstrap/css/tag.css">
@@ -78,18 +90,7 @@
 			</div>
 		</div>
 	</nav>
-	<!-- Page header with logo and tagline-->
-	<header class="py-5 border-bottom mb-4">
-		<img src="~/bootstrap/assets/banner_1.webp" alt="">
-		<div class="container">
-			<div class="text-center my-5">
-				<h1 class="fw-bolder">Welcome to Blog Home!</h1>
-				<p class="lead mb-0">
-					A Bootstrap 5 starter layout for your next blog homepage
-				</p>
-			</div>
-		</div>
-	</header>
+
 	<!-- Page content-->
 
 	<div class="main-content">
