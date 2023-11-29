@@ -99,10 +99,13 @@ namespace BlogWebsite.Controllers
 			return View(vm);
 		}
 
+        [HttpGet("Forums")]
+        public IActionResult Forum()
+        {
+            return View();
+        }
 
-
-
-		public IActionResult About()
+        public IActionResult About()
         {
             return View();
         }

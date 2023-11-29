@@ -30,6 +30,7 @@
 	<link rel="stylesheet" href="~/bootstrap/css/customStyle.css">
 	<link rel="stylesheet" href="~/bootstrap/css/tag.css">
 	<link rel="stylesheet" href="~/bootstrap/css/styles.css">
+	<link rel="stylesheet" href="~/forum/styles.css">
 	<link rel="stylesheet" href="~/bootstrap/css/thumbnail.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
 
@@ -63,7 +64,7 @@
 					<li class="custom-nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
 					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
 					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="GetTags">Tags</a></li>
-					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Forum</a></li>
+					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Forum">Forum</a></li>
 					@if (User.Identity!.IsAuthenticated)
 					{
 						<li class="nav-item dropdown">
