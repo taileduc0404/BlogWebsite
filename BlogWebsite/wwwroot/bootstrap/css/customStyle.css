@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Edu+TAS+Beginner:wght@500&family=Jost:ital,wght@1,500&family=Pacifico&display=swap');
+/*Lê Đức Tài, Bùi Ngọc Na*/
 
 header {
     position: relative;
@@ -60,6 +61,7 @@ body {
     margin-right: 10px;
     margin-bottom: 10px;
     float: right;
+    /*Lê Đức Tài, Bùi Ngọc Na*/
     background-color: #85C1E9;
     padding: 13px 20px;
     color: rgb(18, 10, 10);

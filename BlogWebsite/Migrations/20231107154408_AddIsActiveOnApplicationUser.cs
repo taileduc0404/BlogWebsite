@@ -18,7 +18,8 @@ namespace BlogWebsite.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsActive",
+				/*Lê Đức Tài, Bùi Ngọc Na - 29/11/2023*/
+				name: "IsActive",
                 table: "AspNetUsers");
         }
     }

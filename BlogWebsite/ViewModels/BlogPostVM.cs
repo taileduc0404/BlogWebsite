@@ -10,6 +10,7 @@ namespace BlogWebsite.ViewModels
 		public int ViewCount { get; set; }
 		public string? Description { get; set; }    
 		public string? AuthorName { get; set; }
+        /*Lê Đức Tài, Bùi Ngọc Na*/
         public string? ThumbnailUrl { get; set; }
         public string? TagName { get; set; }
 
