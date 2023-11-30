@@ -2,6 +2,7 @@
 using BlogWebsite.Models;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using X.PagedList;
@@ -100,10 +101,36 @@ namespace BlogWebsite.Controllers
 		}
 
         [HttpGet("Forums")]
-        public IActionResult Forum()
+        public async Task<IActionResult> Forum(string keyword, int? page)
         {
-            return View();
+            var vm = new HomeVM();
+            var setting = _context.settings!.ToList();
+            vm.Title = setting[0].Title;
+            vm.ShortDescription = setting[0].ShortDescription;
+            vm.ThumbnailUrl = setting[0].ThumbnailUrl;
+
+            // Sửa truy vấn để bao gồm thông tin về Tag
+            IQueryable<ForumPost> fpostsQuery = _context.forumPosts!
+                .Include(x => x.ApplicationUsers)
+                .Include(x => x.Tag) // Include thông tin về Tag
+                .OrderByDescending(x => x.CreatedDate);
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                string lowerKeyword = keyword.ToLower();
+                fpostsQuery = fpostsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
+            }
+
+            int pageNumber = page ?? 1;
+            int pageSize = 6;
+
+            vm.forumPosts = await fpostsQuery.ToPagedListAsync(pageNumber, pageSize);
+
+            ViewData["keyword"] = keyword;  // Pass the keyword to the view
+
+            return View(vm);
         }
+
 
         public IActionResult About()
         {

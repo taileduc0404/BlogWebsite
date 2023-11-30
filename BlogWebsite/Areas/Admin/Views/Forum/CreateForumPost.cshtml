@@ -1,0 +1,66 @@
+﻿@model BlogWebsite.ViewModels.CreateForumPostVM
+
+@{
+	ViewData["Title"] = "Create Forum Post";
+}
+
+<div class="container-fluid">
+	<a class="btn btn-primary mb-1 mt-3" asp-action="Index" asp-controller="ForumPost" asp-area="Admin">Go Back</a>
+	<div class="card">
+		<div class="card-header bg-primary">
+			<h4 class="card-title text-white">New Post</h4>
+		</div>
+		<div class="card-body">
+			<form asp-action="CreateForumPost" asp-controller="Forum" asp-area="Admin" enctype="multipart/form-data">
+				<div class="row mb-2">
+					<div class="col-12">
+						<div class="mb-2">
+							<label>Title</label>
+							<input type="text" asp-for="Title" class="form-control" />
+							<span asp-validation-for="Title" class="text-danger"></span>
+						</div>
+						<div class="mb-2">
+							<label>Tag</label>
+							<input type="text" asp-for="TagName" class="form-control" id="tags" list="tags-list" />
+							<datalist id="tags-list"></datalist>
+							<span asp-validation-for="TagName" class="text-danger"></span>
+						</div>
+						<div class="mb-2">
+							<label>Description</label>
+							<textarea id="textarea" asp-for="Description" class="form-control" rows="8"></textarea>
+							<span asp-validation-for="Description" class="text-danger"></span>
+						</div>
+					</div>
+
+				</div>
+				<div class="mb-2">
+					<button type="submit" class="btn btn-primary w-100">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+@section Scripts{
+	<partial name="_ValidationScriptsPartial" />
+	
+	<script>
+		$(document).ready(function () {
+			$("#tags").keyup(function () {
+				var input = $(this).val();
+				if (input.length >= 1) { // Kiểm tra nếu có ít nhất 2 ký tự được nhập
+					$.ajax({
+						url: "/Admin/Post/AutocompleteTags", // Địa chỉ URL xử lý autocomplete
+						type: "GET",
+						data: { keyword: input },
+						success: function (data) {
+							$("#tags-list").empty();
+							$.each(data, function (index, value) {
+								$("#tags-list").append('<option value="' + value + '"></option>');
+							});
+						}
+					});
+				}
+			});
+		});
+	</script>
+}

@@ -1,40 +1,43 @@
-﻿<div class="container">
-    <div class="forum-list">
-        <!-- Add Question Button -->
-        <button class="btn btn-info mb-3 mt-3">Add Question</button>
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common;
+@model BlogWebsite.ViewModels.HomeVM
+@{
+	ViewData["Title"] = "Forum";
+}
 
-        <!-- Forum Items -->
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <div class="card forum-item">
-                    <div class="card-body">
-                        <h5 class="card-title">Title 1</h5>
-                        <p class="text-muted mb-1">Author: John Doe</p>
-                        <p class="text-muted mb-1">Created Date: October 10, 2023</p>
-                        <p class="description mb-1">Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <div class="tags">
-                            <button type="button" class="btn btn-outline-secondary btn-sm mr-1">Tag 1</button>
-                        </div>
-                        <p class="text-muted view-comment">Views: 100 | Comments: 20</p>
-                    </div>
-                </div>
-            </div>
+<div class="container">
 
-            <div class="col-md-6 mb-3">
-                <div class="card forum-item">
-                    <div class="card-body">
-                        <h5 class="card-title">Title 2</h5>
-                        <p class="text-muted mb-1">Author: Jane Doe</p>
-                        <p class="text-muted mb-1">Created Date: October 15, 2023</p>
-                        <p class="description mb-1">Description: Nulla facilisi. Sed non risus.</p>
-                        <div class="tags">
-                            <button type="button" class="btn btn-outline-secondary btn-sm mr-1">Tag 3</button>
-                        </div>
-                        <p class="text-muted view-comment">Views: 80 | Comments: 15</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- ... Thêm các diễn đàn khác nếu cần ... -->
-    </div>
+	@if (User.Identity!.IsAuthenticated)
+	{
+		<a class="btn btn-info mb-3 mt-3" type="button" asp-action="CreateForumPost" asp-controller="Forum" asp-area="Admin">Add Question</a>
+	}
+	else
+	{
+		<a class="btn btn-info mb-3 mt-3" type="button" asp-action="Login" asp-controller="User" asp-area="Admin">Add Question</a>
+	}
+	<div class="forum-list row row-cols-1 row-cols-md-2 g-4">
+		<!-- Add Question Button -->
+		@for (int i = Model.forumPosts!.Count - 1; i >= 0; i--)
+		{
+			var fpost = Model.forumPosts![i];
+			<div class="col">
+				<div class="card h-100">
+					<div class="card-body">
+						<h5 class="card-title">@fpost.Title</h5>
+						<p class="text-muted mb-1">Author: @fpost.ApplicationUsers!.FirstName @fpost.ApplicationUsers!.LastName</p>
+						<div class="small text-muted">@fpost.CreatedDate.ToShortDateString()</div>
+						@{
+							var words = fpost.Description!.Split(' ');
+							string shortenedTitle = words.Length > 10 ? string.Join(" ", words.Take(10)) + "..." : fpost.Description;
+						}
+						<p class="description mb-1">@Html.Raw(shortenedTitle)</p>
+						<div class="tags">
+							<button type="button" class="btn btn-outline-secondary btn-sm mr-1">@fpost.Tag!.Name</button>
+						</div>
+						<p class="text-muted view-comment">Views: @fpost.ViewCount | Comments: @fpost.CommentCount</p>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
 </div>

@@ -12,6 +12,7 @@ namespace BlogWebsite.Data
 
         public DbSet<ApplicationUser>? applicationUsers { get; set; }
         public DbSet<Post>? posts { get; set; }
+        public DbSet<ForumPost>? forumPosts { get; set; }
         public DbSet<Page>? pages { get; set; }
         public DbSet<Tag>? tags { get; set; }
 		public DbSet<Comment>? comments { get; set; }

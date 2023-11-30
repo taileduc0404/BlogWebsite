@@ -9,6 +9,7 @@ namespace BlogWebsite.ViewModels
         public string? ShortDescription { get; set; }
         public string? ThumbnailUrl { get; set; }
         public IPagedList<Post>? posts { get; set; }
+        public IPagedList<ForumPost>? forumPosts { get; set; }
         public List<Tag>? tags { get; set; }
     }
 }

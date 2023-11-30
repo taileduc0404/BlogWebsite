@@ -8,5 +8,6 @@ namespace BlogWebsite.Models
         public string? Name{ get; set; }
         public int PostCount { get; set; }
         public ICollection<Post>? posts { get; set; }
-    }
+		public ICollection<ForumPost>? ForumPosts { get; set; }
+	}
 }
