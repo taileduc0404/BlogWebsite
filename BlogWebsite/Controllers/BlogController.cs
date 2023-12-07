@@ -40,11 +40,13 @@ namespace BlogWebsite.Controllers
 			post.ViewCount++;
 			await _context.SaveChangesAsync();
 
-			var comments = await _context.comments!
+			var allComments = await _context.comments!
 				.Where(c => c.PostId == post.Id)
 				.Include(c => c.ApplicationUsers)
 				.Include(c => c.Replies) // Bao gồm danh sách replies của mỗi comment
 				.ToListAsync();
+			var userId = _userManager.GetUserId(User);
+			var myComment = allComments.Where(c => c.ApplicationUserId == userId).ToList();
 
 			var vm = new BlogPostVM()
 			{
@@ -56,7 +58,8 @@ namespace BlogWebsite.Controllers
 				CreatedDate = post.CreatedDate,
 				ThumbnailUrl = post.ThumbnailUrl,
 				Description = post.Description,
-				Comments = comments
+				Comments = allComments,
+				MyComments = myComment
 			};
 
 			return View(vm);
@@ -74,12 +77,6 @@ namespace BlogWebsite.Controllers
 
 			var post = await _context.posts!
 				.FirstOrDefaultAsync(p => p.Id == postId);
-
-			//if (post == null)
-			//{
-			//	_notification.Error("Post not found!");
-			//	return RedirectToAction("NotFound", "Error");
-			//}
 
 			var comment = new Comment
 			{

@@ -2,7 +2,6 @@
 using BlogWebsite.Models;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using X.PagedList;

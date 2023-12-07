@@ -1,6 +1,9 @@
 ﻿@model BlogWebsite.ViewModels.BlogPostVM
+@using Microsoft.AspNetCore.Http
 
-
+@{
+	var request = ViewContext.HttpContext.Request;
+}
 @{
 	ViewData["Title"] = "Post";
 	string thumbnailUrl = "";
@@ -12,8 +15,6 @@
 	{
 		thumbnailUrl = "/thumbnails/" + Model.ThumbnailUrl;
 	}
-
-
 }
 
 <main class="mt-4 mb-5">
@@ -28,7 +29,7 @@
 					<span class="meta">
 						<i class="fa-solid fa-user"></i> <b>@Model.AuthorName</b><br>
 						<i class="fa-solid fa-clock"></i> @Model.CreatedDate.ToLongDateString() | @Model.CreatedDate.ToShortTimeString()<br>
-						<i class="fa-solid fa-eye"></i> @Model.ViewCount
+						<i class="fa-solid fa-eye"></i> @Model.ViewCount<br>
 					</span>
 					<hr />
 					<div class="row align-items-center mb-4">
@@ -90,120 +91,175 @@
 					<button type="button" class="btn btn-primary px-3 me-1" aria-label="linkedin" title="linkedin" style="background-color: #0082ca;">
 						<i class="fab fa-linkedin"></i>
 					</button>
-					<a onclick="scrollToComment()" aria-label="comments" title="comments" class="btn btn-primary me-1">
-						<i class="fas fa-comments me-2"></i>Add Comment
-					</a>
 				</section>
 				<!--Section: Share buttons-->
 				<!--Section: Comments-->
 				<!--Section: Reply-->
-				<section id="commentSection">
-					<p class="text-center"><strong>Leave a reply</strong></p>
 
-					<form asp-controller="Blog" asp-action="AddComment" method="post">
-						<!-- Các trường dữ liệu cho comment -->
-						<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
-						<div class="form-outline mb-4">
-							<label class="form-label" for="description ">Comment</label>
-<textarea class="form-control" id="description" name="description" rows="4" required aria-label="Description" placeholder="Enter Description Here" aria-required="true"></textarea>
 
-							<small id="contentHelp" class="form-text text-muted">Min length: 10, Max length: 500 characters.</small>
-						</div>
-						<button type="submit" class="btn btn-primary btn-block mb-4">
-							Submit Comment
-						</button>
-					</form>
-				</section>
+				<a onclick="toggleCommentForm(event)" aria-label="comments" title="comments" class="btn btn-primary me-1">
+					<i class="fas fa-comments me-2"></i>Add Comment
+				</a>
+
+				<form id="commentForm" asp-controller="Blog" asp-action="AddComment" method="post" style="display: none;">
+					<!-- Các trường dữ liệu cho comment -->
+					<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
+					<div class="form-outline mb-2">
+						<textarea class="form-control mt-2" id="description" name="description" rows="4" required aria-label="Description" placeholder="Enter Your Comment Here..." aria-required="true"></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block mb-2 mt-2">Submit Comment</button>
+				</form>
+
 				<!--Section: Comments-->
 				<!-- Hiển thị danh sách comment -->
-
 				<section id="commentListSection" class="gradient-custom">
+					<!-- Phần hiển thị tab và danh sách comment -->
 					<div class="container my-5 py-5">
-						<div class="row d-flex justify-content-center">
-							<div class="col-md-12 col-lg-12 col-xl-12">
-								<div class="card">
-									<div class="card-body p-4">
-										<div role="heading" aria-level="4" class="text-center mb-4 pb-2" style="color: #333;">
-											@if (Model.Comments?.Count != null && Model.Comments.Count > 0)
-											{
-												<span>@Model.Comments.Count bình luận</span>
-											}
-											else
-											{
-												<span>No Comments</span>
-											}
-										</div>
-										@if (Model.Comments != null && Model.Comments.Count > 0)
-										{
-											<div class="row">
-												<div class="col">
-													<ul class="list-unstyled">
-														@foreach (var comment in Model.Comments.Where(c => c.ParentCommentId == null))
-														{
-															<li class="media my-4">
-																<div class="media-body">
-																	<div class="d-flex justify-content-between">
-																		<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers?.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
-																		<button class="btn btn-sm btn-primary" onclick="showReplyForm(@comment.Id)">
-																			<i class="fas fa-reply" style="color: #fff;"></i>
-																		</button>
-																	</div>
-																	<p style="color: #555;">@comment.Description</p>
-																	<!-- Form trả lời ẩn -->
-																	<form id="replyForm_@comment.Id" class="mt-3 d-none" asp-controller="Blog" asp-action="AddReply" method="post">
-																		<input type="hidden" name="parentId" value="@comment.Id" />
-																		<input type="hidden" name="postId" value="@Model.Id" />
-																		<input type="hidden" name="replyTo" value="@comment.ApplicationUsers!.UserName" />
-																		<div class="form-outline mb-4">
-																			<label class="form-label" for="description" style="color: #333;">Reply</label>
-																			<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required aria-label="Your Reply" placeholder="Enter Your Reply Here" aria-required="true"></textarea>
-																		</div>
-																		<button type="submit" class="btn btn-primary btn-sm">Reply</button>
-																	</form>
-																	@if (User.Identity!.IsAuthenticated && comment.ApplicationUsers != null && comment.ApplicationUsers.UserName == User.Identity.Name)
-																	{
-																		<form id="deleteForm_@comment.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
-																			<input type="hidden" name="commentId" value="@comment.Id" />
-																			<button type="submit" class="btn btn-danger btn-sm">Delete</button>
-																		</form>
-																	}
+						<div class="row">
+							<div class="col text-center">
+								<ul class="nav nav-tabs" id="commentTabs" role="tablist">
+									<li class="nav-item" role="presentation">
+										<button class="nav-link active" id="allComment-tab" data-bs-toggle="tab" data-bs-target="#allComment" type="button" role="tab" aria-controls="allComment" aria-selected="true">All Comment</button>
+									</li>
+									@if (User.Identity!.IsAuthenticated)
+									{
+										<li class="nav-item" role="presentation">
+											<button class="nav-link" id="myComment-tab" data-bs-toggle="tab" data-bs-target="#myComment" type="button" role="tab" aria-controls="myComment" aria-selected="false">My Comment</button>
+										</li>
+									}
 
-																	@foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id))
-																	{
-																		<div class="media mt-4" style="margin-left: 20px;">
-																			<div class="media-body">
-																				<h5 class="mt-0 mb-1" style="color: #333;">@reply.ApplicationUsers?.UserName <span class="small">- @reply.CreatedDate.ToShortDateString()</span></h5>
-																				<p style="color: #555;">@reply.Description</p>
+								</ul>
+							</div>
+						</div>
+						<div class="tab-content mt-4" id="commentTabsContent">
+							<div class="tab-pane fade show active" id="allComment" role="tabpanel" aria-labelledby="allComment-tab">
+								<!-- Hiển thị số lượng comment -->
+								@if (Model.Comments != null && Model.Comments.Count > 0)
+								{
 
-																				@if (User.Identity!.IsAuthenticated && reply.ApplicationUsers != null && reply.ApplicationUsers.UserName == User.Identity.Name)
-																				{
-																					<form id="deleteForm_@reply.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
-																						<input type="hidden" name="commentId" value="@reply.Id" />
-																						<button type="submit" class="btn btn-danger btn-sm">Delete</button>
-																					</form>
-																				}
-																			</div>
-																		</div>
-																	}
+									@if (Model.Comments.Count != 1)
+									{
+										<p class="text-center text-dark">
+											@Model.Comments.Count Comments
+										</p>
+									}
+									else
+									{
+										<p class="text-center text-dark">
+											@Model.Comments.Count Comment
+										</p>
+									}
+
+									<div class="row">
+										<div class="col">
+											<ul class="list-unstyled">
+												<!-- Các comment -->
+												@foreach (var comment in Model.Comments!.Where(c => c.ParentCommentId == null))
+												{
+													<!-- Hiển thị comment cha -->
+													<li class="media my-4">
+														<!-- Thông tin comment cha -->
+														<div class="media-body">
+															<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers!.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
+															<p style="color: #555;">@comment.Description</p>
+															<!-- Nút reply và form reply -->
+															<button class="btn btn-sm btn-primary" onclick="showReplyForm(@comment.Id)">
+																Reply
+															</button>
+															<form id="replyForm_@comment.Id" class="mt-3 d-none" asp-controller="Blog" asp-action="AddReply" method="post">
+																<input type="hidden" name="parentId" value="@comment.Id" />
+																<input type="hidden" name="postId" value="@Model.Id" />
+																<input type="hidden" name="replyTo" value="@comment.ApplicationUsers.UserName" />
+																<div class="form-outline mb-4">
+																	<label class="form-label" for="description">Reply</label>
+																	<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required aria-label="Your Reply" placeholder="Enter Your Reply Here" aria-required="true"></textarea>
 																</div>
-															</li>
-														}
-													</ul>
-												</div>
-											</div>
-										}
+																<button type="submit" class="btn btn-primary btn-sm">Submit Reply</button>
+															</form>
+
+															<!-- Hiển thị comment con -->
+															<ul>
+																@foreach (var childComment in Model.Comments.Where(c => c.ParentCommentId == comment.Id))
+																{
+																	<li class="media my-4" style="margin-left: 20px;">
+																		<div class="media-body">
+																			<h5 class="mt-0 mb-1" style="color: #333;">@childComment.ApplicationUsers!.UserName <span class="small">- @childComment.CreatedDate.ToShortDateString()</span></h5>
+																			<p style="color: #555;">@childComment.Description</p>
+																		</div>
+																	</li>
+																}
+															</ul>
+														</div>
+													</li>
+												}
+											</ul>
+										</div>
 									</div>
-								</div>
+								}
+								else
+								{
+									<!-- Hiển thị thông báo khi không có comment -->
+									<p class="text-center text-dark">0 Comment</p>
+								}
+							</div>
+
+							<div class="tab-pane fade" id="myComment" role="tabpanel" aria-labelledby="myComment-tab">
+								<!-- Hiển thị các comment của người dùng đăng nhập -->
+								@if (Model.MyComments != null && Model.MyComments.Count > 0)
+								{
+									@if (Model.MyComments!.Count != 1)
+									{
+										<p class="text-center text-dark">
+											@Model.MyComments.Count Comments
+										</p>
+									}
+									else
+									{
+										<p class="text-center text-dark">
+											@Model.MyComments.Count Comment
+										</p>
+									}
+									<div class="row">
+										<div class="col">
+											<ul class="list-unstyled">
+												@foreach (var comment in Model.MyComments)
+												{
+													<!-- Hiển thị comment của user đang đăng nhập -->
+													<li class="media my-4">
+														<!-- Hiển thị thông tin comment -->
+														<div class="media-body">
+															<!-- Hiển thị nội dung comment của người dùng đăng nhập -->
+															<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers!.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
+															<p style="color: #555;">@comment.Description</p>
+															<!-- Kiểm tra xem người dùng hiện tại có phải là chủ comment không -->
+															@if (User.Identity!.IsAuthenticated && comment.ApplicationUsers != null && comment.ApplicationUsers.UserName == User.Identity.Name)
+															{
+																<form id="deleteForm_@comment.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
+																	<input type="hidden" name="commentId" value="@comment.Id" />
+																	<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+																</form>
+															}
+														</div>
+													</li>
+												}
+											</ul>
+										</div>
+									</div>
+								}
+								else
+								{
+									<p class="text-center text-dark">
+										0 Comment
+									</p>
+								}
 							</div>
 						</div>
 					</div>
 				</section>
 
-
-
 				<!--Section: Reply-->
 			</div>
-			<div class="col-md-4 mb-4" id="google-ad">
+			<div class="col-md-4 mb-4">
 				<!--Section: Sidebar-->
 				<section class="sticky-top" style="top: 80px;">
 					<!--Section: Ad-->
@@ -256,12 +312,6 @@
 	}
 </script>
 <script>
-	function scrollToComment() {
-		var commentSection = document.getElementById('commentSection');
-		if (commentSection) {
-			commentSection.scrollIntoView({ behavior: 'smooth' });
-		}
-	}
 	function scrollToCommentList() {
 		var commentSection = document.getElementById('commentListSection');
 		if (commentSection) {
@@ -280,4 +330,16 @@
 			}
 		}
 	}
+
+
+	function toggleCommentForm(event) {
+		event.preventDefault();
+		var commentForm = document.getElementById('commentForm');
+		if (commentForm.style.display === 'none') {
+			commentForm.style.display = 'block';
+		} else {
+			commentForm.style.display = 'none';
+		}
+	}
+
 </script>
