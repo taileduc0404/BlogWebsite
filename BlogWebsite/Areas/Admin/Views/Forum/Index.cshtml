@@ -30,10 +30,10 @@
 							<a asp-area="Admin" asp-action="EditForumPost" asp-controller="Forum" asp-route-id="@fposts.Id" method="post">
 								<h4 style="font-size:25px; font-weight: bolder;" class="text-primary fw-bold">@fposts.Title</h4>
 							</a>
-							@if (!string.IsNullOrEmpty(fposts.TagName))
+							@if (!string.IsNullOrEmpty(fposts.TopicName))
 							{
 								<button type="button" class="btn btn-secondary">
-									@fposts.TagName
+									@fposts.TopicName
 								</button>
 							}
 							else

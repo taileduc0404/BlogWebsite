@@ -7,7 +7,7 @@
         public string? AuthorName { get; set; }
         public DateTime CreatedDate { get; set; }
         public string? Description { get; set; }
-        public string? TagName { get; set; }
+        public string? TopicName { get; set; }
         public int ViewCount { get; set; }
         public int CommentCount { get; set; }
 

@@ -1,7 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
-using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,13 +12,13 @@ namespace BlogWebsite.Areas.Admin.Controllers
 {
 	[Area("Admin")]
 	[Authorize]
-	public class TagController : Controller
+	public class TopicController : Controller
 	{
 		private readonly ApplicationDbContext _context;
 		public INotyfService _notification { get; }
 		private IWebHostEnvironment _webHostEnvironment;
 		private readonly UserManager<ApplicationUser> _userManager;
-		public TagController(ApplicationDbContext context,
+		public TopicController(ApplicationDbContext context,
 							  INotyfService notyfService,
 							  IWebHostEnvironment webHostEnvironment,
 							  UserManager<ApplicationUser> userManager)
@@ -30,38 +29,38 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			_notification = notyfService;
 		}
 
-		[HttpGet("Tag")]
+		[HttpGet("Topic")]
 		public async Task<IActionResult> Index(string keyword)
 		{
-			var listOfTag = await _context.tags!
+			var listOfTopic = await _context.topics!
 				.ToListAsync();
 
-			var listOfTagVM = listOfTag
-				.Select(x => new TagVM
+			var listOfTopicVM = listOfTopic
+				.Select(x => new TopicVM
 				{
 					Id = x.Id,
-					Name = x.Name ?? "None Tag" // Đặt tên mặt định cho Name nếu Name được set là null
+					Name = x.Name ?? "None Topic" // Đặt tên mặt định cho Name nếu Name được set là null
 				})
 				.ToList();
 
 			if (string.IsNullOrEmpty(keyword))
 			{
-				return View(listOfTagVM);
+				return View(listOfTopicVM);
 			}
 			else
 			{
-				return View(listOfTagVM.Where(x => x.Name!.ToLower().Contains(keyword)));
+				return View(listOfTopicVM.Where(x => x.Name!.ToLower().Contains(keyword)));
 			}
 		}
 
-		[HttpGet("CreateTag")]
-		public IActionResult CreateTag()
+		[HttpGet("CreateTopic")]
+		public IActionResult CreateTopic()
 		{
-			return View(new CreateTagVM());
+			return View(new CreateTopicVM());
 		}
 
-		[HttpPost("CreateTag")]
-		public async Task<IActionResult> CreateTag(CreateTagVM vm)
+		[HttpPost("CreateTopic")]
+		public async Task<IActionResult> CreateTopic(CreateTagVM vm)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -70,48 +69,47 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 
-			var tagExist = await _context.tags!.AnyAsync(x => x.Name == vm.Name);
+			var topicExist = await _context.topics!.AnyAsync(x => x.Name == vm.Name);
 
-			if (tagExist)
+			if (topicExist)
 			{
-				_notification.Error("This Tag Has Already Exist!");
-				return RedirectToAction("Index");
+				_notification.Error("This Topic Has Already Exist!");
+				return RedirectToAction("Index", "Topic", new {area="Admin"});
 			}
 			else
 			{
-				var tag = new Tag
+				var topic = new Topic
 				{
 					Name = vm.Name!.ToUpper(),
 				};
 
-				_context.tags!.Add(tag);
+				_context.topics!.Add(topic);
 				await _context.SaveChangesAsync();
-				_notification.Success("Tag Created Successfully!");
-				return RedirectToAction("Index");
+				_notification.Success("Topic Created Successfully!");
+				return RedirectToAction("Index", "Topic", new { area = "Admin" });
 			}
 		}
 
-		[HttpGet("PostInTag")]
-		public async Task<IActionResult> ShowPostInTag(int id, int? page)
+		[HttpGet("ForumPostInTopic")]
+		public async Task<IActionResult> ShowForumPostInTopic(int id, int? page)
 		{
 			int pageNumber = page ?? 1;
 			int pageSize = 4;
 
-			var postsQuery = _context.posts!
+			var postsQuery = _context.forumPosts!
 				.Include(x => x.ApplicationUsers)
-				.Include(t => t.Tag)
-				.Where(x => x.TagId == id)
+				.Include(t => t.Topic)
+				.Where(x => x.TopicId == id)
 				.OrderByDescending(x => x.CreatedDate);
 
-			ViewBag.TagId = id;
+			ViewBag.TopicId = id;
 
 			var listOfPostVM = await postsQuery
-				.Select(x => new PostVM
+				.Select(x => new ForumPostVM
 				{
 					Id = x.Id,
 					Title = x.Title,
-					CreateDate = x.CreatedDate,
-					ThumbnailUrl = x.ThumbnailUrl,
+					CreatedDate = x.CreatedDate,
 					AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author"
 				})
 				.ToPagedListAsync(pageNumber, pageSize);
@@ -120,25 +118,25 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		}
 
 
-		[HttpGet("GetTags")]
-		public IActionResult GetTags(string term)
+		[HttpGet("GetTopics")]
+		public IActionResult GetTopics(string term)
 		{
-			var tags = _context.tags!
+			var topics = _context.topics!
 				.Where(t => t.Name!.Contains(term, StringComparison.OrdinalIgnoreCase))
 				.Select(t => new { name = t.Name })
 				.ToList();
 
-			return Json(tags);
+			return Json(topics);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> DeleteTag(int id)
+		public async Task<IActionResult> DeleteTopic(int id)
 		{
-			var tag = await _context.tags!.SingleOrDefaultAsync(x => x.Id == id);
-			_context.tags!.Remove(tag!);
+			var topic = await _context.topics!.SingleOrDefaultAsync(x => x.Id == id);
+			_context.topics!.Remove(topic!);
 			await _context.SaveChangesAsync();
-			_notification.Success("Tag Deleted Successfully!");
-			return RedirectToAction("Index", "Tag", new { area = "Admin" });
+			_notification.Success("Topic Deleted Successfully!");
+			return RedirectToAction("Index", "Topic", new { area = "Admin" });
 		}
 	}
 }

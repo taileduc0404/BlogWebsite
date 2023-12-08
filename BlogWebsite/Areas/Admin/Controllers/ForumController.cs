@@ -46,7 +46,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				{
 					Id = x.Id,
 					Title = x.Title,
-					TagName = x.Tag != null ? x.Tag.Name : "None Tag",
+					TopicName = x.Topic != null ? x.Topic.Name : "None Topic",
 					ViewCount = x.ViewCount,
 					Description = x.Description,
 					CreatedDate = x.CreatedDate,
@@ -76,17 +76,17 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			if (!ModelState.IsValid) { return View(vm); }
 
 			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
-			var tag = await _context.tags!.FirstOrDefaultAsync(t => t.Name == vm.TagName);
+			var topic = await _context.topics!.FirstOrDefaultAsync(t => t.Name == vm.TopicName);
 
-			if (tag == null)
+			if (topic == null)
 			{
 				// Nếu tag chưa tồn tại, tạo mới tag trước khi tạo post
-				tag = new Tag
+				topic = new Topic
 				{
-					Name = vm.TagName!.ToUpper()
+					Name = vm.TopicName!.ToUpper()
 				};
 
-				_context.tags!.Add(tag);
+				_context.topics!.Add(topic);
 				await _context.SaveChangesAsync();
 			}
 
@@ -95,18 +95,18 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				Title = vm.Title,
 				CreatedDate = DateTime.Now,
 				Description = vm.Description,
-				TagId = tag!.Id,
+				TopicId = topic!.Id,
 				ApplicationUserId = loggedInUser!.Id
 			};
 
-			if (tag == null)
+			if (topic == null)
 			{
-				tag = new Tag
+				topic = new Topic
 				{
-					Name = vm.TagName
+					Name = vm.TopicName
 				};
 
-				_context.tags!.Add(tag);
+				_context.topics!.Add(topic);
 				await _context.SaveChangesAsync();
 			}
 
@@ -149,7 +149,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		public async Task<IActionResult> EditForumPost(int id)
 		{
 			var post = await _context.forumPosts!
-				.Include(p => p.Tag)
+				.Include(p => p.Topic)
 				.SingleOrDefaultAsync(x => x.Id == id);
 
 			if (post == null)
@@ -170,7 +170,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			{
 				Id = post.Id,
 				Title = post.Title,
-				TagName = post.Tag != null ? post.Tag.Name : "",
+				TopicName = post.Topic != null ? post.Topic.Name : "",
 				Description = post.Description,
 			};
 
@@ -182,30 +182,40 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		{
 			if (!ModelState.IsValid) { return View(vm); }
 			var post = await _context.forumPosts!.SingleOrDefaultAsync(x => x.Id == vm.Id);
-			var tag = await _context.tags!.SingleOrDefaultAsync(t => t.Name == vm.TagName);
+			var topic = await _context.topics!.SingleOrDefaultAsync(t => t.Name == vm.TopicName);
 			if (post == null)
 			{
 				_notification.Error("Post not found!");
 				return View();
 			}
 
-			if (tag == null)
+			if (topic == null)
 			{
-				tag = new Tag()
+				topic = new Topic()
 				{
-					Name = vm.TagName!.ToUpper()
+					Name = vm.TopicName!.ToUpper()
 				};
-				_context.tags!.Add(tag);
+				_context.topics!.Add(topic);
 				await _context.SaveChangesAsync();
 			}
 
 			post.Title = vm.Title;
-			post.Tag = tag;
+			post.Topic = topic;
 			post.Description = vm.Description;
 			await _context.SaveChangesAsync();
 			_notification.Success("Post Updated Successfully!");
 			return RedirectToAction("Index", "Forum", new { area = "Admin" });
 
+		}
+		[HttpGet]
+		public IActionResult AutocompleteTopics(string keyword)
+		{
+			var tags = _context.topics!
+				.Where(t => t.Name!.StartsWith(keyword))
+				.Select(t => t.Name)
+				.ToList();
+
+			return Json(tags);
 		}
 	}
 }

@@ -4,6 +4,7 @@ using BlogWebsite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231208150310_UpdateTopicModel")]
+    partial class UpdateTopicModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,10 +86,13 @@ namespace BlogWebsite.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TopicId")
+                    b.Property<int?>("TopicId")
                         .HasColumnType("int");
 
                     b.Property<int>("ViewCount")
@@ -96,6 +101,8 @@ namespace BlogWebsite.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("TagId");
 
                     b.HasIndex("TopicId");
 
@@ -478,15 +485,19 @@ namespace BlogWebsite.Migrations
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("BlogWebsite.Models.Topic", "Topic")
-                        .WithMany("ForumPosts")
-                        .HasForeignKey("TopicId")
+                    b.HasOne("BlogWebsite.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BlogWebsite.Models.Topic", null)
+                        .WithMany("ForumPosts")
+                        .HasForeignKey("TopicId");
+
                     b.Navigation("ApplicationUsers");
 
-                    b.Navigation("Topic");
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("BlogWebsite.Models.Post", b =>

@@ -99,7 +99,7 @@ namespace BlogWebsite.Controllers
 			return View(vm);
 		}
 
-        [HttpGet("Forums")]
+		[HttpGet("Forums")]
         public async Task<IActionResult> Forum(string keyword, int? page)
         {
             var vm = new HomeVM();
@@ -111,7 +111,7 @@ namespace BlogWebsite.Controllers
             // Sửa truy vấn để bao gồm thông tin về Tag
             IQueryable<ForumPost> fpostsQuery = _context.forumPosts!
                 .Include(x => x.ApplicationUsers)
-                .Include(x => x.Tag) // Include thông tin về Tag
+                .Include(x => x.Topic) // Include thông tin về Tag
                 .OrderByDescending(x => x.CreatedDate);
 
             if (!string.IsNullOrEmpty(keyword))

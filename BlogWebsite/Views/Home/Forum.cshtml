@@ -6,15 +6,23 @@
 }
 
 <div class="container">
+	<div class="topic-buttons mt-3 mb-1">
+		<h3>Topics: </h3>
+		<!-- Thêm các button chủ đề ở đây -->
+		<button type="button" class="btn btn-outline-secondary btn-sm mr-1">HTML</button>
+		<button type="button" class="btn btn-outline-secondary btn-sm mr-1">CSS</button>
+		<!-- Thêm các button khác nếu cần -->
+	</div>
 
 	@if (User.Identity!.IsAuthenticated)
 	{
-		<a class="btn btn-info mb-3 mt-3" type="button" asp-action="CreateForumPost" asp-controller="Forum" asp-area="Admin">Add Question</a>
+		<a class="btn btn-info mb-3 mt-1" type="button" asp-action="CreateForumPost" asp-controller="Forum" asp-area="Admin">Add Question</a>
 	}
 	else
 	{
 		<a class="btn btn-info mb-3 mt-3" type="button" asp-action="Login" asp-controller="User" asp-area="Admin">Add Question</a>
 	}
+
 	<div class="forum-list row row-cols-1 row-cols-md-2 g-4">
 		<!-- Add Question Button -->
 		@for (int i = Model.forumPosts!.Count - 1; i >= 0; i--)
@@ -32,7 +40,7 @@
 						}
 						<p class="description mb-1">@Html.Raw(shortenedTitle)</p>
 						<div class="tags">
-							<button type="button" class="btn btn-outline-secondary btn-sm mr-1">@fpost.Tag!.Name</button>
+							<button type="button" class="btn btn-outline-secondary btn-sm mr-1">@fpost.Topic!.Name</button>
 						</div>
 						<p class="text-muted view-comment">Views: @fpost.ViewCount | Comments: @fpost.CommentCount</p>
 					</div>

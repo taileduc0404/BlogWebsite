@@ -7,8 +7,8 @@ namespace BlogWebsite.ViewModels
 		public int Id { get; set; }
 		[Required]
 		public string? Title { get; set; }
-		public int TagId { get; set; }
-		public string? TagName { get; set; }
+		public int TopicId { get; set; }
+		public string? TopicName { get; set; }
 		public string? ApplicationUserId { get; set; }
 		public string? Description { get; set; }
 	}

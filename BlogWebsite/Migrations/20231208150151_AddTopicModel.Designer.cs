@@ -4,6 +4,7 @@ using BlogWebsite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231208150151_AddTopicModel")]
+    partial class AddTopicModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,11 +86,11 @@ namespace BlogWebsite.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TopicId")
-                        .HasColumnType("int");
 
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");
@@ -97,7 +99,7 @@ namespace BlogWebsite.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("TopicId");
+                    b.HasIndex("TagId");
 
                     b.ToTable("forumPosts");
                 });
@@ -210,22 +212,6 @@ namespace BlogWebsite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tags");
-                });
-
-            modelBuilder.Entity("BlogWebsite.Models.Topic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("topics");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -478,15 +464,15 @@ namespace BlogWebsite.Migrations
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("BlogWebsite.Models.Topic", "Topic")
-                        .WithMany("ForumPosts")
-                        .HasForeignKey("TopicId")
+                    b.HasOne("BlogWebsite.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ApplicationUsers");
 
-                    b.Navigation("Topic");
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("BlogWebsite.Models.Post", b =>
@@ -575,11 +561,6 @@ namespace BlogWebsite.Migrations
             modelBuilder.Entity("BlogWebsite.Models.Tag", b =>
                 {
                     b.Navigation("posts");
-                });
-
-            modelBuilder.Entity("BlogWebsite.Models.Topic", b =>
-                {
-                    b.Navigation("ForumPosts");
                 });
 
             modelBuilder.Entity("BlogWebsite.Models.ApplicationUser", b =>

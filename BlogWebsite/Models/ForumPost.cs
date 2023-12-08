@@ -10,8 +10,8 @@
 		public ApplicationUser? ApplicationUsers { get; set; }
         public int ViewCount { get; set; }
         public int CommentCount { get; set; }
-        public int TagId { get; set; }
-		public Tag? Tag { get; set; }
+        public int TopicId { get; set; }
+		public Topic? Topic { get; set; }
 		public string? Slug { get; set; }
 		public ICollection<Comment>? Comments { get; set; }
 	}

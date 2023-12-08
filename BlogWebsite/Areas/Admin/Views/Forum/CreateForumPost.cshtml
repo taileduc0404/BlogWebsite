@@ -21,9 +21,9 @@
 						</div>
 						<div class="mb-2">
 							<label>Tag</label>
-							<input type="text" asp-for="TagName" class="form-control" id="tags" list="tags-list" />
-							<datalist id="tags-list"></datalist>
-							<span asp-validation-for="TagName" class="text-danger"></span>
+							<input type="text" asp-for="TopicName" class="form-control" id="topics" list="topics-list" />
+							<datalist id="topics-list"></datalist>
+							<span asp-validation-for="TopicName" class="text-danger"></span>
 						</div>
 						<div class="mb-2">
 							<label>Description</label>
@@ -45,17 +45,17 @@
 	
 	<script>
 		$(document).ready(function () {
-			$("#tags").keyup(function () {
+			$("#topics").keyup(function () {
 				var input = $(this).val();
 				if (input.length >= 1) { // Kiểm tra nếu có ít nhất 2 ký tự được nhập
 					$.ajax({
-						url: "/Admin/Post/AutocompleteTags", // Địa chỉ URL xử lý autocomplete
+						url: "/Admin/Forum/AutocompleteTopics", // Địa chỉ URL xử lý autocomplete
 						type: "GET",
 						data: { keyword: input },
 						success: function (data) {
-							$("#tags-list").empty();
+							$("#topics-list").empty();
 							$.each(data, function (index, value) {
-								$("#tags-list").append('<option value="' + value + '"></option>');
+								$("#topics-list").append('<option value="' + value + '"></option>');
 							});
 						}
 					});
