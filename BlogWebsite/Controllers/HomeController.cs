@@ -128,30 +128,6 @@ namespace BlogWebsite.Controllers
 		[HttpGet("ForumPostTopic")]
 		public async Task<IActionResult> ForumPostTopic(int id, int? page, string keyword)
 		{
-			//int pageNumber = page ?? 1;
-			//int pageSize = 6;
-
-			//var vm = new HomeVM();
-
-			//// Sửa truy vấn để bao gồm thông tin về Topic
-			//IQueryable<ForumPost> fpostsQuery = _context.forumPosts!
-			//	//.Include(x => x.ApplicationUsers)
-			//	.Include(x => x.Topic) // Include thông tin về Topic
-			//	.OrderByDescending(x => x.CreatedDate);
-
-			//if (!string.IsNullOrEmpty(keyword))
-			//{
-			//	string lowerKeyword = keyword.ToLower();
-			//	fpostsQuery = fpostsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
-			//}
-
-
-			//vm.forumPosts = await fpostsQuery.Where(x => x.TopicId == id).ToPagedListAsync(pageNumber, pageSize);
-
-			//ViewData["keyword"] = keyword;  // Pass the keyword to the view
-
-			//return View(vm);
-
 			int pageNumber = page ?? 1;
 			int pageSize = 6;
 
