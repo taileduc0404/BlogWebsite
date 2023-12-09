@@ -1,0 +1,65 @@
+﻿@model BlogWebsite.ViewModels.HomeVM
+
+@{
+	ViewData["Title"] = "Forum Post In Topic";
+}
+
+
+<div class="container">
+	<!-- Add Question Button -->
+	@if (User.Identity!.IsAuthenticated)
+	{
+		<a class="btn btn-info mb-3 mt-1" type="button" asp-action="CreateForumPost" asp-controller="Forum" asp-area="Admin">Add Question</a>
+	}
+	else
+	{
+		<a class="btn btn-info mb-3 mt-3" type="button" asp-action="Login" asp-controller="User" asp-area="Admin">Add Question</a>
+	}
+	@if (Model.forumPosts != null && Model.forumPosts!.Any())
+	{
+		<div class="forum-list row row-cols-1 row-cols-md-2 g-4">
+			@foreach (var forumPost in Model.forumPosts!)
+			{
+				<div class="col">
+					<div class="card h-100">
+						<div class="card-body">
+							<h5 class="card-title">@forumPost.Title</h5>
+							<div class="small text-muted">@forumPost.CreatedDate.ToShortDateString()</div>
+							@{
+								var words = forumPost.Description!.Split(' ');
+								string shortenedTitle = words.Length > 10 ? string.Join(" ", words.Take(10)) + "..." : forumPost.Description;
+							}
+							<p class="description">@Html.Raw(shortenedTitle)</p>
+							<p class="text-muted view-comment">Views: @forumPost.ViewCount | Comments: @forumPost.CommentCount</p>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Pagination -->
+		<div class="d-flex justify-content-center my-4">
+			<nav aria-label="Page navigation">
+				<ul class="pagination">
+					<li class="page-item @(Model?.forumPosts.HasPreviousPage == false ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("ForumPostTopic", new { id = ViewBag.TopicId, keyword = ViewBag.CurrentFilter, page = Model?.forumPosts.PageNumber - 1 })" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+							<span class="sr-only">Previous</span>
+						</a>
+					</li>
+					@for (var i = 1; i <= Model?.forumPosts.PageCount; i++)
+					{
+						<li class="page-item @(i == Model?.forumPosts.PageNumber ? "active" : "")">
+							<a class="page-link" href="@Url.Action("ForumPostTopic", new { id = ViewBag.TopicId, keyword = ViewBag.CurrentFilter, page = i })">@i</a>
+						</li>
+					}
+					<li class="page-item @(Model?.forumPosts.HasNextPage == false ? "disabled" : "")">
+						<a class="page-link" href="@Url.Action("ForumPostTopic", new { id = ViewBag.TopicId, keyword = ViewBag.CurrentFilter, page = Model?.forumPosts.PageNumber + 1 })" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+							<span class="sr-only">Next</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	}
+</div>

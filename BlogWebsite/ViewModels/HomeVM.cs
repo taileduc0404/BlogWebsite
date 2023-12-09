@@ -11,5 +11,6 @@ namespace BlogWebsite.ViewModels
         public IPagedList<Post>? posts { get; set; }
         public IPagedList<ForumPost>? forumPosts { get; set; }
         public List<Tag>? tags { get; set; }
-    }
+        public List<Topic>? topics { get; set; }
+	}
 }
