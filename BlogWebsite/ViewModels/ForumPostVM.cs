@@ -1,4 +1,7 @@
-﻿namespace BlogWebsite.ViewModels
+﻿using BlogWebsite.Models;
+using System.Xml.Linq;
+
+namespace BlogWebsite.ViewModels
 {
 	public class ForumPostVM
 	{
@@ -9,7 +12,15 @@
         public string? Description { get; set; }
         public string? TopicName { get; set; }
         public int ViewCount { get; set; }
-        public int CommentCount { get; set; }
+        public int AnswerCount { get; set; }
 
-    }
+        public List<Comment>? Answers {  get; set; }
+		public List<Comment>? MyAnswers { get; set; }
+
+		public ForumPostVM()
+		{
+			Answers = new List<Comment>();
+			MyAnswers = new List<Comment>(); // Khởi tạo danh sách MyAnswers
+		}
+	}
 }

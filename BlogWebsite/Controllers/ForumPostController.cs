@@ -38,13 +38,13 @@ namespace BlogWebsite.Controllers
 			fpost!.ViewCount++;
 			await _context.SaveChangesAsync();
 
-			var allComments = await _context.comments!
+			var allAnswers = await _context.comments!
 				.Where(c => c.ForumPostId == fpost!.Id)
 				.Include(c => c.ApplicationUsers)
 				.Include(c => c.Replies) // Bao gồm danh sách replies của mỗi comment
 				.ToListAsync();
 			var userId = _userManager.GetUserId(User);
-			var myComment = allComments.Where(c => c.ApplicationUserId == userId).ToList();
+			var myAnswer = allAnswers.Where(c => c.ApplicationUserId == userId).ToList();
 
 			var vm = new ForumPostVM()
 			{
@@ -55,11 +55,63 @@ namespace BlogWebsite.Controllers
 				AuthorName = fpost.ApplicationUsers != null ? fpost.ApplicationUsers.FirstName + " " + fpost.ApplicationUsers.LastName : "Unknown",
 				CreatedDate = fpost.CreatedDate,
 				Description = fpost.Description,
-				//Comments = allComments,
-				//MyComments = myComment
+				Answers = allAnswers,
+				MyAnswers = myAnswer
 			};
 
 			return View(vm);
+		}
+		[HttpPost]
+		public async Task<IActionResult> AddAnswer(int fpostId, string description)
+		{
+			var user = await _userManager.GetUserAsync(User);
+
+			if (user == null || !User.Identity!.IsAuthenticated)
+			{
+				return RedirectToAction("Login", "User", new { area = "Admin" });
+			}
+
+			var post = await _context.forumPosts!
+				.FirstOrDefaultAsync(p => p.Id == fpostId);
+
+			var answer = new Comment
+			{
+				ForumPostId = fpostId,
+				Description = description,
+				ApplicationUserId = user.Id,
+				CreatedDate = DateTime.Now
+			};
+
+			_context.comments!.Add(answer);
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("ForumPost", "ForumPost", new { slug = post!.Slug });
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> DeleteAnswer(int commentId, int postId)
+		{
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null || !User.Identity!.IsAuthenticated)
+			{
+				return RedirectToAction("Login", "User", new { area = "Admin" });
+			}
+			else
+			{
+				var commentToDelete = await _context.comments!
+					.Include(c => c.Replies)
+					.FirstOrDefaultAsync(c => c.Id == commentId || c.ParentCommentId == commentId);
+
+				if (commentToDelete == null)
+				{
+					return RedirectToAction("Index", "Home");
+				}
+
+				_context.comments!.Remove(commentToDelete);
+				await _context.SaveChangesAsync();
+
+				return RedirectToAction("Index", "Home");
+			}
 		}
 	}
 }

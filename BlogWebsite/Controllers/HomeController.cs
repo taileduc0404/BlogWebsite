@@ -132,20 +132,30 @@ namespace BlogWebsite.Controllers
 			int pageSize = 6;
 
 			var vm = new HomeVM();
-			var postsQuery = _context.forumPosts!.AsQueryable();
+			var fpostsQuery = _context.forumPosts!.AsQueryable();
 
 			if (!string.IsNullOrEmpty(keyword))
 			{
 				string lowerKeyword = keyword.ToLower();
-				postsQuery = postsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
+				fpostsQuery = fpostsQuery.Where(p => p.Title!.ToLower().Contains(lowerKeyword));
 				ViewBag.CurrentFilter = keyword; // Truyền từ khóa vào ViewBag
 			}
 
-			postsQuery = postsQuery.Where(x => x.TopicId == id).OrderByDescending(x => x.CreatedDate);
+			// Lấy danh sách ForumPosts
+			var forumPosts = await fpostsQuery.Where(x => x.TopicId == id)
+											  .OrderByDescending(x => x.CreatedDate)
+											  .ToPagedListAsync(pageNumber, pageSize);
+
+			// Tính số lượng comment cha cho mỗi ForumPost
+			foreach (var forumPost in forumPosts)
+			{
+				// Lấy số lượng comment cha bằng cách đếm các comment có ParentCommentId là null
+				var answerCount = _context.comments!.Count(c => c.ForumPostId == forumPost.Id && c.ParentCommentId == null);
+				forumPost.AnswerCount = answerCount;
+			}
 
 			ViewBag.TopicId = id; // Truyền ID của topic vào ViewBag
-
-			vm.forumPosts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
+			vm.forumPosts = forumPosts;
 
 			return View(vm);
 		}

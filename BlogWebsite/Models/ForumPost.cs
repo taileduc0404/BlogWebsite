@@ -9,10 +9,11 @@
 		public string? ApplicationUserId { get; set; }
 		public ApplicationUser? ApplicationUsers { get; set; }
         public int ViewCount { get; set; }
-        public int CommentCount { get; set; }
+		public int AnswerCount { get; set; }
         public int TopicId { get; set; }
 		public Topic? Topic { get; set; }
 		public string? Slug { get; set; }
-		public ICollection<Comment>? Comments { get; set; }
+		public ICollection<Comment>? Answer { get; set; }
+
 	}
 }

@@ -130,7 +130,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeletePost(int id)
 		{
-			var post = await _context.posts!.SingleOrDefaultAsync(x => x.Id == id);
+			var post = await _context.posts!.Include(x=>x.Comments).SingleOrDefaultAsync(x => x.Id == id);
 
 			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);

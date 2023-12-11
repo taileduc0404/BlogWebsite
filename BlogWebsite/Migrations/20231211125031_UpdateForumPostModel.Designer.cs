@@ -4,6 +4,7 @@ using BlogWebsite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231211125031_UpdateForumPostModel")]
+    partial class UpdateForumPostModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -452,7 +454,7 @@ namespace BlogWebsite.Migrations
                         .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("BlogWebsite.Models.ForumPost", "ForumPost")
-                        .WithMany("Answer")
+                        .WithMany("Comments")
                         .HasForeignKey("ForumPostId");
 
                     b.HasOne("BlogWebsite.Models.Comment", "ParentComment")
@@ -564,7 +566,7 @@ namespace BlogWebsite.Migrations
 
             modelBuilder.Entity("BlogWebsite.Models.ForumPost", b =>
                 {
-                    b.Navigation("Answer");
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("BlogWebsite.Models.Post", b =>
