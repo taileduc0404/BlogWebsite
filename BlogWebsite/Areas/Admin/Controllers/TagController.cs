@@ -134,10 +134,23 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteTag(int id)
 		{
-			var tag = await _context.tags!.SingleOrDefaultAsync(x => x.Id == id);
-			_context.tags!.Remove(tag!);
-			await _context.SaveChangesAsync();
-			_notification.Success("Tag Deleted Successfully!");
+			var tag = await _context.tags!.Include(x=>x.posts)!.ThenInclude(y=>y.Comments).SingleOrDefaultAsync(x => x.Id == id);
+
+			if (tag != null)
+			{
+				foreach(var post in tag.posts!)
+				{
+					_context.comments!.RemoveRange(post.Comments!);
+				}
+				_context.posts!.RemoveRange(tag.posts!);
+				_context.tags!.Remove(tag!);
+				await _context.SaveChangesAsync();
+				_notification.Success("Tag Deleted Successfully!");
+			}
+			else
+			{
+				_notification.Success("Tag Not Found!");
+			}
 			return RedirectToAction("Index", "Tag", new { area = "Admin" });
 		}
 	}
