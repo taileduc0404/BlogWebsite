@@ -83,7 +83,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				// Nếu tag chưa tồn tại, tạo mới tag trước khi tạo post
 				topic = new Topic
 				{
-					Name = vm.TopicName!.ToUpper()
+					Name = "None"
 				};
 
 				_context.topics!.Add(topic);

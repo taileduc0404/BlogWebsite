@@ -24,40 +24,39 @@ namespace BlogWebsite.Controllers
 		[HttpGet("[controller]/{slug}")]
 		public async Task<IActionResult> ForumPost(string slug)
 		{
-			var post = await _context.posts!
+			var fpost = await _context.forumPosts!
 				.Include(p => p.ApplicationUsers)
-				.Include(t => t.Tag)
+				.Include(t => t.Topic)
 				.FirstOrDefaultAsync(x => x.Slug == slug);
 
-			if (post == null)
+			if (fpost == null)
 			{
 				_notification.Error("Post not found!");
 				return RedirectToAction("NotFound");
 			}
 
-			post.ViewCount++;
+			fpost!.ViewCount++;
 			await _context.SaveChangesAsync();
 
 			var allComments = await _context.comments!
-				.Where(c => c.PostId == post.Id)
+				.Where(c => c.ForumPostId == fpost!.Id)
 				.Include(c => c.ApplicationUsers)
 				.Include(c => c.Replies) // Bao gồm danh sách replies của mỗi comment
 				.ToListAsync();
 			var userId = _userManager.GetUserId(User);
 			var myComment = allComments.Where(c => c.ApplicationUserId == userId).ToList();
 
-			var vm = new BlogPostVM()
+			var vm = new ForumPostVM()
 			{
-				Id = post.Id,
-				Title = post.Title,
-				ViewCount = post.ViewCount,
-				TagName = post.Tag != null ? post.Tag.Name : "None Tag",
-				AuthorName = post.ApplicationUsers != null ? post.ApplicationUsers.FirstName + " " + post.ApplicationUsers.LastName : "Unknown",
-				CreatedDate = post.CreatedDate,
-				ThumbnailUrl = post.ThumbnailUrl,
-				Description = post.Description,
-				Comments = allComments,
-				MyComments = myComment
+				Id = fpost!.Id,
+				Title = fpost.Title,
+				ViewCount = fpost.ViewCount,
+				TopicName = fpost.Topic != null ? fpost.Topic!.Name : "None Topic",
+				AuthorName = fpost.ApplicationUsers != null ? fpost.ApplicationUsers.FirstName + " " + fpost.ApplicationUsers.LastName : "Unknown",
+				CreatedDate = fpost.CreatedDate,
+				Description = fpost.Description,
+				//Comments = allComments,
+				//MyComments = myComment
 			};
 
 			return View(vm);

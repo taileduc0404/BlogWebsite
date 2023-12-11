@@ -1,0 +1,315 @@
+﻿@model BlogWebsite.ViewModels.ForumPostVM
+@using Microsoft.AspNetCore.Http
+
+@{
+	var request = ViewContext.HttpContext.Request;
+}
+@{
+	ViewData["Title"] = "Forum Post";
+}
+
+<main class="mt-4 mb-5">
+	<div class="container">
+		<!--Grid row-->
+		<div class="row">
+			<!--Grid column-->
+			<div class="col-md-8 mb-4" id="contentColumn">
+				<!--Section: Post data-mdb-->
+				<section class="border-bottom mb-4">
+					<span class="meta">
+						<i class="fa-solid fa-user"></i> <b>@Model.AuthorName</b><br>
+						<i class="fa-solid fa-clock"></i> @Model.CreatedDate.ToLongDateString() | @Model.CreatedDate.ToShortTimeString()<br>
+						<i class="fa-solid fa-eye"></i> @Model.ViewCount<br>
+					</span>
+					<hr />
+					<div class="row align-items-center mb-4">
+						<div class="col-lg-9 text-center text-lg-start mb-3 m-lg-0">
+							<h1 style="display: block;color:#B03A2E;">@Model.Title</h1>
+
+							@if (!string.IsNullOrEmpty(Model.TopicName))
+							{
+								<button type="button" class="btn px-3 me-1" style="color:white;background-color: #28B463;">
+									@Model.TopicName
+								</button>
+							}
+							else
+							{
+								<button type="button" class="btn px-3 me-1" style="background-color: #28B463;">
+									None Topic
+								</button>
+							}
+
+						</div>
+						<div class="col-lg-3 text-center text-lg-end">
+							<div class="d-flex justify-content-end">
+								<button onclick="scrollToCommentList()" type="button" aria-label="comments" title="comments" class="btn btn-primary px-3 me-1">
+									<i class="fas fa-comments"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</section>
+
+
+
+				<!--Section: Post data-mdb-->
+				<!--Section: Text-->
+				<div class="description-text">
+					@Html.Raw(Model.Description)
+				</div>
+				<!--Section: Text-->
+				<!--Section: Share buttons-->
+				<section class="text-center border-top border-bottom py-4 mb-4">
+					<a onclick="toggleCommentForm(event)" aria-label="comments" title="comments" class="btn btn-primary me-1">
+						<i class="fas fa-comments me-2"></i>Answer
+					</a>
+					<form id="commentForm" asp-controller="Blog" asp-action="AddComment" method="post" style="display: none;">
+						<!-- Các trường dữ liệu cho comment -->
+						<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
+						<div class="form-outline mb-2">
+							<textarea class="form-control mt-2" id="description" name="description" rows="4" required aria-label="Description" placeholder="Enter Your Answer Here..." aria-required="true"></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary btn-block mb-2 mt-2">Submit Comment</button>
+					</form>
+				</section>
+				<!--Section: Share buttons-->
+				<!--Section: Comments-->
+				<!--Section: Reply-->
+
+
+
+				
+
+				<!--Section: Comments-->
+				<!-- Hiển thị danh sách comment -->
+				@*				<section id="commentListSection" class="gradient-custom">
+				<!-- Phần hiển thị tab và danh sách comment -->
+				<div class="container my-5 py-5">
+				<div class="row">
+				<div class="col text-center">
+				<ul class="nav nav-tabs" id="commentTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="allComment-tab" data-bs-toggle="tab" data-bs-target="#allComment" type="button" role="tab" aria-controls="allComment" aria-selected="true">All Comment</button>
+				</li>
+				@if (User.Identity!.IsAuthenticated)
+				{
+				<li class="nav-item" role="presentation">
+				<button class="nav-link" id="myComment-tab" data-bs-toggle="tab" data-bs-target="#myComment" type="button" role="tab" aria-controls="myComment" aria-selected="false">My Comment</button>
+				</li>
+				}
+
+				</ul>
+				</div>
+				</div>
+				<div class="tab-content mt-4" id="commentTabsContent">
+				<div class="tab-pane fade show active" id="allComment" role="tabpanel" aria-labelledby="allComment-tab">
+				<!-- Hiển thị số lượng comment -->
+				@if (Model.Comments != null && Model.Comments.Count > 0)
+				{
+
+				@if (Model.Comments.Count != 1)
+				{
+				<p class="text-center text-dark">
+				@Model.Comments.Count Comments
+				</p>
+				}
+				else
+				{
+				<p class="text-center text-dark">
+				@Model.Comments.Count Comment
+				</p>
+				}
+
+				<div class="row">
+				<div class="col">
+				<ul class="list-unstyled">
+				<!-- Các comment -->
+				@foreach (var comment in Model.Comments!.Where(c => c.ParentCommentId == null))
+				{
+				<!-- Hiển thị comment cha -->
+				<li class="media my-4">
+				<!-- Thông tin comment cha -->
+				<div class="media-body">
+				<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers!.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
+				<p style="color: #555;">@comment.Description</p>
+				<!-- Nút reply và form reply -->
+				<button class="btn btn-sm btn-primary" onclick="showReplyForm(@comment.Id)">
+				Reply
+				</button>
+				<form id="replyForm_@comment.Id" class="mt-3 d-none" asp-controller="Blog" asp-action="AddReply" method="post">
+				<input type="hidden" name="parentId" value="@comment.Id" />
+				<input type="hidden" name="postId" value="@Model.Id" />
+				<input type="hidden" name="replyTo" value="@comment.ApplicationUsers.UserName" />
+				<div class="form-outline mb-4">
+				<label class="form-label" for="description">Reply</label>
+				<textarea class="form-control" id="replyDescription_@comment.Id" name="description" rows="2" required aria-label="Your Reply" placeholder="Enter Your Reply Here" aria-required="true"></textarea>
+				</div>
+				<button type="submit" class="btn btn-primary btn-sm">Submit Reply</button>
+				</form>
+
+				<!-- Hiển thị comment con -->
+				<ul>
+				@foreach (var childComment in Model.Comments.Where(c => c.ParentCommentId == comment.Id))
+				{
+				<li class="media my-4" style="margin-left: 20px;">
+				<div class="media-body">
+				<h5 class="mt-0 mb-1" style="color: #333;">@childComment.ApplicationUsers!.UserName <span class="small">- @childComment.CreatedDate.ToShortDateString()</span></h5>
+				<p style="color: #555;">@childComment.Description</p>
+				</div>
+				</li>
+				}
+				</ul>
+				</div>
+				</li>
+				}
+				</ul>
+				</div>
+				</div>
+				}
+				else
+				{
+				<!-- Hiển thị thông báo khi không có comment -->
+				<p class="text-center text-dark">0 Comment</p>
+				}
+				</div>
+
+				<div class="tab-pane fade" id="myComment" role="tabpanel" aria-labelledby="myComment-tab">
+				<!-- Hiển thị các comment của người dùng đăng nhập -->
+				@if (Model.MyComments != null && Model.MyComments.Count > 0)
+				{
+				@if (Model.MyComments!.Count != 1)
+				{
+				<p class="text-center text-dark">
+				@Model.MyComments.Count Comments
+				</p>
+				}
+				else
+				{
+				<p class="text-center text-dark">
+				@Model.MyComments.Count Comment
+				</p>
+				}
+				<div class="row">
+				<div class="col">
+				<ul class="list-unstyled">
+				@foreach (var comment in Model.MyComments)
+				{
+				<!-- Hiển thị comment của user đang đăng nhập -->
+				<li class="media my-4">
+				<!-- Hiển thị thông tin comment -->
+				<div class="media-body">
+				<!-- Hiển thị nội dung comment của người dùng đăng nhập -->
+				<h5 class="mt-0 mb-1" style="color: #333;">@comment.ApplicationUsers!.UserName <span class="small">- @comment.CreatedDate.ToShortDateString()</span></h5>
+				<p style="color: #555;">@comment.Description</p>
+				<!-- Kiểm tra xem người dùng hiện tại có phải là chủ comment không -->
+				@if (User.Identity!.IsAuthenticated && comment.ApplicationUsers != null && comment.ApplicationUsers.UserName == User.Identity.Name)
+				{
+				<form id="deleteForm_@comment.Id" class="mt-3" asp-controller="Blog" asp-action="DeleteComment" method="post">
+				<input type="hidden" name="commentId" value="@comment.Id" />
+				<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+				</form>
+				}
+				</div>
+				</li>
+				}
+				</ul>
+				</div>
+				</div>
+				}
+				else
+				{
+				<p class="text-center text-dark">
+				0 Comment
+				</p>
+				}
+				</div>
+				</div>
+				</div>
+				</section>
+				*@
+				<!--Section: Reply-->
+			</div>
+			<div class="col-md-4 mb-4">
+				<!--Section: Sidebar-->
+				<section class="sticky-top" style="top: 80px;">
+					<!--Section: Ad-->
+					<section class="text-center border-bottom pb-4 mb-4">
+						<div class="bg-image hover-overlay ripple mb-4">
+							<img src="~/bootstrap/assets/Screenshot 2023-11-21 102024.png"
+		 class="img-fluid" alt="ads" />
+							<img src="~/bootstrap/assets/Screenshot 2023-11-21 102057.png"
+		 class="img-fluid" alt="ads" />
+						</div>
+
+					</section>
+					<!--Section: Ad-->
+					<!--Section: Video-->
+					<section class="text-center">
+						<h5 class="mb-4">Learn the newest Bootstrap 5</h5>
+
+						<div class="embed-responsive embed-responsive-16by9 shadow-4-strong">
+							<iframe class="embed-responsive-item rounded-5" src="https://www.youtube.com/embed/1LfM0fgxio4?si=lkzlniDPTRa-IhT0"
+									allowfullscreen></iframe>
+						</div>
+					</section>
+					<!--Section: Video-->
+				</section>
+				<!--Section: Sidebar-->
+			</div>
+			<!--Grid column-->
+		</div>
+		<!--Grid row-->
+	</div>
+</main>
+
+<script>
+	// Kiểm tra kích thước của hình ảnh khi trang được tải
+	window.onload = function () {
+		resizeImages();
+	};
+
+	// Hàm để thu nhỏ hình ảnh nếu nó quá lớn
+	function resizeImages() {
+		var contentColumn = document.getElementById('contentColumn');
+		var images = contentColumn.getElementsByTagName('img');
+
+		for (var i = 0; i < images.length; i++) {
+			if (images[i].naturalWidth > contentColumn.offsetWidth * 1) {
+				images[i].style.maxWidth = '100%';
+				images[i].style.height = 'auto';
+			}
+		}
+	}
+</script>
+<script>
+	function scrollToCommentList() {
+		var commentSection = document.getElementById('commentListSection');
+		if (commentSection) {
+			commentSection.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+</script>
+<script>
+	function showReplyForm(commentId) {
+		var replyForm = document.getElementById(`replyForm_${commentId}`);
+		if (replyForm) {
+			if (replyForm.classList.contains('d-none')) {
+				replyForm.classList.remove('d-none');
+			} else {
+				replyForm.classList.add('d-none');
+			}
+		}
+	}
+
+
+	function toggleCommentForm(event) {
+		event.preventDefault();
+		var commentForm = document.getElementById('commentForm');
+		if (commentForm.style.display === 'none') {
+			commentForm.style.display = 'block';
+		} else {
+			commentForm.style.display = 'none';
+		}
+	}
+
+</script>

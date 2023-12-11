@@ -12,20 +12,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure Identity and Email Service
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 {
-    opt.Password.RequiredLength = 7;
-    opt.Password.RequireDigit = false;
-    opt.Password.RequireUppercase = false;
-    opt.User.RequireUniqueEmail = true;
-    opt.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(
-        typeof(DataProtectorTokenProvider<ApplicationUser>)));
+	opt.Password.RequiredLength = 7;
+	opt.Password.RequireDigit = false;
+	opt.Password.RequireUppercase = false;
+	opt.User.RequireUniqueEmail = true;
+	opt.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(
+		typeof(DataProtectorTokenProvider<ApplicationUser>)));
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+	.AddEntityFrameworkStores<ApplicationDbContext>()
+	.AddDefaultTokenProviders();
 
 
 
@@ -41,7 +41,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(20); // Thời gian phiên làm việc
+	options.IdleTimeout = TimeSpan.FromMinutes(20); // Thời gian phiên làm việc
 });
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
@@ -51,15 +51,15 @@ builder.Services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDi
 
 var app = builder.Build();
 
-DataSeeding();
+
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+	app.UseHsts();
 }
 
 app.UseNotyf();
@@ -74,22 +74,24 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "area",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+	name: "area",
+	pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
+
+DataSeeding();
 
 app.Run();
 
 void DataSeeding()
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var DbInitialize = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        DbInitialize.Initialize();
-    }
+	using (var scope = app.Services.CreateScope())
+	{
+		var DbInitialize = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+		DbInitialize.Initialize();
+	}
 }
 
 

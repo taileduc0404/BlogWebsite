@@ -20,11 +20,12 @@
 							<span asp-validation-for="Title" class="text-danger"></span>
 						</div>
 						<div class="mb-2">
-							<label>Tag</label>
+							<label>Topic</label>
 							<input type="text" asp-for="TopicName" class="form-control" id="topics" list="topics-list" />
 							<datalist id="topics-list"></datalist>
-							<span asp-validation-for="TopicName" class="text-danger"></span>
+							<span id="topic-error" class="text-danger"></span> <!-- Thêm vùng hiển thị thông báo lỗi -->
 						</div>
+
 						<div class="mb-2">
 							<label>Description</label>
 							<textarea id="textarea" asp-for="Description" class="form-control" rows="8"></textarea>
@@ -59,6 +60,18 @@
 							});
 						}
 					});
+				}
+			});
+		});
+
+		$(document).ready(function () {
+			$("form").submit(function (event) {
+				var topic = $("#topics").val(); // Lấy giá trị của trường "Topic"
+
+				if (topic.trim() === "") { // Kiểm tra nếu trường trống
+					$("#topic-error").text("Please enter a topic"); // Hiển thị thông báo lỗi
+					$("#topics").focus();
+					event.preventDefault(); // Ngăn form gửi đi nếu trường trống
 				}
 			});
 		});
