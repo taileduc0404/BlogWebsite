@@ -160,6 +160,7 @@ namespace BlogWebsite.Controllers
 			return View(vm);
 		}
 
+		[HttpGet("About")]
 		public IActionResult About()
 		{
 			return View();
