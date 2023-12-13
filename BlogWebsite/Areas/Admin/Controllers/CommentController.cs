@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
+using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -34,7 +35,12 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		{
 			int pageNumber = page ?? 1;
 			int pageSize = 6;
+
+			var loggedInUser = await _userManager.GetUserAsync(User);
+			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser);
+
 			var postsQuery = _context.posts!
+				.Where(x => loggedInUserRole[0] == WebsiteRole.WebisteAdmin || x.ApplicationUserId == loggedInUser.Id)
 				.AsQueryable(); // Chuyển danh sách bài post sang IQueryable để bắt đầu truy vấn
 
 			if (!string.IsNullOrEmpty(keyword))

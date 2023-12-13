@@ -21,7 +21,7 @@ namespace BlogWebsite.Controllers
 			_userManager = userManager;
 			_notification = notification;
 		}
-		[HttpGet("[controller]/{slug}")]
+		[HttpGet("ForumPost/{slug}")]
 		public async Task<IActionResult> ForumPost(string slug)
 		{
 			var fpost = await _context.forumPosts!
