@@ -89,7 +89,7 @@ namespace BlogWebsite.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> DeleteAnswer(int commentId, int postId)
+		public async Task<IActionResult> DeleteAnswer(int answerId, int postId)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null || !User.Identity!.IsAuthenticated)
@@ -98,16 +98,15 @@ namespace BlogWebsite.Controllers
 			}
 			else
 			{
-				var commentToDelete = await _context.comments!
-					.Include(c => c.Replies)
-					.FirstOrDefaultAsync(c => c.Id == commentId || c.ParentCommentId == commentId);
+				var answerToDelete = await _context.comments!
+					.FirstOrDefaultAsync(c => c.Id == answerId || c.ParentCommentId == answerId);
 
-				if (commentToDelete == null)
+				if (answerToDelete == null)
 				{
 					return RedirectToAction("Index", "Home");
 				}
 
-				_context.comments!.Remove(commentToDelete);
+				_context.comments!.Remove(answerToDelete);
 				await _context.SaveChangesAsync();
 
 				return RedirectToAction("Index", "Home");
