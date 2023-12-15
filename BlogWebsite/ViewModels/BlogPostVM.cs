@@ -12,6 +12,7 @@ namespace BlogWebsite.ViewModels
 		public string? AuthorName { get; set; }
 		public string? ThumbnailUrl { get; set; }
 		public string? TagName { get; set; }
+		public int? TagId { get; set; }
 
 		public List<Comment> Comments { get; set; }
 		public List<Comment> MyComments { get; set; } // Danh sách các comment của người dùng hiện tại

@@ -40,6 +40,11 @@
 
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 					<li><hr class="dropdown-divider" /></li>
+					<form asp-action="Index" asp-controller="Home" asp-area="Default" method="post">
+						<button type="submit" class="dropdown-item">
+							Home
+						</button>
+					</form>
 					<form asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">
 						<button type="submit" class="dropdown-item">
 							<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

@@ -1,11 +1,12 @@
 ﻿@model BlogWebsite.ViewModels.HomeVM
 
+
 @{
-	ViewData["Title"] = "Post Tag";
+	ViewData["Title"] = "PostTag";
 }
 
 <div class="container">
-	@if (Model.posts != null && Model.posts!.Any())
+	@if (Model.posts != null && Model.posts!.Count > 0)
 	{
 		<div class="row mt-5">
 			@foreach (var post in Model.posts!)
