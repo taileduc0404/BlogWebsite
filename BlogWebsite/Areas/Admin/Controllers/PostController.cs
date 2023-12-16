@@ -130,7 +130,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeletePost(int id)
 		{
-			var post = await _context.posts!.Include(x=>x.Comments).SingleOrDefaultAsync(x => x.Id == id);
+			var post = await _context.posts!.Include(x => x.Comments).SingleOrDefaultAsync(x => x.Id == id);
 
 			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);
@@ -219,18 +219,18 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 		}
 
-        [HttpGet]
-        public IActionResult AutocompleteTags(string keyword)
-        {
-            var tags = _context.tags!
-                .Where(t => t.Name!.StartsWith(keyword))
-                .Select(t => t.Name)
-                .ToList();
+		[HttpGet]
+		public IActionResult AutocompleteTags(string keyword)
+		{
+			var tags = _context.tags!
+				.Where(t => t.Name!.StartsWith(keyword))
+				.Select(t => t.Name)
+				.ToList();
 
-            return Json(tags);
-        }
+			return Json(tags);
+		}
 
-        public string UploadImage(IFormFile file)
+		public string UploadImage(IFormFile file)
 		{
 			string uniqueFileName = "";
 			var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "thumbnails");

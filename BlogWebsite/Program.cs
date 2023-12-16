@@ -3,9 +3,9 @@ using AspNetCoreHero.ToastNotification.Extensions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
 using BlogWebsite.Utilites;
+using EmailService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 

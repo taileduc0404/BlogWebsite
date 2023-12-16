@@ -126,7 +126,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteForumPost(int id)
 		{
-			var post = await _context.forumPosts!.Include(x=>x.Answer).SingleOrDefaultAsync(x => x.Id == id);
+			var post = await _context.forumPosts!.Include(x => x.Answer).SingleOrDefaultAsync(x => x.Id == id);
 
 			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);

@@ -8,7 +8,7 @@
 		public int? PostId { get; set; } // Khóa ngoại tham chiếu đến Post
 		public Post? Post { get; set; }
 
-		public int? ForumPostId { get; set; }	
+		public int? ForumPostId { get; set; }
 		public ForumPost? ForumPost { get; set; }
 
 		public string? ApplicationUserId { get; set; }  // Khóa ngoại tham chiếu đến ApplicationUser

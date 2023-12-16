@@ -2,7 +2,6 @@
 using BlogWebsite.Data;
 using BlogWebsite.Models;
 using BlogWebsite.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

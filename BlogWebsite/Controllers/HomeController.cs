@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using X.PagedList;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace BlogWebsite.Controllers
 {

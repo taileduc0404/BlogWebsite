@@ -2,11 +2,11 @@
 using BlogWebsite.Models;
 using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
+using EmailService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EmailService;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -67,7 +67,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			if (!ModelState.IsValid)
 				return View(vm);
 			var user = await _userManager.FindByEmailAsync(vm.Email);
-			var checkUserByEmail = await _userManager.FindByEmailAsync(vm.Email);	
+			var checkUserByEmail = await _userManager.FindByEmailAsync(vm.Email);
 			if (user == null)
 			{
 				return RedirectToAction(nameof(ForgotPasswordConfirmationError));
@@ -80,7 +80,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				await _emailSender.SendEmailAsync(message);
 				return RedirectToAction(nameof(ForgotPasswordConfirmation));
 			}
-			
+
 		}
 
 		[HttpGet("ForgotPasswordConfirmation")]
@@ -125,7 +125,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			var applicationUser = new ApplicationUser()
 			{
 				FirstName = vm.FirstName,
-				LastName = vm.LastName,	
+				LastName = vm.LastName,
 				Email = vm.Email,
 				UserName = vm.UserName
 			};

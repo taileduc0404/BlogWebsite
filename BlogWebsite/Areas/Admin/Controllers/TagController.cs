@@ -1,7 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
-using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -134,11 +133,11 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteTag(int id)
 		{
-			var tag = await _context.tags!.Include(x=>x.posts)!.ThenInclude(y=>y.Comments).SingleOrDefaultAsync(x => x.Id == id);
+			var tag = await _context.tags!.Include(x => x.posts)!.ThenInclude(y => y.Comments).SingleOrDefaultAsync(x => x.Id == id);
 
 			if (tag != null)
 			{
-				foreach(var post in tag.posts!)
+				foreach (var post in tag.posts!)
 				{
 					_context.comments!.RemoveRange(post.Comments!);
 				}

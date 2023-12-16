@@ -4,22 +4,22 @@
 
 namespace BlogWebsite.Migrations
 {
-    public partial class ShortDescriptionOnPost : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "ShortDescription",
-                table: "posts",
-                type: "nvarchar(max)",
-                nullable: true);
-        }
+	public partial class ShortDescriptionOnPost : Migration
+	{
+		protected override void Up(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.AddColumn<string>(
+				name: "ShortDescription",
+				table: "posts",
+				type: "nvarchar(max)",
+				nullable: true);
+		}
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "ShortDescription",
-                table: "posts");
-        }
-    }
+		protected override void Down(MigrationBuilder migrationBuilder)
+		{
+			migrationBuilder.DropColumn(
+				name: "ShortDescription",
+				table: "posts");
+		}
+	}
 }

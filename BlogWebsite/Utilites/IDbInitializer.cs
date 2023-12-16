@@ -1,8 +1,8 @@
 ﻿namespace BlogWebsite.Utilites
 {
-    public interface IDbInitializer
-    {
-        void Initialize();
+	public interface IDbInitializer
+	{
+		void Initialize();
 
-    }
+	}
 }
