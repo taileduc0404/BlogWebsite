@@ -14,7 +14,7 @@
 	{
 		thumbnailUrl = "/thumbnails/" + Model.ThumbnailUrl;
 	}
-	
+
 }
 <!-- Page header with logo and tagline-->
 <header class="py-5 border-bottom mb-4">
@@ -35,7 +35,7 @@
 			<div class="col-lg-4 col-md-6 mb-4">
 				<!-- Blog post-->
 				<div class="card">
-					<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">
+					<a class="thumbnail-container" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" style="text-decoration:none;">
 						@if (post.ThumbnailUrl == null)
 						{
 							<img class="custom-img-fluid" alt="@post.Title" src="~/thumbnails/default_image.webp">
@@ -44,16 +44,16 @@
 						{
 							<img class="custom-img-fluid" alt="@post.Title" src="~/thumbnails/@post.ThumbnailUrl">
 						}
+
+						<div class="card-body">
+							<div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
+							@{
+								//var words = post.Title!.Split(' ');
+								string shortenedTitle = @post.Title!.Length > 28 ? string.Join("", @post.Title.Take(28)) + "..." : post.Title;
+							}
+							<h2 class="card-title h4" title="@post.Title" style="color:#B03A2E;">@shortenedTitle</h2>
+						</div>
 					</a>
-					<div class="card-body">
-						<div class="small text-muted">@post.CreatedDate.ToShortDateString()</div>
-						@{
-							var words = post.Title!.Split(' ');
-							string shortenedTitle = words.Length > 4 ? string.Join(" ", words.Take(4)) + "..." : post.Title;
-						}
-						<h2 class="card-title h4" title="@post.Title" style="color:#B03A2E;">@shortenedTitle</h2>
-						<a class="btn custom-btn btn-primary" asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" style="background-color:#85C1E9;color:#454545;">Read more →</a>
-					</div>
 				</div>
 			</div>
 		}
