@@ -39,13 +39,13 @@
 
 							@if (!string.IsNullOrEmpty(Model.TagName))
 							{
-								<button type="button" class="btn px-3 me-1" style="color:white;background-color: #28B463;">
+								<button type="button" class="btn px-3 me-1" style="color:white;background-color: #146138;">
 									@Model.TagName
 								</button>
 							}
 							else
 							{
-								<button type="button" class="btn px-3 me-1" style="background-color: #28B463;">
+								<button type="button" class="btn px-3 me-1" style="background-color: #146138;">
 									None Tag
 								</button>
 							}
@@ -98,9 +98,9 @@
 				<!--Section: Reply-->
 
 
-				<a href="" onclick="toggleCommentForm(event)" aria-label="comments" title="comments" class="btn btn-primary me-1">
+				<button name="link" onclick="toggleCommentForm(event)" aria-label="Add Comment" title="comments" class="btn btn-primary me-1">
 					<i class="fas fa-comments me-2"></i>Add Comment
-				</a>
+				</button>
 
 				<form id="commentForm" asp-controller="Blog" asp-action="AddComment" method="post" style="display: none;">
 					<!-- Các trường dữ liệu cho comment -->
@@ -279,7 +279,7 @@
 						<h5 class="mb-4">Learn the newest Bootstrap 5</h5>
 
 						<div class="embed-responsive embed-responsive-16by9 shadow-4-strong">
-							<iframe class="embed-responsive-item rounded-5" src="https://www.youtube.com/embed/1LfM0fgxio4?si=lkzlniDPTRa-IhT0"
+							<iframe title="videoAds" class="embed-responsive-item rounded-5" src="https://www.youtube.com/embed/1LfM0fgxio4?si=lkzlniDPTRa-IhT0"
 									allowfullscreen></iframe>
 						</div>
 					</section>
