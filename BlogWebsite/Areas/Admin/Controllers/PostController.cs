@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Slugify;
+using System.Net;
+using System.Web;
 using X.PagedList;
 
 namespace BlogWebsite.Areas.Admin.Controllers
@@ -19,15 +22,18 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		public INotyfService _notification { get; }
 		private IWebHostEnvironment _webHostEnvironment;
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly ISlugHelper _slugHelper;
 		public PostController(ApplicationDbContext context,
 							  INotyfService notyfService,
 							  IWebHostEnvironment webHostEnvironment,
-							  UserManager<ApplicationUser> userManager)
+							  UserManager<ApplicationUser> userManager,
+							  ISlugHelper slugHelper)
 		{
 			_context = context;
 			_webHostEnvironment = webHostEnvironment;
 			_userManager = userManager;
 			_notification = notyfService;
+			_slugHelper = slugHelper;
 		}
 
 		[HttpGet("Post")]
@@ -111,8 +117,9 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			if (post.Title != null)
 			{
-				string slug = vm.Title!.Trim();
-				slug = slug.Replace(" ", "-");
+				var slugHelper = new SlugHelper();
+				string slug = slugHelper.GenerateSlug(vm.Title!.Trim());
+
 				post.Slug = slug + "-" + Guid.NewGuid();
 			}
 

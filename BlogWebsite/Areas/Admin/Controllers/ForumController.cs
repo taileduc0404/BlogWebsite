@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Slugify;
 using X.PagedList;
 
 namespace BlogWebsite.Areas.Admin.Controllers
@@ -112,8 +113,9 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 			if (fpost.Title != null)
 			{
-				string slug = vm.Title!.Trim();
-				slug = slug.Replace(" ", "-");
+				var slugHelper = new SlugHelper();
+				string slug = slugHelper.GenerateSlug(fpost.Title.Trim());
+
 				fpost.Slug = slug + "-" + Guid.NewGuid();
 			}
 

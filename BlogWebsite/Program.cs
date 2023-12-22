@@ -6,6 +6,7 @@ using BlogWebsite.Utilites;
 using EmailService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Slugify;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddDefaultTokenProviders();
 
-
+// SlugHelper
+builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
 
 // Email service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration")
