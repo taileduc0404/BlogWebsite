@@ -39,12 +39,12 @@
 				</a>
 
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-					<li><hr class="dropdown-divider" /></li>
 					<form asp-action="Index" asp-controller="Home" asp-area="Default" method="post">
 						<button type="submit" class="dropdown-item">
 							Home
 						</button>
 					</form>
+					<li><hr class="dropdown-divider" /></li>
 					<form asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">
 						<button type="submit" class="dropdown-item">
 							<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -103,10 +103,6 @@
 										<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
 										Home
 									</a>
-									<a class="nav-link" href="charts.html">
-										<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-										About
-									</a>
 								</nav>
 							</div>
 						}
@@ -121,7 +117,7 @@
 			<footer class="py-4 bg-light mt-auto">
 				<div class="container-fluid px-4">
 					<div class="d-flex align-items-center justify-content-between small">
-						<div class="text-muted">Copyright &copy; Your Website 2023</div>
+						<div class="text-muted">Copyright &copy; Le Duc Tai - Bui Ngoc Na 2023</div>
 						<div>
 							<a href="#">Privacy Policy</a>
 							&middot;
