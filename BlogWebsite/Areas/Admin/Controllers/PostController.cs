@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Slugify;
-using System.Net;
-using System.Web;
 using X.PagedList;
 
 namespace BlogWebsite.Areas.Admin.Controllers
