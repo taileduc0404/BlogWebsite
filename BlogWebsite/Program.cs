@@ -12,15 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure Identity and Email Service
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 {
-	opt.Password.RequiredLength = 7;
-	opt.Password.RequireDigit = false;
-	opt.Password.RequireUppercase = false;
+	opt.Password.RequiredLength = 6;
+	opt.Password.RequireDigit = true;
+	opt.Password.RequireUppercase = true;
+	opt.Password.RequireNonAlphanumeric = true;
+	opt.Password.RequireLowercase = true;
 	opt.User.RequireUniqueEmail = true;
 	opt.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(
 		typeof(DataProtectorTokenProvider<ApplicationUser>)));
@@ -43,7 +46,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromMinutes(20); // Thời gian phiên làm việc
+	options.IdleTimeout = TimeSpan.FromMinutes(2); // Thời gian phiên làm việc
 });
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();

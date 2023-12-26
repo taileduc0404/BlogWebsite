@@ -222,8 +222,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			}
 		}
 
-
-
 		[HttpPost]
 		[Authorize]
 		public IActionResult Logout()
