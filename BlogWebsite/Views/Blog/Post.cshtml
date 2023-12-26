@@ -98,18 +98,28 @@
 				<!--Section: Reply-->
 
 
-				<button name="link" onclick="toggleCommentForm(event)" aria-label="Add Comment" title="comments" class="btn btn-primary me-1">
-					<i class="fas fa-comments me-2"></i>Add Comment
-				</button>
+				
 
-				<form id="commentForm" asp-controller="Blog" asp-action="AddComment" method="post" style="display: none;">
-					<!-- Các trường dữ liệu cho comment -->
-					<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
-					<div class="form-outline mb-2">
-						<textarea class="form-control mt-2" id="description" name="description" rows="4" required aria-label="Description" placeholder="Enter Your Comment Here..." aria-required="true"></textarea>
-					</div>
-					<button type="submit" class="btn btn-primary btn-block mb-2 mt-2">Submit Comment</button>
-				</form>
+				@if (User.Identity!.IsAuthenticated)
+				{
+					<button name="link" onclick="toggleCommentForm(event)" aria-label="Add Comment" title="comments" class="btn btn-primary me-1">
+						<i class="fas fa-comments me-2"></i>Add Comment
+					</button>
+					<form id="commentForm" asp-controller="Blog" asp-action="AddComment" method="post" style="display: none;">
+						<!-- Các trường dữ liệu cho comment -->
+						<input type="hidden" name="postId" value="@Model.Id" /> <!-- Sử dụng Id của post hiện tại -->
+						<div class="form-outline mb-2">
+							<textarea class="form-control mt-2" id="description" name="description" rows="4" required aria-label="Description" placeholder="Enter Your Comment Here..." aria-required="true"></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary btn-block mb-2 mt-2">Submit Comment</button>
+					</form>
+				}
+				else
+				{
+					<a type="button" asp-action="Login" asp-controller="User" asp-area="Admin" aria-label="Add Comment" title="comments" class="btn btn-primary me-1"><i class="fas fa-comments me-2"></i>Add Comment</a>
+				}
+
+				
 
 				<!--Section: Comments-->
 				<!-- Hiển thị danh sách comment -->
