@@ -114,8 +114,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			if (fpost.Title != null)
 			{
 				var slugHelper = new SlugHelper();
-				string slug = slugHelper.GenerateSlug(fpost.Title.Trim());
-
+				string slug = slugHelper.GenerateSlug(vm.Title!.Trim());
 				fpost.Slug = slug + "-" + Guid.NewGuid();
 			}
 

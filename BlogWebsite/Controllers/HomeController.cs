@@ -41,7 +41,7 @@ namespace BlogWebsite.Controllers
 
 			vm.posts = await postsQuery.ToPagedListAsync(pageNumber, pageSize);
 
-			ViewData["keyword"] = keyword;  // Pass the keyword to the view
+			ViewData["keyword"] = keyword;
 
 			return View(vm);
 		}
