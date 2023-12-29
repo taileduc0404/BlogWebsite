@@ -77,7 +77,10 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpPost("CreatePost")]
 		public async Task<IActionResult> CreatePost(CreatPostVM vm)
 		{
-			if (!ModelState.IsValid) { return View(vm); }
+			if (!ModelState.IsValid)
+			{
+				return View(vm);
+			}
 
 			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 			var tag = await _context.tags!.FirstOrDefaultAsync(t => t.Name == vm.TagName);

@@ -10,6 +10,7 @@ body {
     font-family: 'Mulish', sans-serif;
     display: flex;
     justify-content: center;
+    overflow-x: hidden;
     align-items: center;
     width: 100%;
     min-height: 100vh;
@@ -21,7 +22,7 @@ body {
     height: 650px;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
     border-radius: 10px;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* .container .box {

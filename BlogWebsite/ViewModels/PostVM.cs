@@ -1,4 +1,5 @@
-﻿namespace BlogWebsite.ViewModels
+﻿
+namespace BlogWebsite.ViewModels
 {
 	public class PostVM
 	{
