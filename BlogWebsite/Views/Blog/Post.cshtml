@@ -50,6 +50,7 @@
 								</button>
 							}
 
+
 						</div>
 						<div class="col-lg-3 text-center text-lg-end">
 							<div class="d-flex justify-content-end">
@@ -67,6 +68,20 @@
 									<i class="fas fa-comments"></i>
 								</button>
 							</div>
+							<br>
+							@*<div>
+								<form id="likeDislikeForm" asp-controller="Post" asp-action="Status" asp-route-postId="@Model.Id" method="post">
+									<button type="button" id="likeButton" style="color:black; border:none;background-color:white;">
+										<i id="likeIcon" class="fa-regular fa-thumbs-up fa-2xl"></i> @Model.CountLike
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" id="dislikeButton" style="color:black;border:none; background-color:white;">
+										<i id="dislikeIcon" class="fa-regular fa-thumbs-down fa-2xl"></i> @Model.CountDisLike
+									</button>
+									<input type="hidden" name="isLike" id="isLikeInput" value="" /> <!-- Hidden input để lưu trữ giá trị Like hoặc Dislike -->
+								</form>
+
+							</div>*@
 						</div>
 					</div>
 				</section>
@@ -96,10 +111,6 @@
 				<!--Section: Share buttons-->
 				<!--Section: Comments-->
 				<!--Section: Reply-->
-
-
-				
-
 				@if (User.Identity!.IsAuthenticated)
 				{
 					<button name="link" onclick="toggleCommentForm(event)" aria-label="Add Comment" title="comments" class="btn btn-primary me-1">
@@ -119,7 +130,7 @@
 					<a type="button" asp-action="Login" asp-controller="User" asp-area="Admin" aria-label="Add Comment" title="comments" class="btn btn-primary me-1"><i class="fas fa-comments me-2"></i>Add Comment</a>
 				}
 
-				
+
 
 				<!--Section: Comments-->
 				<!-- Hiển thị danh sách comment -->
@@ -353,4 +364,32 @@
 		}
 	}
 
+</script>
+
+<script>
+	const likeButton = document.getElementById('likeButton');
+	const likeIcon = document.getElementById('likeIcon');
+	const dislikeButton = document.getElementById('dislikeButton');
+	const dislikeIcon = document.getElementById('dislikeIcon');
+	const isLikeInput = document.getElementById('isLikeInput');
+
+	likeButton.addEventListener('click', function () {
+		likeIcon.classList.add('fa-solid', 'fa-thumbs-up'); // Thêm class để thay đổi icon thành solid icon Like
+		likeIcon.classList.remove('fa-regular');
+		likeButton.style.color = 'blue'; // Thay đổi màu chữ của nút thành màu xanh
+		dislikeIcon.classList.add('fa-regular', 'fa-thumbs-down'); // Reset icon dislike về trạng thái ban đầu
+		dislikeIcon.classList.remove('fa-solid');
+		dislikeButton.style.color = 'black'; // Reset màu chữ của nút dislike về màu đen
+		isLikeInput.value = "Like"; // Đặt giá trị của hidden input thành "Like"
+	});
+
+	dislikeButton.addEventListener('click', function () {
+		dislikeIcon.classList.add('fa-solid', 'fa-thumbs-down'); // Thêm class để thay đổi icon thành solid icon Dislike
+		dislikeIcon.classList.remove('fa-regular');
+		dislikeButton.style.color = 'blue'; // Thay đổi màu chữ của nút thành màu xanh
+		likeIcon.classList.add('fa-regular', 'fa-thumbs-up'); // Reset icon like về trạng thái ban đầu
+		likeIcon.classList.remove('fa-solid');
+		likeButton.style.color = 'black'; // Reset màu chữ của nút like về màu đen
+		isLikeInput.value = "Dislike"; // Đặt giá trị của hidden input thành "Dislike"
+	});
 </script>

@@ -39,11 +39,13 @@ namespace BlogWebsite.Controllers
 			post.ViewCount++;
 			await _context.SaveChangesAsync();
 
+
 			var allComments = await _context.comments!
 				.Where(c => c.PostId == post.Id)
 				.Include(c => c.ApplicationUsers)
 				.Include(c => c.Replies) // Bao gồm danh sách replies của mỗi comment
 				.ToListAsync();
+
 			var userId = _userManager.GetUserId(User);
 			var myComment = allComments.Where(c => c.ApplicationUserId == userId).ToList();
 
@@ -58,7 +60,7 @@ namespace BlogWebsite.Controllers
 				ThumbnailUrl = post.ThumbnailUrl,
 				Description = post.Description,
 				Comments = allComments,
-				MyComments = myComment
+				MyComments = myComment,
 			};
 
 			return View(vm);
@@ -103,12 +105,6 @@ namespace BlogWebsite.Controllers
 
 			var post = await _context.posts!
 				.FirstOrDefaultAsync(p => p.Id == postId);
-
-			//if (post == null)
-			//{
-			//	_notification.Error("Post not found!");
-			//	return RedirectToAction("NotFound", "Error");
-			//}
 
 			var parentComment = await _context.comments!
 				.Include(c => c.Replies)
@@ -160,6 +156,47 @@ namespace BlogWebsite.Controllers
 
 				return RedirectToAction("Index", "Home");
 			}
+		}
+
+
+		public async Task<IActionResult> Status(int postId, bool isLike = true)
+		{
+			var user = await _userManager.GetUserAsync(User);
+
+			var post = await _context.posts!.FirstOrDefaultAsync(x => x.Id == postId);
+
+			if (isLike)
+			{
+				if (!post!.IsLike)
+				{
+					post.IsLike = true;
+					post.CountLike++;
+					post.CountDisLike--;
+				}
+				else
+				{
+					post.IsLike = false;
+					post.CountLike--;
+				}
+			}
+			else
+			{
+				if (post!.IsLike)
+				{
+					post.IsLike = false;
+					post.CountLike--;
+					post.CountDisLike++;
+				}
+				else
+				{
+					post.IsLike = true;
+					post.CountDisLike++;
+				}
+			}
+
+			_context.posts!.Update(post);
+			_context.SaveChanges();
+			return RedirectToAction("Post", "Blog", new { slug = post!.Slug });
 		}
 
 	}

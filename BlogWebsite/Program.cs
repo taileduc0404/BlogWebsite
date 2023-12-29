@@ -60,6 +60,7 @@ var app = builder.Build();
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
