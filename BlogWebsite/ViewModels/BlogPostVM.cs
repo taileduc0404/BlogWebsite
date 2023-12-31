@@ -14,6 +14,8 @@ namespace BlogWebsite.ViewModels
 		public string? TagName { get; set; }
 		public int? TagId { get; set; }
 
+		public int LikeCount { get; set; }
+
 		public List<Comment> Comments { get; set; }
 		public List<Comment> MyComments { get; set; } // Danh sách các comment của người dùng hiện tại
 

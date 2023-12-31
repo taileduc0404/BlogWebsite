@@ -68,20 +68,25 @@
 									<i class="fas fa-comments"></i>
 								</button>
 							</div>
-							<br>
-							@*<div>
-								<form id="likeDislikeForm" asp-controller="Post" asp-action="Status" asp-route-postId="@Model.Id" method="post">
-									<button type="button" id="likeButton" style="color:black; border:none;background-color:white;">
-										<i id="likeIcon" class="fa-regular fa-thumbs-up fa-2xl"></i> @Model.CountLike
+							<br />
+							<form asp-controller="Blog" asp-action="LikePost" method="post">
+								<input type="hidden" name="postId" value="@Model.Id" />
+								<div>
+									<button id="likeButton" type="submit" style="background-color:white;border:none;">
+										@*<i class="fa-regular fa-heart fa-2xl"></i>*@
+										<i class="fa-solid fa-chevron-up fa-2xl"></i>
 									</button>
-									&nbsp;&nbsp;
-									<button type="button" id="dislikeButton" style="color:black;border:none; background-color:white;">
-										<i id="dislikeIcon" class="fa-regular fa-thumbs-down fa-2xl"></i> @Model.CountDisLike
-									</button>
-									<input type="hidden" name="isLike" id="isLikeInput" value="" /> <!-- Hidden input để lưu trữ giá trị Like hoặc Dislike -->
-								</form>
+								</div>
+								<i id="likeCount" style="color:black;font-size:30px;">@Model.LikeCount</i>
 
-							</div>*@
+								<div>
+									<button id="likeButton" type="submit" style="background-color:white;border:none;">
+										@*<i class="fa-regular fa-heart fa-2xl"></i>*@
+										<i class="fa-solid fa-angle-down fa-2xl"></i>
+									</button>
+								</div>
+							</form>
+
 						</div>
 					</div>
 				</section>
@@ -366,30 +371,30 @@
 
 </script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-	const likeButton = document.getElementById('likeButton');
-	const likeIcon = document.getElementById('likeIcon');
-	const dislikeButton = document.getElementById('dislikeButton');
-	const dislikeIcon = document.getElementById('dislikeIcon');
-	const isLikeInput = document.getElementById('isLikeInput');
+	$(document).ready(function () {
+		var isLiked = /* Kiểm tra xem người dùng đã like hay chưa */;
 
-	likeButton.addEventListener('click', function () {
-		likeIcon.classList.add('fa-solid', 'fa-thumbs-up'); // Thêm class để thay đổi icon thành solid icon Like
-		likeIcon.classList.remove('fa-regular');
-		likeButton.style.color = 'blue'; // Thay đổi màu chữ của nút thành màu xanh
-		dislikeIcon.classList.add('fa-regular', 'fa-thumbs-down'); // Reset icon dislike về trạng thái ban đầu
-		dislikeIcon.classList.remove('fa-solid');
-		dislikeButton.style.color = 'black'; // Reset màu chữ của nút dislike về màu đen
-		isLikeInput.value = "Like"; // Đặt giá trị của hidden input thành "Like"
-	});
+		// Cập nhật trạng thái ban đầu của nút like dựa trên isLiked
+		var likeButton = $('#likeButton');
+		if (isLiked) {
+			likeButton.css('background-color', 'blue'); // Màu xanh khi đã like
+		}
 
-	dislikeButton.addEventListener('click', function () {
-		dislikeIcon.classList.add('fa-solid', 'fa-thumbs-down'); // Thêm class để thay đổi icon thành solid icon Dislike
-		dislikeIcon.classList.remove('fa-regular');
-		dislikeButton.style.color = 'blue'; // Thay đổi màu chữ của nút thành màu xanh
-		likeIcon.classList.add('fa-regular', 'fa-thumbs-up'); // Reset icon like về trạng thái ban đầu
-		likeIcon.classList.remove('fa-solid');
-		likeButton.style.color = 'black'; // Reset màu chữ của nút like về màu đen
-		isLikeInput.value = "Dislike"; // Đặt giá trị của hidden input thành "Dislike"
+		// Sự kiện click cho nút like
+		likeButton.on('click', function (event) {
+			event.preventDefault(); // Ngăn chặn hành động submit mặc định của form
+
+			// Thay đổi màu sắc của nút like
+			if (likeButton.css('background-color') === 'rgb(255, 255, 255)') {
+				likeButton.css('background-color', 'blue'); // Màu xanh khi chưa like
+			} else {
+				likeButton.css('background-color', 'white'); // Màu trắng khi đã like
+			}
+
+			// Gửi form bằng JavaScript
+			$(this).closest('form').submit();
+		});
 	});
 </script>

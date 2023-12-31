@@ -5,6 +5,8 @@ using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
 
 namespace BlogWebsite.Controllers
 {
@@ -49,6 +51,7 @@ namespace BlogWebsite.Controllers
 			var userId = _userManager.GetUserId(User);
 			var myComment = allComments.Where(c => c.ApplicationUserId == userId).ToList();
 
+
 			var vm = new BlogPostVM()
 			{
 				Id = post.Id,
@@ -61,6 +64,7 @@ namespace BlogWebsite.Controllers
 				Description = post.Description,
 				Comments = allComments,
 				MyComments = myComment,
+				LikeCount = post.LikeCount
 			};
 
 			return View(vm);
@@ -157,46 +161,56 @@ namespace BlogWebsite.Controllers
 				return RedirectToAction("Index", "Home");
 			}
 		}
-
-
-		public async Task<IActionResult> Status(int postId, bool isLike = true)
+		[HttpPost]
+		public async Task<IActionResult> LikePost(int postId)
 		{
-			var user = await _userManager.GetUserAsync(User);
-
-			var post = await _context.posts!.FirstOrDefaultAsync(x => x.Id == postId);
-
-			if (isLike)
+			//nếu người dùng chưa đăng nhập thì chuyển hướng đến trang đăng nhập
+			if (!User.Identity!.IsAuthenticated)
 			{
-				if (!post!.IsLike)
+				return RedirectToAction("Login", "User", new { area = "Admin" });
+			}
+
+			//lấy ra id của bài post
+			var post = await _context.posts!.FirstOrDefaultAsync(p => p.Id == postId);
+
+			//lấy ra thông tin người dùng đang đăng nhập
+
+			//cách 1
+			//string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+			//cách 2
+			var currentUserId = (await _userManager.GetUserAsync(User))?.Id;
+
+			if (post != null)
+			{
+				//kiểm tra và lấy ra reaction đã tồn tại trong bài post cùng với userId của người like hiện tại
+				var existingReaction = await _context.reactions!
+					.FirstOrDefaultAsync(r => r.PostId == postId && r.UserId == currentUserId);
+
+				if (existingReaction != null)
 				{
-					post.IsLike = true;
-					post.CountLike++;
-					post.CountDisLike--;
+					_context.reactions!.Remove(existingReaction);
+					post.LikeCount = Math.Max(post.LikeCount - 1, 0);  //giảm số lượt like và ràng buộc LikeCount không được âm
 				}
 				else
 				{
-					post.IsLike = false;
-					post.CountLike--;
+					var newReaction = new Reaction
+					{
+						PostId = postId,
+						UserId = currentUserId,
+						IsLike = true
+					};
+
+					_context.reactions!.Add(newReaction);
+					post.LikeCount++; // Tăng số lượt "like"
 				}
-			}
-			else
-			{
-				if (post!.IsLike)
-				{
-					post.IsLike = false;
-					post.CountLike--;
-					post.CountDisLike++;
-				}
-				else
-				{
-					post.IsLike = true;
-					post.CountDisLike++;
-				}
+
+				await _context.SaveChangesAsync();
 			}
 
-			_context.posts!.Update(post);
-			_context.SaveChanges();
-			return RedirectToAction("Post", "Blog", new { slug = post!.Slug });
+			// Lấy số lượt "like" sau khi đã cập nhật
+			var updatedPost = await _context.posts!.FirstOrDefaultAsync(p => p.Id == postId);
+			return RedirectToAction("Post", "Blog", new { slug = updatedPost?.Slug });
 		}
 
 	}

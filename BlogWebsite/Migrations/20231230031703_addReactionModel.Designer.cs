@@ -4,6 +4,7 @@ using BlogWebsite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231230031703_addReactionModel")]
+    partial class addReactionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,9 +146,6 @@ namespace BlogWebsite.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LikeCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
 
@@ -192,7 +191,7 @@ namespace BlogWebsite.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("reactions");
+                    b.ToTable("Reaction");
                 });
 
             modelBuilder.Entity("BlogWebsite.Models.Setting", b =>

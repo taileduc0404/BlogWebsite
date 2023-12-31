@@ -18,6 +18,7 @@ namespace BlogWebsite.Data
 		public DbSet<Topic>? topics { get; set; }
 		public DbSet<Comment>? comments { get; set; }
 		public DbSet<Setting>? settings { get; set; }
+		public DbSet<Reaction>? reactions { get; set; }
 
 
 	}
