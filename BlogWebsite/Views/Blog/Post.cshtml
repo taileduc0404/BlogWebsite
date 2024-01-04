@@ -17,6 +17,13 @@
 	}
 }
 
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> _userManager;
+@*@{
+	var loggedInUser = new ApplicationUser();
+	loggedInUser = _userManager.Users.FirstOrDefault(x => x.UserName == User.Identity!.Name);
+}*@
+
 
 <main class="mt-4 mb-5">
 	<div class="container">
@@ -69,23 +76,50 @@
 								</button>
 							</div>
 							<br />
-							<form asp-controller="Blog" asp-action="LikePost" method="post">
-								<input type="hidden" name="postId" value="@Model.Id" />
-								<div>
-									<button id="likeButton" type="submit" style="background-color:white;border:none;">
-										@*<i class="fa-regular fa-heart fa-2xl"></i>*@
-										<i class="fa-solid fa-chevron-up fa-2xl"></i>
-									</button>
-								</div>
-								<i id="likeCount" style="color:black;font-size:30px;">@Model.LikeCount</i>
+							@{
+								bool loggedInUser = User.Identity?.IsAuthenticated ?? false;
+								string currentUserId = "";
 
+								if (loggedInUser)
+								{
+									var currentUser = await _userManager.GetUserAsync(User);
+									currentUserId = currentUser?.Id!;
+								}
+
+								bool hasLiked = Model.Reactions?.Any(r => r.UserId == currentUserId) ?? false;
+							}
+
+							<form asp-controller="Blog" asp-action="LikePost" method="post" style="display: flex; align-items: center;">
+								<input type="hidden" name="postId" value="@Model.Id" />
+								<div style="margin-right: 10px;">
+									@if (loggedInUser)
+									{
+										@if (hasLiked)
+										{
+											<button id="likeButton" type="submit" style="background-color:white; border:none;">
+												<i class="fa-solid fa-heart fa-2xl" style="color: #c02a39;"></i>
+											</button>
+										}
+										else
+										{
+											<button id="likeButton" type="submit" style="background-color:white; border:none;">
+												<i class="fa-regular fa-heart fa-2xl"></i>
+											</button>
+										}
+									}
+									else
+									{
+										<button id="likeButton" type="submit" style="background-color:white; border:none;">
+											<i class="fa-regular fa-heart fa-2xl"></i>
+										</button>
+									}
+								</div>
 								<div>
-									<button id="likeButton" type="submit" style="background-color:white;border:none;">
-										@*<i class="fa-regular fa-heart fa-2xl"></i>*@
-										<i class="fa-solid fa-angle-down fa-2xl"></i>
-									</button>
+									<i id="likeCount" style="color:black; font-size:30px;">@Model.LikeCount</i>
 								</div>
 							</form>
+
+
 
 						</div>
 					</div>
@@ -369,32 +403,4 @@
 		}
 	}
 
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-	$(document).ready(function () {
-		var isLiked = /* Kiểm tra xem người dùng đã like hay chưa */;
-
-		// Cập nhật trạng thái ban đầu của nút like dựa trên isLiked
-		var likeButton = $('#likeButton');
-		if (isLiked) {
-			likeButton.css('background-color', 'blue'); // Màu xanh khi đã like
-		}
-
-		// Sự kiện click cho nút like
-		likeButton.on('click', function (event) {
-			event.preventDefault(); // Ngăn chặn hành động submit mặc định của form
-
-			// Thay đổi màu sắc của nút like
-			if (likeButton.css('background-color') === 'rgb(255, 255, 255)') {
-				likeButton.css('background-color', 'blue'); // Màu xanh khi chưa like
-			} else {
-				likeButton.css('background-color', 'white'); // Màu trắng khi đã like
-			}
-
-			// Gửi form bằng JavaScript
-			$(this).closest('form').submit();
-		});
-	});
 </script>

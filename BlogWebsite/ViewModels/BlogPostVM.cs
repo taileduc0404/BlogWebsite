@@ -18,11 +18,13 @@ namespace BlogWebsite.ViewModels
 
 		public List<Comment> Comments { get; set; }
 		public List<Comment> MyComments { get; set; } // Danh sách các comment của người dùng hiện tại
+		public List<Reaction> Reactions { get; set; }
 
 		public BlogPostVM()
 		{
 			Comments = new List<Comment>();
 			MyComments = new List<Comment>(); // Khởi tạo danh sách MyComments
+			Reactions = new List<Reaction>();
 		}
 	}
 }
