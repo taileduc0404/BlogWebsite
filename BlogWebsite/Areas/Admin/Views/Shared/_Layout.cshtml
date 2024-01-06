@@ -21,7 +21,7 @@
 <body class="sb-nav-fixed">
 	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 		<!-- Navbar Brand-->
-		<a class="navbar-brand ps-3" asp-controller="Post" asp-action="Index" asp-area="Admin">Techno Blog - Admin</a>
+		<a class="navbar-brand ps-3" asp-controller="Post" asp-action="Index" asp-area="Admin">TechVerse - Admin</a>
 		<!-- Sidebar Toggle-->
 		<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" aria-label="Mở thanh bên" href="#!">
 			<i class="fas fa-bars" aria-hidden="true"></i>
@@ -68,44 +68,65 @@
 								Users
 							</a>
 						}
-
-						<a class="nav-link" asp-action="Index" asp-controller="Post" asp-area="Admin">
-							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
-							Posts
-						</a>
-						<a class="nav-link" asp-controller="Tag" asp-action="Index" asp-area="Admin">
-							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
-							Tags
-						</a>
-						<a class="nav-link" asp-controller="Topic" asp-action="Index" asp-area="Admin">
-							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
-							Topics - Forums
-						</a>
-						<a class="nav-link" asp-controller="Forum" asp-action="Index" asp-area="Admin">
-							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
-							Forum Posts
-						</a>
+						
 						<a class="nav-link" asp-controller="Comment" asp-action="Index" asp-area="Admin">
-							<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
+							<div class="sb-nav-link-icon"><i class="fa-solid fa-comment"></i></div>
 							Comment
 						</a>
+						<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePosts" aria-expanded="false" aria-controls="collapsePosts">
+							<div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+							Post
+							<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+						</a>
+						<div class="collapse" id="collapsePosts" aria-labelledby="headingPosts" data-bs-parent="#sidenavAccordion">
+							<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPosts">
+								<a class="nav-link" asp-controller="Tag" asp-action="Index" asp-area="Admin">
+									<div class="sb-nav-link-icon"><i class="fa-solid fa-tag"></i></div>
+									Tags
+								</a>
+								<a class="nav-link" asp-action="Index" asp-controller="Post" asp-area="Admin">
+									<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
+									Posts
+								</a>
+							</nav>
+						</div>
+
+						<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseForum" aria-expanded="false" aria-controls="collapseForum">
+							<div class="sb-nav-link-icon"><i class="fa-solid fa-circle-question"></i></div>
+							Forum
+							<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+						</a>
+						<div class="collapse" id="collapseForum" aria-labelledby="headingForum" data-bs-parent="#sidenavAccordion">
+							<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionForum">
+								<a class="nav-link" asp-controller="Topic" asp-action="Index" asp-area="Admin">
+									<div class="sb-nav-link-icon"><i class="fa-solid fa-tag"></i></div>
+									Topics
+								</a>
+								<a class="nav-link" asp-controller="Forum" asp-action="Index" asp-area="Admin">
+									<div class="sb-nav-link-icon"><i class="fa-solid fa-newspaper"></i></div>
+									Posts
+								</a>
+							</nav>
+						</div>
 						@if (User.IsInRole("Admin"))
 						{
 							<div class="sb-sidenav-menu-heading">Setting</div>
-							<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+							<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">
 								<div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
 								Pages
 								<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 							</a>
-							<div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-								<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+							<div class="collapse" id="collapseSetting" aria-labelledby="headingSetting" data-bs-parent="#sidenavAccordion">
+								<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionSetting">
 									<a class="nav-link" asp-controller="Setting" asp-action="Index" asp-area="Admin">
-										<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+										<div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
 										Home
 									</a>
 								</nav>
 							</div>
 						}
+
+
 					</div>
 				</div>
 			</nav>

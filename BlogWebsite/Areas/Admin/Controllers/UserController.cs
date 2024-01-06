@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using BlogWebsite.Data;
 using BlogWebsite.Models;
 using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
@@ -13,6 +14,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 	[Area("Admin")]
 	public class UserController : Controller
 	{
+		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly INotyfService _notification;
@@ -22,13 +24,15 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		public UserController(UserManager<ApplicationUser> userManager,
 							  SignInManager<ApplicationUser> signInManager,
 							  INotyfService notyfService, IEmailSender emailSender,
-							  EmailConfiguration emailConfig)
+							  EmailConfiguration emailConfig,
+							  ApplicationDbContext context)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_notification = notyfService;
 			_emailSender = emailSender;
 			_emailConfig = emailConfig;
+			_context = context;
 		}
 
 		[Authorize(Roles = "Admin")]
@@ -219,6 +223,52 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			{
 				_notification.Error("Invalid password");
 				return View(vm);
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> DeleteUser(string userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+
+			if (user == null)
+			{
+				_notification.Error("This User Is Not Exist!");
+			}
+
+			var post=await _context.posts!.Where(p=>p.ApplicationUserId == userId).Include(p=>p.Comments).ToListAsync();
+			if (post.Count > 0)
+			{
+				_context.posts!.RemoveRange(post);
+				await _context.SaveChangesAsync();
+			}
+			var fpost = await _context.forumPosts!.Where(p => p.ApplicationUserId == userId).Include(p=>p.Answer).ToListAsync();
+			if (fpost.Count > 0)
+			{
+				_context.forumPosts!.RemoveRange(fpost);
+				await _context.SaveChangesAsync();
+			}
+
+			var commment = await _context.comments!.Where(c=>c.ApplicationUserId == userId).ToListAsync();
+			if(commment.Count > 0)
+			{
+				_context.comments!.RemoveRange(commment);
+				await _context.SaveChangesAsync();
+			}
+
+			var result = await _userManager.DeleteAsync(user!);
+			if (result.Succeeded)
+			{
+				_notification.Success("Delete User Successfully!");
+				return RedirectToAction("Index", "User", new { area = "Admin" });
+
+			}
+			else
+			{
+				_notification.Error("Delete User Fail!");
+				return RedirectToAction("Index", "User", new { area = "Admin" });
+
+
 			}
 		}
 
