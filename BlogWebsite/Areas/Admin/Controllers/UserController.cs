@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Tls;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -47,13 +46,16 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				FirstName = x.FirstName,
 				LastName = x.LastName,
 				UserName = x.UserName,
-				Email = x.Email
+				Email = x.Email,
+				IsLocked = x.IsLocked,
+
 			}).ToList();
 			foreach (var user in vm)
 			{
 				var singleUser = await _userManager.FindByIdAsync(user.Id);
 				var role = await _userManager.GetRolesAsync(singleUser);
 				user.Role = role.FirstOrDefault();
+				user.IsLocked = await _userManager.IsLockedOutAsync(singleUser);
 			}
 
 			return View(vm);
@@ -301,13 +303,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				return RedirectToAction("Index", "User", new { area = "Admin" });
 			}
 
-			var currentUser = await _userManager.GetUserAsync(User);
-
-			if (currentUser != null && currentUser!.Id == userId)
-			{
-				await _signInManager.SignOutAsync();
-				return RedirectToAction("Index", "Home", new { area = "Default" });
-			}
 
 			user.LockoutEnd = DateTimeOffset.MaxValue;
 			var result = await _userManager.UpdateAsync(user);

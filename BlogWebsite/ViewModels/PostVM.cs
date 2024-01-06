@@ -10,6 +10,6 @@ namespace BlogWebsite.ViewModels
 		public string? AuthorName { get; set; }
 		public DateTime CreateDate { get; set; }
 		public string? ThumbnailUrl { get; set; }
-		public int LikeCount { get; set;}
+		public int LikeCount { get; set; }
 	}
 }

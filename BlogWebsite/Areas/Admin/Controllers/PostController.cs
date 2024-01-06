@@ -55,7 +55,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 					CreateDate = x.CreatedDate,
 					ThumbnailUrl = x.ThumbnailUrl,
 					AuthorName = x.ApplicationUsers != null ? x.ApplicationUsers.FirstName + " " + x.ApplicationUsers.LastName : "Unknown Author",
-					LikeCount=x.LikeCount
+					LikeCount = x.LikeCount
 				});
 
 			if (!string.IsNullOrEmpty(keyword))
