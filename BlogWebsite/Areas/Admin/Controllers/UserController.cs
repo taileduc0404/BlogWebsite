@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Tls;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -208,20 +209,36 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				user = await _userManager.FindByNameAsync(vm.Username);
 				if (user == null)
 				{
-					_notification.Error("Username or Email does not exist");
+					_notification.Error("This account does not exist.");
 					return View(vm);
 				}
 			}
 
 			var signInResult = await _signInManager.PasswordSignInAsync(user.UserName, vm.Password, vm.RememberMe, true);
-			if (signInResult.Succeeded)
+
+			if (user.IsLocked)
+			{
+				_notification.Error("Your Account Is Locked!");
+				return View(vm);
+			}
+			else if (signInResult.IsLockedOut)
+			{
+				_notification.Error("Your Account Is Locked!");
+				return View(vm);
+			}
+			else if (signInResult.IsNotAllowed)
+			{
+				_notification.Error("Your Account Is Not Allowed to Sign In.");
+				return View(vm);
+			}
+			else if (signInResult.Succeeded)
 			{
 				_notification.Success("Logged In Successfully!");
 				return RedirectToAction("Index", "Home", new { area = "Default" });
 			}
 			else
 			{
-				_notification.Error("Invalid password");
+				_notification.Error("Invalid Password");
 				return View(vm);
 			}
 		}
@@ -234,23 +251,24 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			if (user == null)
 			{
 				_notification.Error("This User Is Not Exist!");
+				return RedirectToAction("Index", "User", new { area = "Admin" });
 			}
 
-			var post=await _context.posts!.Where(p=>p.ApplicationUserId == userId).Include(p=>p.Comments).ToListAsync();
+			var post = await _context.posts!.Where(p => p.ApplicationUserId == userId).Include(p => p.Comments).ToListAsync();
 			if (post.Count > 0)
 			{
 				_context.posts!.RemoveRange(post);
 				await _context.SaveChangesAsync();
 			}
-			var fpost = await _context.forumPosts!.Where(p => p.ApplicationUserId == userId).Include(p=>p.Answer).ToListAsync();
+			var fpost = await _context.forumPosts!.Where(p => p.ApplicationUserId == userId).Include(p => p.Answer).ToListAsync();
 			if (fpost.Count > 0)
 			{
 				_context.forumPosts!.RemoveRange(fpost);
 				await _context.SaveChangesAsync();
 			}
 
-			var commment = await _context.comments!.Where(c=>c.ApplicationUserId == userId).ToListAsync();
-			if(commment.Count > 0)
+			var commment = await _context.comments!.Where(c => c.ApplicationUserId == userId).ToListAsync();
+			if (commment.Count > 0)
 			{
 				_context.comments!.RemoveRange(commment);
 				await _context.SaveChangesAsync();
@@ -270,6 +288,66 @@ namespace BlogWebsite.Areas.Admin.Controllers
 
 
 			}
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> LockUser(string userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+			{
+				_notification.Error("This User Is Not Exist!");
+				return RedirectToAction("Index", "User", new { area = "Admin" });
+			}
+
+			var currentUser = await _userManager.GetUserAsync(User);
+
+			if (currentUser != null && currentUser!.Id == userId)
+			{
+				await _signInManager.SignOutAsync();
+				return RedirectToAction("Index", "Home", new { area = "Default" });
+			}
+
+			user.LockoutEnd = DateTimeOffset.MaxValue;
+			var result = await _userManager.UpdateAsync(user);
+
+			if (result.Succeeded)
+			{
+				_notification.Success("Lock User Successfully!");
+				user.IsLocked = true;
+			}
+			else
+			{
+				_notification.Error("Lock User Fail!");
+			}
+			return RedirectToAction("Index", "User", new { area = "Admin" });
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> UnlockUser(string userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+			{
+				_notification.Error("This User Is Not Exist!");
+				return RedirectToAction("Index", "User", new { area = "Admin" });
+			}
+
+			user.LockoutEnd = null;
+			var result = await _userManager.UpdateAsync(user);
+
+			if (result.Succeeded)
+			{
+				_notification.Success("Unlock User Successfully!");
+				user.IsLocked = false;
+			}
+			else
+			{
+				_notification.Error("Unlock User Fail!");
+			}
+			return RedirectToAction("Index", "User", new { area = "Admin" });
 		}
 
 		[HttpPost]
