@@ -345,13 +345,22 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return RedirectToAction("Index", "User", new { area = "Admin" });
 		}
 
-		[HttpPost]
+        [HttpPost]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            _signInManager.SignOutAsync();
+            _notification.Success("You logged out successfully!");
+            return RedirectToAction("Index", "Home", new { area = "Default" });
+        }
+
+        [HttpGet("AccessDenied")]
 		[Authorize]
-		public IActionResult Logout()
+		public IActionResult AccessDenied()
 		{
-			_signInManager.SignOutAsync();
-			_notification.Success("You logged out successfully!");
-			return RedirectToAction("Index", "Home", new { area = "Default" });
+			return View();
 		}
+
+		
 	}
 }

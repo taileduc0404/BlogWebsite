@@ -117,7 +117,6 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return View(listOfPostVM);
 		}
 
-
 		[HttpGet("GetTopics")]
 		public IActionResult GetTopics(string term)
 		{

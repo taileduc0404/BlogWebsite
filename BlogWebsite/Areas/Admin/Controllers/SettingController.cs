@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BlogWebsite.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	[Authorize]
+    [Authorize(Roles = "Admin")]
+    [Authorize]
 	public class SettingController : Controller
 	{
 		private readonly ApplicationDbContext _context;
