@@ -63,6 +63,10 @@
 				<div class="sb-sidenav-menu">
 					<div class="nav">
 						<div class="sb-sidenav-menu-heading">Core</div>
+						<a class="nav-link" asp-controller="User" asp-action="EditProfile" asp-area="Admin">
+							<div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
+							My Profile
+						</a>
 						@if (User.IsInRole("Admin"))
 						{
 							<a class="nav-link" asp-controller="User" asp-action="Index" asp-area="Admin">

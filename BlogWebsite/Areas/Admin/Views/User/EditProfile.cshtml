@@ -1,0 +1,46 @@
+﻿@model BlogWebsite.ViewModels.EditProfileVM
+
+@{
+    ViewData["Title"] = " My Profile";
+}
+
+<div class="container-fluid">
+    <a class="btn btn-dark mb-2 mt-2" asp-action="Index" asp-controller="Post" asp-area="Admin">Go Back</a>
+    <div class="card">
+        <div class="card-header bg-dark">
+            <h4 class="card-title text-white">My Profile</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditProfile" asp-controller="User" asp-area="Admin" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="mb-2">
+                            <label>Username</label>
+                            <input type="text" asp-for="Username" class="form-control" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label>FirstName</label>
+                            <input type="text" asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label>LastName</label>
+                            <input type="text" asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-2">
+                            <label>Email</label>
+                            <input type="text" asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

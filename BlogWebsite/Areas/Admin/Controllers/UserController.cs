@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BlogWebsite.Areas.Admin.Controllers
 {
@@ -345,22 +346,87 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			return RedirectToAction("Index", "User", new { area = "Admin" });
 		}
 
-        [HttpPost]
-        [Authorize]
-        public IActionResult Logout()
-        {
-            _signInManager.SignOutAsync();
-            _notification.Success("You logged out successfully!");
-            return RedirectToAction("Index", "Home", new { area = "Default" });
-        }
+		[HttpPost]
+		[Authorize]
+		public IActionResult Logout()
+		{
+			_signInManager.SignOutAsync();
+			_notification.Success("You logged out successfully!");
+			return RedirectToAction("Index", "Home", new { area = "Default" });
+		}
 
-        [HttpGet("AccessDenied")]
+		[HttpGet("AccessDenied")]
 		[Authorize]
 		public IActionResult AccessDenied()
 		{
 			return View();
 		}
 
-		
+		[HttpGet("EditProfile")]
+		[Authorize]
+		public async Task<IActionResult> EditProfile()
+		{
+			//var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+			//var userId = userIdClaim?.Value;
+
+			//var user = await _userManager.FindByIdAsync(userId);
+
+			var user = await _userManager.GetUserAsync(User);
+
+			if (user == null)
+			{
+				_notification.Error("This User Does Not Exist!");
+				return RedirectToAction("EditProfile", "User", new { area = "Admin" });
+			}
+
+			var vm = new EditProfileVM
+			{
+				Id = user.Id,
+				Username = user.UserName,
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				Email = user.Email
+			};
+
+			return View(vm); // Trả về view với thông tin người dùng để chỉnh sửa
+		}
+
+		[HttpPost("EditProfile")]
+		[Authorize]
+		public async Task<IActionResult> EditProfile(EditProfileVM vm)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(vm); // Nếu dữ liệu không hợp lệ, hiển thị lại form chỉnh sửa với thông tin đã nhập
+			}
+
+			var user = await _userManager.FindByIdAsync(vm.Id);
+			if (user == null)
+			{
+				_notification.Error("This User Does Not Exist!");
+				return RedirectToAction("EditProfile", "User", new { area = "Admin" });
+			}
+
+			// Cập nhật thông tin người dùng từ form chỉnh sửa
+			user.UserName = vm.Username;
+			user.FirstName = vm.FirstName;
+			user.LastName = vm.LastName;
+			user.Email = vm.Email;
+
+			var updateResult = await _userManager.UpdateAsync(user);
+
+			if (updateResult.Succeeded)
+			{
+				_notification.Success("Profile updated successfully!");
+				return RedirectToAction("EditProfile", "User", new { area = "Admin" }); // Điều hướng đến trang thông tin người dùng sau khi cập nhật thành công
+			}
+			else
+			{
+				_notification.Error("Failed to update profile. Please try again.");
+				return View(vm); // Nếu cập nhật thất bại, hiển thị lại form chỉnh sửa với thông tin đã nhập
+			}
+		}
+
+
 	}
 }
