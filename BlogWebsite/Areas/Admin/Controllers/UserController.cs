@@ -39,26 +39,33 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		[HttpGet("User")]
 		public async Task<IActionResult> Index()
 		{
+
 			var users = await _userManager.Users.ToListAsync();
-			var vm = users.Select(x => new UserVM()
-			{
-				Id = x.Id,
-				FirstName = x.FirstName,
-				LastName = x.LastName,
-				UserName = x.UserName,
-				Email = x.Email,
-				IsLocked = x.IsLocked,
 
-			}).ToList();
-			foreach (var user in vm)
+			var vmList = new List<UserVM>();
+			//var vmList = new Dictionary<string, UserVM>();
+
+			foreach (var user in users)
 			{
-				var singleUser = await _userManager.FindByIdAsync(user.Id);
-				var role = await _userManager.GetRolesAsync(singleUser);
-				user.Role = role.FirstOrDefault();
-				user.IsLocked = await _userManager.IsLockedOutAsync(singleUser);
+				var roles = await _userManager.GetRolesAsync(user);
+				var isLocked = await _userManager.IsLockedOutAsync(user);
+
+				var vm = new UserVM
+				{
+					Id = user.Id,
+					UserName = user.UserName,
+					Email = user.Email,
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					IsLocked = isLocked,
+					Role = roles.FirstOrDefault(),
+				};
+				vmList.Add(vm); 
+				//vmList.Add(user.Id, vm);
 			}
+			return View(vmList);
+			//return View(vmList.values.ToList());
 
-			return View(vm);
 		}
 
 		[HttpGet("ForgotPassword")]
