@@ -412,6 +412,12 @@ namespace BlogWebsite.Areas.Admin.Controllers
 			user.LastName = vm.LastName;
 			user.Email = vm.Email;
 
+
+			var checkUsernameExist = await _userManager.FindByNameAsync(vm.Username);
+			if (checkUsernameExist != null)
+			{
+				ModelState.AddModelError("Username", "This Username Already Exist!");
+			}
 			var updateResult = await _userManager.UpdateAsync(user);
 
 			if (updateResult.Succeeded)
