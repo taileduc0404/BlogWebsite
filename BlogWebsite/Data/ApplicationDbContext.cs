@@ -1,5 +1,7 @@
 ﻿using BlogWebsite.Models;
+using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogWebsite.Data
@@ -20,6 +22,5 @@ namespace BlogWebsite.Data
 		public DbSet<Setting>? settings { get; set; }
 		public DbSet<Reaction>? reactions { get; set; }
 
-
-	}
+    }
 }
