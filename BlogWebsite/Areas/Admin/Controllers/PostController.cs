@@ -6,10 +6,8 @@ using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Slugify;
-using System.Drawing.Printing;
 using X.PagedList;
 
 namespace BlogWebsite.Areas.Admin.Controllers

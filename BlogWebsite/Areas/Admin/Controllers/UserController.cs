@@ -60,7 +60,7 @@ namespace BlogWebsite.Areas.Admin.Controllers
 					IsLocked = isLocked,
 					Role = roles.FirstOrDefault(),
 				};
-				vmList.Add(vm); 
+				vmList.Add(vm);
 				//vmList.Add(user.Id, vm);
 			}
 			return View(vmList);

@@ -62,7 +62,7 @@ namespace EmailService
 				{
 					client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, true);
 					client.AuthenticationMechanisms.Remove("XOAUTH2");
-					client.Authenticate(_emailConfig.UserName, "paoyjharvgjqhukd");
+					client.Authenticate(_emailConfig.UserName, "digiaqqnsxomggzr");
 
 					client.Send(mailMessage);
 				}
