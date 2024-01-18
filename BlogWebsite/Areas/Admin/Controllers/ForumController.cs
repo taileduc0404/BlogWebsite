@@ -13,7 +13,7 @@ using X.PagedList;
 namespace BlogWebsite.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	[Authorize]
+	[Authorize("Admin")]
 	public class ForumController : Controller
 	{
 		private readonly ApplicationDbContext _context;

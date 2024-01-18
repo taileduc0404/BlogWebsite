@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using BlogWebsite.Data;
 using BlogWebsite.Models;
+using BlogWebsite.Utilites;
 using BlogWebsite.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -134,6 +135,9 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		public async Task<IActionResult> DeleteTag(int id)
 		{
 			var tag = await _context.tags!.Include(x => x.posts)!.ThenInclude(y => y.Comments).SingleOrDefaultAsync(x => x.Id == id);
+			var loggedInUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+			var loggedInUserRole = await _userManager.GetRolesAsync(loggedInUser!);
+
 
 			if (tag != null)
 			{
@@ -141,10 +145,18 @@ namespace BlogWebsite.Areas.Admin.Controllers
 				{
 					_context.comments!.RemoveRange(post.Comments!);
 				}
-				_context.posts!.RemoveRange(tag.posts!);
-				_context.tags!.Remove(tag!);
-				await _context.SaveChangesAsync();
-				_notification.Success("Tag Deleted Successfully!");
+				if (loggedInUserRole[0] != WebsiteRole.WebisteAdmin)
+				{
+					_notification.Error("You Are Not Author Of This Tag!");
+					return RedirectToAction("Index", "Tag", new { area = "Admin" });
+				}
+				else
+				{
+					_context.posts!.RemoveRange(tag.posts!);
+					_context.tags!.Remove(tag!);
+					await _context.SaveChangesAsync();
+					_notification.Success("Tag Deleted Successfully!");
+				}
 			}
 			else
 			{
