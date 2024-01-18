@@ -33,8 +33,9 @@
 	<link rel="stylesheet" href="~/bootstrap/css/styles.css" media="all">
 	<link rel="stylesheet" href="~/bootstrap/css/thumbnail.css">
 	<link rel="stylesheet" href="~/bootstrap/css/tag.css">
-@*	<link rel="stylesheet" href="~/forum/styles.css">
-*@	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
+	@*	<link rel="stylesheet" href="~/forum/styles.css">
+	*@
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
 	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9067129215332668"
 			crossorigin="anonymous"></script>
 </head>
@@ -67,33 +68,39 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-					
+
 					<li class="custom-nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
 					@*<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>*@
 					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="GetTags">Tags</a></li>
-@*					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Forum">Forum</a></li>
-*@					@if (User.Identity!.IsAuthenticated)
+					@*					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Forum">Forum</a></li>
+					*@
+					@if (User.Identity!.IsAuthenticated)
 					{
-						<li class="nav-item dropdown">
-							<a href="" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-								Hello @User.Identity.Name
-							</a>
-							<ul class="dropdown-menu" style="border-radius:10px;">
-								<li class=nav-item><a class="nav-link" asp-area="Admin" asp-controller="Post" asp-action="Index">Dashboard</a></li>
-								<li class=nav-item><a class="nav-link" asp-controller="Post" asp-action="CreatePost" asp-area="Admin">Create Post</a></li>
-								<form asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">
-									<button type="submit" class="dropdown-item">
-										<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-										Logout
-									</button>
-								</form>
-							</ul>
+						<li class="nav-item custom-dropdown">
+							<div class="dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Hello @User.Identity.Name
+								</a>
+								<ul class="dropdown-menu custom-dropdown-content" aria-labelledby="navbarDropdown">
+									<li class="nav-item"><a class="nav-link custom-dropdown-item" asp-area="Admin" asp-controller="Post" asp-action="Index">Dashboard</a></li>
+									<li class="nav-item"><a class="nav-link custom-dropdown-item" asp-controller="Post" asp-action="CreatePost" asp-area="Admin">Create Post</a></li>
+									<form asp-action="Logout" asp-controller="User" asp-area="Admin" method="post">
+										<button type="submit" class="dropdown-item custom-dropdown-item">
+											<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+											Logout
+										</button>
+									</form>
+								</ul>
+							</div>
 						</li>
 					}
 					else
 					{
 						<li class="custom-nav-item"><a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Login">Login</a></li>
 					}
+
+
+
 					<li class="nav-item" style="margin-top: 4px;">
 						<form asp-controller="Home" asp-action="Index" method="get" class="input-group">
 							<div class="form-outline">
@@ -139,3 +146,4 @@
 
 <script src="~/bootstrap/js/scripts.js"></script>
 <script src="~/bootstrap/js/moveToTop.js"></script>
+

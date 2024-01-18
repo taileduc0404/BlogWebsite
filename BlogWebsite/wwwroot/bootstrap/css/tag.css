@@ -1,16 +1,12 @@
-﻿.tag-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px; /* Khoảng cách giữa các tag */
-}
-
-.btn-tag-custom {
+﻿.btn-tag-custom {
     background-color: #85C1E9;
     color: #333;
     padding: 6px 12px;
     border-radius: 16px;
     text-decoration: none;
     transition: background-color 0.3s ease, color 0.3s ease;
+    margin-right: 8px; /* Khoảng cách giữa các button */
+    margin-bottom: 8px; /* Khoảng cách dưới cùng */
 }
 
     .btn-tag-custom:hover {

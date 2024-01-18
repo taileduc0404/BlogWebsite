@@ -31,27 +31,26 @@ namespace BlogWebsite.Areas.Admin.Controllers
 		}
 
 		[HttpGet("Tag")]
-		public async Task<IActionResult> Index(string keyword)
+		public async Task<IActionResult> Index(string keyword, int? page)
 		{
-			var listOfTag = await _context.tags!
-				.ToListAsync();
+			int pageNumber = page ?? 1;
+			int pageSize = 6;
 
-			var listOfTagVM = listOfTag
+			var listOfTagVM = _context.tags!
 				.Select(x => new TagVM
 				{
 					Id = x.Id,
 					Name = x.Name ?? "None Tag" // Đặt tên mặt định cho Name nếu Name được set là null
-				})
-				.ToList();
+				});
 
-			if (string.IsNullOrEmpty(keyword))
+			if (!string.IsNullOrEmpty(keyword))
 			{
-				return View(listOfTagVM);
+				keyword = keyword.ToLower();
+				listOfTagVM = listOfTagVM.Where(x => x.Name!.ToLower().Contains(keyword));
+
 			}
-			else
-			{
-				return View(listOfTagVM.Where(x => x.Name!.ToLower().Contains(keyword)));
-			}
+			var listOfTag = await listOfTagVM.ToPagedListAsync(pageNumber, pageSize);
+			return View(listOfTag);
 		}
 
 		[HttpGet("CreateTag")]

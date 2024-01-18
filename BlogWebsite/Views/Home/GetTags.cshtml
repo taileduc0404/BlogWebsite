@@ -3,22 +3,22 @@
     ViewData["Title"] = "Tags";
 }
 
-<div class="container mt-4">    
-    <div class="row">
-        @if (Model.tags != null && Model.tags.Count > 0)
-        {
-            <div class="tag-container mt-4">
+<div class="container">
+    <div class="row mt-4 justify-content-center">
+        <div class="col-auto">
+            @if (Model.tags != null && Model.tags.Count > 0)
+            {
                 @foreach (var tag in Model.tags)
                 {
-                    <a asp-action="PostTag" asp-controller="Home" asp-route-id="@tag.Id" class="btn-tag-custom">@tag.Name (@tag.PostCount)</a>
+                    <a asp-action="PostTag" asp-controller="Home" asp-route-id="@tag.Id" class="btn btn-tag-custom">@tag.Name (@tag.PostCount)</a>
                 }
-            </div>
-        }
-        else
-        {
-            <div class="col-12 text-center">
-                <p>No tags available.</p>
-            </div>
-        }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p>No tags available.</p>
+                </div>
+            }
+        </div>
     </div>
 </div>

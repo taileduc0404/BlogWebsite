@@ -12,19 +12,18 @@ body {
     margin: 0;
 }
 
-    header img {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1; /* Đặt z-index là -1 để đảm bảo hình nền chìm dưới tiêu đề */
-    }
+header img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Đặt z-index là -1 để đảm bảo hình nền chìm dưới tiêu đề */
+}
 
 
 .container {
     position: relative;
-    z-index: 1; /* Đặt z-index là 1 để đảm bảo tiêu đề đè lên hình nền */
 }
 
 .text-center {
@@ -35,12 +34,14 @@ body {
     position: fixed;
     background-color: #85C1E9;
 }
+
 .custom-navbar-brand {
     font-family: 'Pacifico', cursive;
     text-decoration: none;
     color: #454545;
     font-size: 2em;
 }
+
 .custom-nav-item {
     font-size: 16px;
     text-align: right;
@@ -77,23 +78,54 @@ body {
         transform: scale(1.05); /* Phóng to thẻ card khi con chuột hover vào */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiển thị bóng đổ khi hover */
     }
-    .custom-nav-link {
-        text-decoration: none;
-        color: #333;
-        padding: 10px 20px;
-        display: block;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
+
+.custom-nav-link {
+    text-decoration: none;
+    color: #333;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 
 .main-content {
     flex: 1;
 }
 
-.dropdown-menu {
-    border-radius: 10px;
-    padding: 10px 0; /* Tăng khoảng cách giữa các mục */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
 }
+
+.custom-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff; /* Màu nền của dropdown */
+    border: 1px solid #ccc; /* Viền của dropdown */
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+    min-width: 160px;
+}
+
+.custom-dropdown:hover .custom-dropdown-content {
+    display: block;
+}
+
+.custom-dropdown-item {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    color: #333;
+    transition: background-color 0.3s ease; /* Hiệu ứng mượt mà khi hover */
+}
+
+    .custom-dropdown-item:hover {
+        background-color: #f1f1f1; /* Màu nền khi hover */
+    }
+
+
+
 
 .description-text {
     text-align: justify; /* Căn đều văn bản */
@@ -102,20 +134,9 @@ body {
 }
 
 
-
-/*.card {
-    transition: transform 0.3s ease;*/ /* Tạo hiệu ứng chuyển động mượt mà */
-    /*box-shadow: none;*/ /* Bắt đầu với bóng đổ ẩn */
-/*}*/
-
-    /*.card:hover {
-        transform: scale(1.05);*/ /* Phóng to thẻ card khi con chuột hover vào */
-        /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/ /* Hiển thị bóng đổ khi hover */
-    /*}*/
-
 footer.custom-footer {
     background-color: #2E2E2E;
     color: #ffffff;
 }
 
-/*Lê Đức Tài, Bùi Ngọc Na*/
+/*Lê Đức Tài*/
