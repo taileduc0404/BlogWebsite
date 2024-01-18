@@ -4,3 +4,10 @@
     height: 200px; /* Điều chỉnh kích thước tùy thuộc vào yêu cầu của bạn */
     object-fit: cover;
 }
+.card-img {
+    transition: transform 0.2s ease-in-out; /* Thêm hiệu ứng transition */
+}
+
+    .card-img:hover {
+        transform: scale(1.1); /* Hiệu ứng scale khi con chuột hover */
+    }

@@ -67,21 +67,12 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-					<li class="nav-item" style="margin-top: 4px;">
-						<form asp-controller="Home" asp-action="Index" method="get" class="input-group">
-							<div class="form-outline">
-								<input id="search-input" name="keyword" type="search" placeholder="Search..." class="form-control form-control-sm box-shadow" style="border-bottom-left-radius:30px;border-top-left-radius:30px;" />
-							</div>
-							<button type="submit" class="btn btn-sm btn-secondary" style="border-bottom-right-radius:30px;border-top-right-radius:30px;">
-								<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
-							</button>
-						</form>
-					</li>
+					
 					<li class="custom-nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
 					@*<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>*@
 					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="GetTags">Tags</a></li>
-					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Forum">Forum</a></li>
-					@if (User.Identity!.IsAuthenticated)
+@*					<li class="custom-nav-item"><a class="nav-link" asp-controller="Home" asp-action="Forum">Forum</a></li>
+*@					@if (User.Identity!.IsAuthenticated)
 					{
 						<li class="nav-item dropdown">
 							<a href="" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
@@ -103,6 +94,16 @@
 					{
 						<li class="custom-nav-item"><a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Login">Login</a></li>
 					}
+					<li class="nav-item" style="margin-top: 4px;">
+						<form asp-controller="Home" asp-action="Index" method="get" class="input-group">
+							<div class="form-outline">
+								<input id="search-input" name="keyword" type="search" placeholder="Search..." class="form-control form-control-sm box-shadow" style="border-bottom-left-radius:30px;border-top-left-radius:30px;" />
+							</div>
+							<button type="submit" class="btn btn-sm btn-secondary" style="border-bottom-right-radius:30px;border-top-right-radius:30px;">
+								<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
+							</button>
+						</form>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -130,9 +131,6 @@
 
 <!-- Notification-->
 <script src="~/dashboard/vendor/jquery/jquery.min.js"></script>
-@*<script src="~/dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>*@
-@*<script src="~/dashboard/vendor/jquery-easing/jquery.easing.min.js"></script>
-*@@*<script src="~/dashboard/vendor/chart.js/Chart.min.js"></script>*@
 
 @await Component.InvokeAsync("Notyf")
 @await RenderSectionAsync("Scripts", required: false)
