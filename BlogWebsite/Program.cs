@@ -106,7 +106,3 @@ void DataSeeding()
 		DbInitialize.Initialize();
 	}
 }
-
-
-
-/*Lê Đức Tài*/
